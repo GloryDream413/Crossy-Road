@@ -1,6 +1,7 @@
 /node_modules
 /.expo
 /.netlify
+/.style
 ExpoParty/Secret.js
 release/builds
 .vscode
