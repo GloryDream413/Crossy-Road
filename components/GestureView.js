@@ -27,17 +27,7 @@ const swipeConfig = {
   directionalOffsetThreshold: 80,
 };
 
-export const keyMap = {
-  Space: "SWIPE_UP",
-  ArrowUp: "SWIPE_UP",
-  KeyW: "SWIPE_UP",
-  ArrowDown: "SWIPE_DOWN",
-  KeyS: "SWIPE_DOWN",
-  ArrowLeft: "SWIPE_LEFT",
-  KeyA: "SWIPE_LEFT",
-  ArrowRight: "SWIPE_RIGHT",
-  KeyD: "SWIPE_RIGHT",
-};
+
 
 function isValidSwipe(
   velocity,
@@ -57,8 +47,12 @@ const freezeBody = (e) => {
 class GestureView extends Component {
   constructor(props, context) {
     super(props, context);
+    this._keyMap = props.keyMap;
+
+    console.log ("&&&&&&&&&&&&&&&&: ", this.keyMap);
     this.swipeConfig = Object.assign(swipeConfig, props.config);
     this._panResponder = PanResponder.create({
+
       onPanResponderStart: () => {
         this.props.onResponderGrant();
       },
@@ -87,14 +81,14 @@ class GestureView extends Component {
   }
 
   onKeyDown = (e) => {
-    const direction = keyMap[e.code];
+    const direction = this._keyMap[e.code];
     if (direction) {
       this.props.onResponderGrant();
     }
   };
 
   onKeyUp = (e) => {
-    const direction = keyMap[e.code];
+    const direction = this._keyMap[e.code];
     if (direction) {
       this.props.onSwipe(direction);
     }

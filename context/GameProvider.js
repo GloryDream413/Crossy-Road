@@ -3,12 +3,14 @@ import * as React from "react";
 
 import GameContext from "./GameContext";
 
+import { CrossyGameMap } from "../src/CrossyGame";
+
 // import AsyncStorage from '@react-native-community/async-storage';
 
-const STORAGE_KEY = "@BouncyBacon:Character";
+const STORAGE_KEY = "@BouncyBrent:Character";
 const SHOULD_REHYDRATE = true;
 
-const defaultState = { character: "bacon", highscore: 0 };
+const defaultState = { character: "brent", highscore: 0 };
 
 async function cacheAsync(value) {
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(value));
@@ -30,6 +32,7 @@ async function rehydrateAsync() {
 export default function GameProvider({ children }) {
   const [character, setCharacter] = React.useState(defaultState.character);
   const [highscore, setHighscore] = React.useState(defaultState.highscore);
+  const [gameMode, setGameMode] = React.useState(1); // 0 : PVE , 1 : PVP  
 
   React.useEffect(() => {
     const parseModulesAsync = async () => {
@@ -57,6 +60,7 @@ export default function GameProvider({ children }) {
           setHighscore(highscore);
           cacheAsync({ character, highscore });
         },
+        gameMode
       }}
     >
       {children}

@@ -9,6 +9,8 @@ import Characters from "../src/Characters";
 import useDimensions from "../src/hooks/useDimensions";
 import Images from "../src/Images";
 
+import GameContext from "../context/GameContext";
+
 // import { setGameState } from '../src/actions/game';
 
 //TODO: Make this dynamic
@@ -123,16 +125,23 @@ function GameOver({ ...props }) {
 
   const imageStyle = { width: 60, height: 48 };
 
+  const { gameMode } = React.useContext(GameContext);
+
+  // styles.container,
   return (
+
     <View
       style={[
-        styles.container,
-        { paddingTop: top || 12, paddingBottom: bottom || 8 },
-        props.style,
+        { paddingTop: top || 12, paddingBottom: bottom || 8 , top : "30%"}
+        , gameMode > 0 && { width: "50%" }
+        // props.style,
       ]}
     >
-      <View key="content" style={{ flex: 1, justifyContent: "center" }}>
+      <View key="content" style={[{ flex: 1, justifyContent: "center" }
+        
+      ]}>
         {banner.map((val, index) => (
+
           <Banner
             animatedValue={animations[index].interpolate({
               inputRange: [0.2, 1],
@@ -142,6 +151,7 @@ function GameOver({ ...props }) {
             key={index}
             style={{
               backgroundColor: val.color,
+              minWidth: "50%",
               transform: [
                 {
                   scaleY: animations[index].interpolate({
@@ -155,6 +165,7 @@ function GameOver({ ...props }) {
             title={val.title}
             button={val.button}
           />
+
         ))}
       </View>
 

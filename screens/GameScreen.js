@@ -19,8 +19,11 @@ import HomeScreen from "./HomeScreen";
 import SettingsScreen from "./SettingsScreen";
 import GameContext from "../context/GameContext";
 
+import { keyMap_1, keyMap_2 } from "../global/keyMap";
+
 const DEBUG_CAMERA_CONTROLS = false;
 class Game extends Component {
+
   /// Reserve State for UI related updates...
   state = {
     ready: false,
@@ -34,6 +37,7 @@ class Game extends Component {
   transitionScreensValue = new Animated.Value(1);
 
   UNSAFE_componentWillReceiveProps(nextProps, nextState) {
+
     if (nextState.gameState && nextState.gameState !== this.state.gameState) {
       this.updateWithGameState(nextState.gameState, this.state.gameState);
     }
@@ -169,13 +173,14 @@ class Game extends Component {
 
   onSwipe = (gestureName) => this.engine.moveWithDirection(gestureName);
 
-  renderGame = () => {
+  renderGame = (keyMap) => {
     if (!this.state.ready) return;
 
     return (
       <GestureView
         pointerEvents={DEBUG_CAMERA_CONTROLS ? "none" : undefined}
         onStartGesture={this.engine.beginMoveWithDirection}
+        keyMap = {keyMap}
         onSwipe={this.onSwipe}
       >
         <GLView
@@ -230,14 +235,14 @@ class Game extends Component {
   }
 
   render() {
-    const { isDarkMode, isPaused } = this.props;
+    const { keyMap, isDarkMode, isPaused } = this.props;
 
     return (
       <View
         pointerEvents="box-none"
         style={[
-          StyleSheet.absoluteFill,
-          { flex: 1, backgroundColor: "#87C6FF" },
+          // StyleSheet.absoluteFill,
+          { flex: 1, backgroundColor: "#0f0f0f", padding: '20px', width: '100%', height: '100%' },
           Platform.select({
             web: { position: "fixed" },
             default: { position: "absolute" },
@@ -248,12 +253,14 @@ class Game extends Component {
         <Animated.View
           style={{ flex: 1, opacity: this.transitionScreensValue }}
         >
-          {this.renderGame()}
+          {this.renderGame(keyMap)}
         </Animated.View>
+
         <Score
           score={this.state.score}
           gameOver={this.state.gameState === State.Game.gameOver}
         />
+
         {this.renderGameOver()}
 
         {this.renderHomeScreen()}
@@ -272,6 +279,7 @@ class Game extends Component {
             ]}
           />
         )}
+
       </View>
     );
   }
@@ -303,12 +311,27 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
 
 function GameScreen(props) {
   const scheme = useColorScheme();
-  const { character } = React.useContext(GameContext);
+  const { character, gameMode } = React.useContext(GameContext);
 
   // const appState = useAppState();
 
   return (
-    <Game {...props} character={character} isDarkMode={scheme === "dark"} />
+    <>
+      {gameMode == 0 ? (
+        <Game {...props} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
+      ) : (
+        <div style={{ flex: 1, flexDirection: 'row' }}>
+          <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
+            <Game {...props}
+              keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
+          </div>
+          <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
+            <Game {...props}
+              keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

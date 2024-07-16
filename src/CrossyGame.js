@@ -238,10 +238,12 @@ export class CrossyGameMap extends GameMap {
       rowKind = 'grass';
     }
 
-    const ROW_TYPES = ['grass', 'roadtype', 'water'];
+    // const ROW_TYPES = ['grass', 'roadtype', 'water'];
+    const ROW_TYPES = ['grass', 'roadtype'];
     if (rowKind == null) {
       rowKind = ROW_TYPES[Math.floor(Math.random() * ROW_TYPES.length)];
     }
+    // rowKind = 'grass';
 
     switch (rowKind) {
       case 'grass':
