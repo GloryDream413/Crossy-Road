@@ -18,12 +18,13 @@ import GameContext from "../context/GameContext";
 let hasShownTitle = false;
 
 function Screen(props) {
-  const { setCharacter, character } = React.useContext(GameContext);
+  const { setCharacter, character , gameMode} = React.useContext(GameContext);
   const animation = new Animated.Value(0);
 
   React.useEffect(() => {
     function onKeyUp({ keyCode }) {
       // Space, up-arrow
+      // When the player click the space the start game.
       if ([32, 38].includes(keyCode)) {
         props.onPlay();
       }
@@ -57,13 +58,13 @@ function Screen(props) {
       {
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [-Dimensions.get("window").width, 0],
+          outputRange: gameMode == 0 ?[0, Dimensions.get("window").width/2] : [-Dimensions.get("window").width/4, 0],
         }),
       },
       {
         translateY: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [-100, 0],
+          outputRange: [-500, 0],
         }),
       },
     ],

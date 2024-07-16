@@ -216,7 +216,7 @@ class Game extends Component {
     }
 
     return (
-      <View style={StyleSheet.absoluteFillObject}>
+      <View >
         <HomeScreen
           onPlay={() => {
             this.updateWithGameState(State.Game.playing);
@@ -265,7 +265,7 @@ class Game extends Component {
 
         {this.renderHomeScreen()}
 
-        {this.state.showSettings && this.renderSettingsScreen()}
+        {/* {this.state.showSettings && this.renderSettingsScreen()} */}
 
         {isPaused && (
           <View
