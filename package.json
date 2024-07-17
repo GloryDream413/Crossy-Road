@@ -29,6 +29,7 @@
     "react-native": "0.64.3",
     "react-native-safe-area-context": "3.3.2",
     "react-native-web": "0.17.1",
+    "socket.io-client": "^4.7.5",
     "three": "^0.138.3"
   },
   "devDependencies": {

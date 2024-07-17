@@ -1,14 +1,39 @@
-import React from 'react';
-import { Button, View } from "react-native";
-
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
-
 import GameContext from '../context/GameContext';
+import io from 'socket.io-client';
+
+const SERVER_URL = "http://192.168.140.49:3000";
+const socket = io(SERVER_URL);
+
+const status_room = 0; // Room is not created yet.
 
 const LandingScreen = () => {
-
+    const [flag, setFlag] = useState(status_room);
     const navigation = useNavigation();
-    const {gameMode, setGameMode} = React.useContext(GameContext);
+    const { gameMode, setGameMode } = React.useContext(GameContext);
+    const [roomName, setRoomName] = useState("");
+
+    useEffect(() => {
+        setFlag(status_room);
+    }, []);
+
+    useEffect(() => {
+        const handleSocketMessage = (data) => {
+            if (data.cmd === "ROOM_CREATED") {
+                setRoomName(data.name);
+                setFlag(1);
+            } else if (data.cmd === "ROOM_CLOSED") {
+                setFlag(0);
+            }
+        };
+
+        socket.on('message', handleSocketMessage);
+
+        return () => {
+            socket.off('message', handleSocketMessage);
+        };
+    }, []);
 
     const createStars = () => {
         const stars = [];
@@ -33,11 +58,26 @@ const LandingScreen = () => {
         setGameMode(0);
         console.log("Set the gameMode to ", gameMode);
     };
-    
+
     const handleTwoPlayersLocal = () => {
         navigation.navigate("GameScreen_1");
         setGameMode(1);
         console.log("Set the gameMode to ", gameMode);
+    };
+
+    const handleCreateRoom = () => {
+        socket.emit('message', JSON.stringify({
+            cmd: 'CREATE_ROOM',
+            map: 'I will set it after!'
+        }));
+    };
+
+    const handleCloseRoom = () => {
+        socket.emit('message', JSON.stringify({
+            cmd: 'CLOSE_ROOM',
+            name: roomName,
+            map: 'I will set it after!'
+        }));
     };
 
     return (
@@ -56,28 +96,25 @@ const LandingScreen = () => {
                 justifyContent: 'center',
                 height: '100%',
             }}>
-                <h1 className="title" >The Road to Valhalla !</h1>
+                <h1 className="title">The Road to Valhalla!</h1>
 
-                <button className="decoration-button"
-                    onClick={handleOnePlayerLocal}
-                >PLAY SINGLE</button>
+                <button className="decoration-button" onClick={handleOnePlayerLocal}>SINGLE PLAYER</button>
+                <button className="decoration-button" onClick={handleTwoPlayersLocal}>MULTI PLAYERS</button>
 
-                <button className="decoration-button"
-                    onClick={handleTwoPlayersLocal}
-                >MULTI PLAYERS</button>
+                {flag === 0 ? (
+                    <button className="decoration-button" onClick={handleCreateRoom}>CREATE SERVER</button>
+                ) : (
+                    <button className="decoration-button" style={{ background: 'rgba(255, 0, 0, 0.4)' }} onClick={handleCloseRoom}>CLOSE ROOM</button>
+                )}
 
-                <button className="decoration-button"
-                >CREATE SERVER</button>
-
-                <button className="decoration-button"
-                >JOIN SERVER</button>
-
+                <button className="decoration-button">FIND SERVERS</button>
             </div>
         </div>
     );
 };
 
 export default LandingScreen;
+
 
 // CSS styles
 const styles = `
@@ -103,7 +140,7 @@ const styles = `
 
     .title {
         color : white;
-        font-size : 40px;
+        font-size : 60px;
         margin-bottom : 50px;
         transition : all 2s;
         transform : scale(1);
@@ -120,13 +157,15 @@ const styles = `
         background-color: transparent;
         border-radius : 20px;
         color: white;
+        margin : 20px;
+        letter-spacing : 2px;
         border: 2px solid white;
         padding: 10px 20px;
         font-size: 16px;
-        margin: 10px;
         cursor: pointer;
         transition: all 0.3s;
-        width : 250px;
+        width : 300px;
+        height : 75px;
     }
 
     .decoration-button:hover {
@@ -134,7 +173,7 @@ const styles = `
         color : white;
         border : 2px solid green;
         transition : 1s all;
-        transform : scale(1.1);
+        transform : scale(1.25);
     }
 
     @keyframes glow {
@@ -159,3 +198,19 @@ const styleSheet = document.createElement('style');
 styleSheet.type = 'text/css';
 styleSheet.innerText = styles;
 document.head.appendChild(styleSheet);
+
+
+
+// socket.on('connect', () => {
+//     console.log('Socket.IO connection established.');
+//     // You can send data or perform actions once the connection is open
+//     socket.emit('hello', 'Hello Server!');
+// });
+
+// socket.on('error', (error) => {
+//     console.error('Socket.IO error:', error);
+// });
+
+// socket.on('disconnect', () => {
+//     console.log('Socket.IO connection closed.');
+// });
