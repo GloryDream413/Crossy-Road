@@ -19,11 +19,10 @@ import HomeScreen from "./HomeScreen";
 import SettingsScreen from "./SettingsScreen";
 import GameContext from "../context/GameContext";
 
-import { keyMap_1, keyMap_2 } from "../global/keyMap";
+import { keyMap_1, keyMap_2, keyMap_Both } from "../global/keyMap";
 import { globalMap } from "../global/globalMap";
 
 import { useNavigation } from "@react-navigation/native";
-
 
 const DEBUG_CAMERA_CONTROLS = false;
 class Game extends Component {
@@ -345,7 +344,7 @@ function GameScreen(props) {
         onClick={gotoMenu}
       >Back to Menu</button>
       {gameMode == 0 ? (
-        <Game {...props} globalMap={globalMap} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
+        <Game {...props}  globalMap={globalMap} keyMap={keyMap_Both} character={character} isDarkMode={scheme === "dark"} />
       ) : (
         <div style={{ flex: 1, flexDirection: 'row' }}>
           <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>

@@ -125,7 +125,7 @@ function GameOver({ ...props }) {
 
   const imageStyle = { width: 60, height: 48 };
 
-  const { gameMode } = React.useContext(GameContext);
+  const gameMode = props.gameMode;
 
   // styles.container,
   return (

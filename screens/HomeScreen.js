@@ -18,7 +18,7 @@ import GameContext from "../context/GameContext";
 let hasShownTitle = false;
 
 function Screen(props) {
-  const { setCharacter, character , gameMode} = React.useContext(GameContext);
+  const { setCharacter, character, gameMode } = React.useContext(GameContext);
   const animation = new Animated.Value(0);
 
   React.useEffect(() => {
@@ -58,7 +58,9 @@ function Screen(props) {
       {
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: gameMode == 0 ?[0, Dimensions.get("window").width/2] : [-Dimensions.get("window").width/4, 0],
+          outputRange: gameMode == 0 ?
+            [0, Dimensions.get("window").width / 2] :
+            [-Dimensions.get("window").width / 4, 0],
         }),
       },
       {
@@ -105,7 +107,9 @@ function Screen(props) {
         <Text style={styles.coins}>{props.coins}</Text>
         <Animated.Image
           source={require("../assets/images/title.png")}
-          style={[styles.title, animatedTitleStyle]}
+          style={[styles.title, animatedTitleStyle, {
+            borderRadius : '2px solid red'
+          }]}
         />
 
         <View
@@ -125,9 +129,9 @@ function Screen(props) {
             onCharacterSelect={() => {
               // TODO(Bacon): Create a character select page
             }}
-            onShop={() => {}}
-            onMultiplayer={() => {}}
-            onCamera={() => {}}
+            onShop={() => { }}
+            onMultiplayer={() => { }}
+            onCamera={() => { }}
           />
         </View>
       </TouchableOpacity>

@@ -32,7 +32,7 @@ async function rehydrateAsync() {
 export default function GameProvider({ children }) {
   const [character, setCharacter] = React.useState(defaultState.character);
   const [highscore, setHighscore] = React.useState(defaultState.highscore);
-  const [gameMode, setGameMode] = React.useState(1); // 0 : PVE , 1 : PVP  
+  const [gameMode, setGameMode] = React.useState(0); // 0 : PVE , 1 : PVP  
 
   React.useEffect(() => {
     const parseModulesAsync = async () => {
@@ -53,14 +53,18 @@ export default function GameProvider({ children }) {
         character,
         setCharacter: (character) => {
           setCharacter(character);
-          cacheAsync({ character, highscore });
+          cacheAsync({ character, highscore , gameMode});
         },
         highscore,
         setHighscore: (highscore) => {
           setHighscore(highscore);
-          cacheAsync({ character, highscore });
+          cacheAsync({ character, highscore , gameMode});
         },
-        gameMode
+        gameMode,
+        setGameMode : (_gameMode) => {
+          setGameMode(_gameMode);
+          cacheAsync({ character, highscore , gameMode});
+        }
       }}
     >
       {children}

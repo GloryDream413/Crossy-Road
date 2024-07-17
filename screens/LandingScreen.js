@@ -3,9 +3,12 @@ import { Button, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 
+import GameContext from '../context/GameContext';
+
 const LandingScreen = () => {
 
     const navigation = useNavigation();
+    const {gameMode, setGameMode} = React.useContext(GameContext);
 
     const createStars = () => {
         const stars = [];
@@ -27,10 +30,14 @@ const LandingScreen = () => {
 
     const handleOnePlayerLocal = () => {
         navigation.navigate("GameScreen");
+        setGameMode(0);
+        console.log("Set the gameMode to ", gameMode);
     };
-
+    
     const handleTwoPlayersLocal = () => {
         navigation.navigate("GameScreen_1");
+        setGameMode(1);
+        console.log("Set the gameMode to ", gameMode);
     };
 
     return (
