@@ -15,6 +15,10 @@ import Hand from "../components/HandCTA";
 import Footer from "../components/Home/Footer";
 import GameContext from "../context/GameContext";
 
+const screenHeight = Math.round(Dimensions.get('window').height);
+const screenWidth = Math.round(Dimensions.get('window').width);
+const halfScreenHeight = - screenHeight / 2;
+
 let hasShownTitle = false;
 
 function Screen(props) {
@@ -55,20 +59,7 @@ function Screen(props) {
 
   const animatedTitleStyle = {
     transform: [
-      {
-        translateX: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: gameMode == 0 ?
-            [0, Dimensions.get("window").width / 2] :
-            [-Dimensions.get("window").width / 4, 0],
-        }),
-      },
-      {
-        translateY: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [-500, 0],
-        }),
-      },
+
     ],
   };
   // console.log(props);
@@ -105,12 +96,22 @@ function Screen(props) {
         }}
       >
         <Text style={styles.coins}>{props.coins}</Text>
-        <Animated.Image
-          source={require("../assets/images/title.png")}
-          style={[styles.title, animatedTitleStyle, {
-            borderRadius : '2px solid red'
-          }]}
-        />
+        {gameMode == 0 ? (
+          <Animated.Image
+            source={require("../assets/images/title.png")}
+            style={[styles.title, animatedTitleStyle, {
+              borderRadius: '2px solid red'
+            }]}
+          />
+        ) : (
+          <Animated.Image
+            source={require("../assets/images/title.png")}
+            style={[styles.title_2, animatedTitleStyle, {
+              borderRadius: '2px solid red'
+            }]}
+          />
+        )}
+
 
         <View
           style={{
@@ -154,9 +155,22 @@ const styles = StyleSheet.create({
     // backgroundColor: 'transparent',
     // textAlign: 'center',
     resizeMode: "contain",
-    maxWidth: 600,
-    width: "80%",
+    // maxWidth: 600,
+    width: "100%",
     height: 300,
+    marginTop: - screenHeight
+  },
+  title_2: {
+    // color: 'white',
+    // fontSize: 48,
+    // backgroundColor: 'transparent',
+    // textAlign: 'center',
+    resizeMode: "contain",
+    // maxWidth: 600,
+    width: "100%",
+    height: 300,
+    marginLeft: -screenWidth/2,
+    marginTop: - screenHeight
   },
   coins: {
     fontFamily: "retro",
