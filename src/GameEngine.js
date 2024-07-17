@@ -41,7 +41,7 @@ export default class Engine {
     }
   };
 
-  setupGame = (character) => {
+  setupGame = (character, globalMap) => {
     this.scene = new CrossyScene({});
 
     this.camera = new CrossyCamera();
@@ -58,6 +58,7 @@ export default class Engine {
       heroWidth: 0.7,
       scene: this.scene,
       onCollide: this.onCollide,
+      globalMap
     });
 
     this.camCount = 0;

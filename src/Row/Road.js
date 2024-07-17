@@ -34,6 +34,10 @@ export default class Road extends Object3D {
     // Number of cars: 1 through 3
     let speed = Math.random() * 0.06 + 0.02;
     let numCars = Math.floor(Math.random() * 2) + 1;
+
+    console.log("!!! Car !!!") ;
+    console.log("speed : ", speed);
+    console.log("numCars : ", numCars);
     let xDir = 1;
 
     if (Math.random() > 0.5) {
@@ -65,7 +69,7 @@ export default class Road extends Object3D {
     }
   };
 
-  constructor(heroWidth, onCollide) {
+  constructor(heroWidth, onCollide, cur_map) {
     super();
     this.heroWidth = heroWidth;
     this.onCollide = onCollide;
@@ -74,6 +78,7 @@ export default class Road extends Object3D {
     this.road = _road.models['1'].children[0].clone();
     this.add(this.road);
 
+    // console.log("Almost there : ", cur_map);
     this.carGen();
   }
 

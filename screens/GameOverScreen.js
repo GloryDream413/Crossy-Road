@@ -132,8 +132,8 @@ function GameOver({ ...props }) {
 
     <View
       style={[
-        { paddingTop: top || 12, paddingBottom: bottom || 8 , top : "30%"}
-        , gameMode > 0 && { width: "50%" }
+        { top : "30%", left : "2.5%", right : "2.5%"}
+        , gameMode > 0 && { width: "45%" }
         // props.style,
       ]}
     >

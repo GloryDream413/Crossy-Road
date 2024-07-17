@@ -21,7 +21,7 @@ export default function App() {
     <AssetLoading>
       <SafeAreaProvider>
         <GameProvider>
-          <GameScreen />
+          <GameScreen character = "bacon" />
         </GameProvider>
       </SafeAreaProvider>
     </AssetLoading>

@@ -189,17 +189,20 @@ export class CrossyGameMap extends GameMap {
   railRoads = new EntityContainer();
   rowCount = 0;
 
-  constructor({ heroWidth, onCollide, scene }) {
+  constructor({ heroWidth, onCollide, scene , globalMap}) {
     super();
 
     this.heroWidth = heroWidth;
+    this.globalMap = globalMap;
+
+    console.log("GLOBAL MAP : ",globalMap)
 
     // Assign mesh to corresponding array
     // and add mesh to scene
     for (let i = 0; i < maxRows; i++) {
       this.grasses.items[i] = new Rows.Grass(this.heroWidth);
       this.water.items[i] = new Rows.Water(this.heroWidth, onCollide);
-      this.roads.items[i] = new Rows.Road(this.heroWidth, onCollide);
+      this.roads.items[i] = new Rows.Road(this.heroWidth, onCollide, this.globalMap[i]);
       this.railRoads.items[i] = new Rows.RailRoad(this.heroWidth, onCollide);
       scene.world.add(this.grasses.items[i]);
       scene.world.add(this.water.items[i]);
@@ -234,16 +237,8 @@ export class CrossyGameMap extends GameMap {
     if (this.railRoads.count === maxRows) {
       this.railRoads.count = 0;
     }
-    if (this.rowCount < 10) {
-      rowKind = 'grass';
-    }
 
-    // const ROW_TYPES = ['grass', 'roadtype', 'water'];
-    const ROW_TYPES = ['roadtype'];
-    if (rowKind == null) {
-      rowKind = ROW_TYPES[Math.floor(Math.random() * ROW_TYPES.length)];
-    }
-    // rowKind = 'grass';
+    rowKind = this.globalMap[this.rowCount].row_type;
 
     switch (rowKind) {
       case 'grass':
@@ -258,15 +253,20 @@ export class CrossyGameMap extends GameMap {
         this.grasses.count++;
         break;
       case 'roadtype':
-        if (((Math.random() * 4) | 0) === 0) {
-          this.railRoads.items[this.railRoads.count].position.z = this.rowCount;
-          this.railRoads.items[this.railRoads.count].active = true;
-          this.setRow(this.rowCount, {
-            type: 'railRoad',
-            entity: this.railRoads.items[this.railRoads.count],
-          });
-          this.railRoads.count++;
-        } else {
+        // if (Math.random() * 2 > 1) 
+        //   {
+        //   this.railRoads.items[this.railRoads.count].position.z = this.rowCount;
+        //   this.railRoads.items[this.railRoads.count].active = true;
+        //   this.setRow(this.rowCount, {
+        //     type: 'railRoad',
+        //     entity: this.railRoads.items[this.railRoads.count],
+        //   });
+        //   this.railRoads.count++;
+        // } else 
+        {
+          // console.log("====================");
+          // console.log(this.roads);
+
           this.roads.items[this.roads.count].position.z = this.rowCount;
 
           const previousRowType = (this.getRow(this.rowCount - 1) || {}).type;
@@ -279,16 +279,16 @@ export class CrossyGameMap extends GameMap {
           this.roads.count++;
         }
         break;
-      case 'water':
-        this.water.items[this.water.count].position.z = this.rowCount;
-        this.water.items[this.water.count].active = true;
-        this.water.items[this.water.count].generate();
-        this.setRow(this.rowCount, {
-          type: 'water',
-          entity: this.water.items[this.water.count],
-        });
-        this.water.count++;
-        break;
+      // case 'water':
+      //   this.water.items[this.water.count].position.z = this.rowCount;
+      //   this.water.items[this.water.count].active = true;
+      //   this.water.items[this.water.count].generate();
+      //   this.setRow(this.rowCount, {
+      //     type: 'water',
+      //     entity: this.water.items[this.water.count],
+      //   });
+      //   this.water.count++;
+      //   break;
     }
 
     this.rowCount++;

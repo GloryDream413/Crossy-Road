@@ -25,8 +25,6 @@ export default class Grass extends Object3D {
 * Random Fill Center
 * Solid Fill Center
 * Empty Fill Center
-
-
 */
 
   generate = (type = Fill.random) => {

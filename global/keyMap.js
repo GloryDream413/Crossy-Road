@@ -1,5 +1,5 @@
 export const keyMap_1 = {
-    Space: "SWIPE_UP",
+    // Space: "SWIPE_UP",
     KeyW: "SWIPE_UP",
     KeyS: "SWIPE_DOWN",
     KeyA: "SWIPE_LEFT",
@@ -7,7 +7,7 @@ export const keyMap_1 = {
 };
 
 export const keyMap_2 = {
-    Space: "SWIPE_UP",
+    // Space: "SWIPE_UP",
     ArrowUp: "SWIPE_UP",
     ArrowDown: "SWIPE_DOWN",
     ArrowLeft: "SWIPE_LEFT",

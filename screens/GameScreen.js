@@ -20,6 +20,7 @@ import SettingsScreen from "./SettingsScreen";
 import GameContext from "../context/GameContext";
 
 import { keyMap_1, keyMap_2 } from "../global/keyMap";
+import { globalMap } from "../global/globalMap";
 
 const DEBUG_CAMERA_CONTROLS = false;
 class Game extends Component {
@@ -65,7 +66,7 @@ class Game extends Component {
       useNativeDriver: true,
       duration: 200,
       onComplete: ({ finished }) => {
-        this.engine.setupGame(this.props.character);
+        this.engine.setupGame(this.props.character, globalMap);
         this.engine.init();
 
         if (finished) {
@@ -160,7 +161,7 @@ class Game extends Component {
       this.setState({ gameState: State.Game.gameOver });
       // this.props.navigation.navigate('GameOver')
     };
-    this.engine.setupGame(this.props.character);
+    this.engine.setupGame(this.props.character, globalMap);
     this.engine.init();
   }
 
@@ -173,7 +174,7 @@ class Game extends Component {
 
   onSwipe = (gestureName) => this.engine.moveWithDirection(gestureName);
 
-  renderGame = (keyMap) => {
+  renderGame = (keyMap, globalMap) => {
     if (!this.state.ready) return;
 
     return (
@@ -181,6 +182,7 @@ class Game extends Component {
         pointerEvents={DEBUG_CAMERA_CONTROLS ? "none" : undefined}
         onStartGesture={this.engine.beginMoveWithDirection}
         keyMap = {keyMap}
+        globalMap = {globalMap}
         onSwipe={this.onSwipe}
       >
         <GLView
@@ -235,7 +237,7 @@ class Game extends Component {
   }
 
   render() {
-    const { keyMap, isDarkMode, isPaused } = this.props;
+    const { keyMap, globalMap, isDarkMode, isPaused } = this.props;
 
     return (
       <View
@@ -253,7 +255,7 @@ class Game extends Component {
         <Animated.View
           style={{ flex: 1, opacity: this.transitionScreensValue }}
         >
-          {this.renderGame(keyMap)}
+          {this.renderGame(keyMap, globalMap)}
         </Animated.View>
 
         <Score
@@ -318,16 +320,16 @@ function GameScreen(props) {
   return (
     <>
       {gameMode == 0 ? (
-        <Game {...props} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
+        <Game {...props} globalMap={globalMap} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
       ) : (
         <div style={{ flex: 1, flexDirection: 'row' }}>
           <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
             <Game {...props}
-              keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
+              globalMap={globalMap} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
           </div>
           <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
             <Game {...props}
-              keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
+              globalMap={globalMap} keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
           </div>
         </div>
       )}
