@@ -1,6 +1,12 @@
 import React from 'react';
+import { Button, View } from "react-native";
+
+import { useNavigation } from "@react-navigation/native";
 
 const LandingScreen = () => {
+
+    const navigation = useNavigation();
+
     const createStars = () => {
         const stars = [];
         for (let i = 0; i < 200; i++) {
@@ -17,6 +23,14 @@ const LandingScreen = () => {
             );
         }
         return stars;
+    };
+
+    const handleOnePlayerLocal = () => {
+        navigation.navigate("GameScreen");
+    };
+
+    const handleTwoPlayersLocal = () => {
+        navigation.navigate("GameScreen_1");
     };
 
     return (
@@ -37,9 +51,20 @@ const LandingScreen = () => {
             }}>
                 <h1 className="title" >The Road to Valhalla !</h1>
 
-                <button className="decoration-button" onClick={() => { /* Add your button click logic here */ }}>PLAY SINGLE</button>
-                <button className="decoration-button" onClick={() => { /* Add your button click logic here */ }}>CREATE SERVER</button>
-                <button className="decoration-button" onClick={() => { /* Add your button click logic here */ }}>JOIN SERVER</button>
+                <button className="decoration-button"
+                    onClick={handleOnePlayerLocal}
+                >PLAY SINGLE</button>
+
+                <button className="decoration-button"
+                    onClick={handleTwoPlayersLocal}
+                >MULTI PLAYERS</button>
+
+                <button className="decoration-button"
+                >CREATE SERVER</button>
+
+                <button className="decoration-button"
+                >JOIN SERVER</button>
+
             </div>
         </div>
     );
@@ -53,8 +78,8 @@ const styles = `
         position: absolute;
         background-color: white;
         border-radius: 50%;
-        width: 3px;
-        height: 3px;
+        width: 2px;
+        height: 2px;
         animation: starAnimation 5s linear infinite;
     }
 
@@ -86,6 +111,7 @@ const styles = `
 
     .decoration-button {
         background-color: transparent;
+        border-radius : 20px;
         color: white;
         border: 2px solid white;
         padding: 10px 20px;

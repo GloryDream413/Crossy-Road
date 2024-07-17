@@ -18,13 +18,32 @@ console.ignoredYellowBox = [
   "THREE.WebGLProgram",
 ];
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
+
+
 export default function App() {
   return (
     <AssetLoading>
       <SafeAreaProvider>
         <GameProvider>
-          <LandingScreen></LandingScreen>
-          {/* <GameScreen character = "bacon" /> */}
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen name="LandingScreen" component={LandingScreen}
+                options={{ headerShown: false }} />
+
+              <Stack.Screen name="GameScreen" component={() => {
+                return <GameScreen gameMode={0} />;
+              }} options={{ headerShown: false }} />
+
+              <Stack.Screen name="GameScreen_1" component={() => {
+                return <GameScreen gameMode={1} />;
+              }} options={{ headerShown: false }} />
+
+            </Stack.Navigator>
+          </NavigationContainer>
         </GameProvider>
       </SafeAreaProvider>
     </AssetLoading>

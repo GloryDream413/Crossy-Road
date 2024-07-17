@@ -22,6 +22,9 @@ import GameContext from "../context/GameContext";
 import { keyMap_1, keyMap_2 } from "../global/keyMap";
 import { globalMap } from "../global/globalMap";
 
+import { useNavigation } from "@react-navigation/native";
+
+
 const DEBUG_CAMERA_CONTROLS = false;
 class Game extends Component {
 
@@ -181,8 +184,8 @@ class Game extends Component {
       <GestureView
         pointerEvents={DEBUG_CAMERA_CONTROLS ? "none" : undefined}
         onStartGesture={this.engine.beginMoveWithDirection}
-        keyMap = {keyMap}
-        globalMap = {globalMap}
+        keyMap={keyMap}
+        globalMap={globalMap}
         onSwipe={this.onSwipe}
       >
         <GLView
@@ -313,12 +316,34 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
 
 function GameScreen(props) {
   const scheme = useColorScheme();
-  const { character, gameMode } = React.useContext(GameContext);
+  const { character } = React.useContext(GameContext);
+
+  const gameMode = props.gameMode;
+
+  const navigation = useNavigation();
+
+  const gotoMenu = () => {
+    navigation.navigate("LandingScreen");
+  };
 
   // const appState = useAppState();
 
   return (
     <>
+      <button
+        style={{
+          position: 'absolute',
+          borderRadius: '40px',
+          padding: '10px',
+          background: 'rgba(255,255,255,0.5)',
+          border: '2px solid purple',
+          zIndex: 2000,
+          right: '30px',
+          top: '30px',
+          cursor: 'pointer'
+        }}
+        onClick={gotoMenu}
+      >Back to Menu</button>
       {gameMode == 0 ? (
         <Game {...props} globalMap={globalMap} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
       ) : (
