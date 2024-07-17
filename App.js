@@ -10,6 +10,8 @@ import AudioManager from "./src/AudioManager";
 import { useResolvedValue } from "./src/hooks/useResolvedValue";
 import ModelLoader from "./src/ModelLoader";
 
+import LandingScreen from "./screens/LandingScreen";
+
 console.ignoredYellowBox = [
   "WebGL",
   "THREE.WebGLRenderer",
@@ -21,7 +23,8 @@ export default function App() {
     <AssetLoading>
       <SafeAreaProvider>
         <GameProvider>
-          <GameScreen character = "bacon" />
+          <LandingScreen></LandingScreen>
+          {/* <GameScreen character = "bacon" /> */}
         </GameProvider>
       </SafeAreaProvider>
     </AssetLoading>
