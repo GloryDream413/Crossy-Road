@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import GameContext from '../context/GameContext';
+import ServerListDialog from './ServerListDialog';
+
 import io from 'socket.io-client';
 
 const SERVER_URL = "http://192.168.140.49:3000";
@@ -9,10 +11,17 @@ const socket = io(SERVER_URL);
 const status_room = 0; // Room is not created yet.
 
 const LandingScreen = () => {
-    const [flag, setFlag] = useState(status_room);
+    const [flag, setFlag] = useState(status_room); // Created the server or not
+
+    const [open, setOpen] = useState(false);            //  showing the find server dlg or not
+
     const navigation = useNavigation();
     const { gameMode, setGameMode } = React.useContext(GameContext);
     const [roomName, setRoomName] = useState("");
+
+    const closeServers = () => {
+        setFlag(0);
+    }
 
     useEffect(() => {
         setFlag(status_room);
@@ -80,6 +89,10 @@ const LandingScreen = () => {
         }));
     };
 
+    const handleFindServers = () => {
+        setOpen(true);
+    }
+
     return (
         <div className="landing-screen" style={{
             position: 'relative',
@@ -87,6 +100,10 @@ const LandingScreen = () => {
             height: '100vh',
             background: 'black'
         }}>
+            <ServerListDialog
+                opened={open}
+                onClose={setOpen}
+                ></ServerListDialog>
             {createStars()}
 
             <div style={{
@@ -107,7 +124,7 @@ const LandingScreen = () => {
                     <button className="decoration-button" style={{ background: 'rgba(255, 0, 0, 0.4)' }} onClick={handleCloseRoom}>CLOSE ROOM</button>
                 )}
 
-                <button className="decoration-button">FIND SERVERS</button>
+                <button className="decoration-button" onClick={handleFindServers}>FIND SERVERS</button>
             </div>
         </div>
     );
