@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import { Alert, Animated, Easing, StyleSheet, View } from "react-native";
 import { useSafeArea } from "react-native-safe-area-context";
 
@@ -49,6 +49,8 @@ const banner = [
 // const AnimatedBanner = Animated.createAnimatedComponent(Banner);
 
 function GameOver({ ...props }) {
+  const { gameMode, character } = React.useContext(GameContext);
+
   const {
     window: { width },
   } = useDimensions();
@@ -124,8 +126,6 @@ function GameOver({ ...props }) {
   const { top, bottom, left, right } = useSafeArea();
 
   const imageStyle = { width: 60, height: 48 };
-
-  const gameMode = props.gameMode;
 
   // styles.container,
   return (

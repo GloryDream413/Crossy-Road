@@ -335,11 +335,13 @@ function GameScreen(props) {
           borderRadius: '40px',
           padding: '10px',
           background: 'rgba(255,255,255,0.5)',
-          border: '2px solid purple',
+          border: '2px solid black',
           zIndex: 2000,
           right: '30px',
           top: '30px',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          fontSize : '32px',
+          padding : '15px',
         }}
         onClick={gotoMenu}
       >Back to Menu</button>
