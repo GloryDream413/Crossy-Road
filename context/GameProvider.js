@@ -39,10 +39,12 @@ export default function GameProvider({ children }) {
   const [keyMap_Server, setKeyMap_Server] = React.useState(keyMap_None);
   const [keyMap_Client, setKeyMap_Client] = React.useState(keyMap_None);
 
+  const [socket, setSocket] = React.useState()
+
   React.useEffect(() => {
     const parseModulesAsync = async () => {
       try {
-        const { character, highscore , gameMode, contextGameMap, role, keyMap_Server, keyMap_Client} = await rehydrateAsync();
+        const { character, highscore, gameMode, contextGameMap, role, keyMap_Server, keyMap_Client } = await rehydrateAsync();
         setCharacter(character);
         setHighscore(highscore);
         setGameMode(gameMode);
@@ -64,37 +66,43 @@ export default function GameProvider({ children }) {
         character,
         setCharacter: (character) => {
           setCharacter(character);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
         },
         highscore,
         setHighscore: (highscore) => {
           setHighscore(highscore);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
         },
         gameMode,
         setGameMode: (_gameMode) => {
           setGameMode(_gameMode);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
         },
         contextGameMap,
         setContextGameMap: (_newMap) => {
           setContextGameMap(_newMap);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
         },
         role,
         setRole: (_role) => {
           setRole(_role);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
         },
-        keyMap_Server, 
-        setKeyMap_Server : (_newKeyMap) => {
+        keyMap_Server,
+        setKeyMap_Server: (_newKeyMap) => {
           setKeyMap_Server(_newKeyMap);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
         },
         keyMap_Client,
-        setKeyMap_Client : (_newKeyMap) => {
+        setKeyMap_Client: (_newKeyMap) => {
           setKeyMap_Client(_newKeyMap),
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+            cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
+        },
+        socket,
+        setSocket: (_socket) => {
+          setSocket(_socket);
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
+
         }
       }}
     >

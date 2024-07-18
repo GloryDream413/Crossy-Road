@@ -11,5 +11,7 @@ export default createContext({
     keyMap_Server : [],
     setKeyMap_Server() {},
     keyMap_Client : [],
-    setKeyMap_Client() {}
+    setKeyMap_Client() {},
+    socket : undefined,
+    setSocket() {}
 });

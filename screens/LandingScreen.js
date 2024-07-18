@@ -4,24 +4,25 @@ import GameContext from '../context/GameContext';
 import ServerListDialog from './ServerListDialog';
 import { globalMap } from "../global/globalMap";
 import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
-
 import io from 'socket.io-client';
 
-const SERVER_URL = "http://192.168.140.49:3000";
-const socket = io(SERVER_URL);
+export const SERVER_URL = "http://192.168.140.49:3000";
+export const socket = io(SERVER_URL);
 
-const status_room = 0; // Room is not created yet.
+const status_room = 0;  // Room is not created yet.
 
 const LandingScreen = () => {
-    const [flag, setFlag] = useState(status_room); // Created the server or not
-
-    const [open, setOpen] = useState(false);            //  showing the find server dlg or not
+    const [flag, setFlag] = useState(status_room);      //  Created the server or not
+    const [open, setOpen] = useState(false);            //  Showing the find server dlg or not
 
     const navigation = useNavigation();
-    const { gameMode, setGameMode,
+    const { 
+        setSocket,
+        gameMode, setGameMode,
         keyMap_Server, setKeyMap_Server,
         role, setRole,
         contextGameMap, setContextGameMap } = React.useContext(GameContext);
+
     const [roomName, setRoomName] = useState("");
 
     const closeServers = () => {
@@ -30,6 +31,7 @@ const LandingScreen = () => {
 
     useEffect(() => {
         setFlag(status_room);
+        setSocket(socket);
     }, []);
 
     useEffect(() => {

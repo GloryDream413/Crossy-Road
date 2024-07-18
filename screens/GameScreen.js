@@ -100,6 +100,9 @@ class Game extends Component {
         } else if (lastState !== none) {
           this.transitionToGamePlayingState();
         } else {
+
+          // GAME-START PART !!!
+
           // Coming straight from the menu.
           // this.engine._hero.stopIdle();
           // this.onSwipe(swipeDirections.SWIPE_UP);

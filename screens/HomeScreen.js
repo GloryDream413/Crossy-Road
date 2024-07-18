@@ -22,15 +22,40 @@ const halfScreenHeight = - screenHeight / 2;
 let hasShownTitle = false;
 
 function Screen(props) {
-  const { setCharacter, character, gameMode } = React.useContext(GameContext);
+  const { setCharacter, character, gameMode, role, socket } = React.useContext(GameContext);
   const animation = new Animated.Value(0);
+
+  const handleSocketStartGame = (data) => {
+    props.onPlay();
+  }
+
+  socket.on('START_PLAY_GAME_APPROVED', handleSocketStartGame);
 
   React.useEffect(() => {
     function onKeyUp({ keyCode }) {
       // Space, up-arrow
       // When the player click the space the start game. (38 arrow up is ommited)
       if ([32].includes(keyCode)) {
-        props.onPlay();
+
+        // window.alert(gameMode + " role :" + role);
+
+        // GAME-START
+        if (gameMode == 2) {
+          socket.emit('message', JSON.stringify({
+            cmd: 'START_PLAY_GAME',
+            msg: "Let's start game!",
+            role: role
+          }));
+
+
+
+          // return () => {
+          //   socket.off('START_PLAY_GAME_APPROVED', handleSocketStartGame);
+          // };
+
+        } else {
+          props.onPlay();
+        }
       }
     }
 
@@ -38,6 +63,9 @@ function Screen(props) {
     return () => {
       window.removeEventListener("keyup", onKeyUp);
     };
+
+
+
   }, []);
 
   React.useEffect(() => {
@@ -89,7 +117,7 @@ function Screen(props) {
             easing: Easing.in(Easing.qubic),
             onComplete: ({ finished }) => {
               if (finished) {
-                props.onPlay();
+
               }
             },
           }).start();
@@ -169,7 +197,7 @@ const styles = StyleSheet.create({
     // maxWidth: 600,
     width: "100%",
     height: 300,
-    marginLeft: -screenWidth/2,
+    marginLeft: -screenWidth / 2,
     marginTop: - screenHeight
   },
   coins: {
