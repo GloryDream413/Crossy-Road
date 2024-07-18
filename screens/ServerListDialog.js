@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import GameContext from "../context/GameContext";
 
 const server_headers = ["No", "Server", "Information"];
 
-const servers = [
-  { id: 1, name: 'server1', info: 'created by kjs1' },
-  { id: 2, name: 'server2', info: 'created by kjs2' },
-  { id: 2, name: 'server2', info: 'created by kjs2' },
-  { id: 2, name: 'server2', info: 'created by kjs2' },
-  { id: 2, name: 'server2', info: 'created by kjs2' },
+const ServerListDialog = ({ onClose, opened, socket }) => {
 
-];
+  const {contextGameMap, setContextGameMap} = useContext(GameContext);
 
-const ServerListDialog = ({ onClose, opened }) => {
+  const navigation = useNavigation();
+
   if (!opened) {
     return null;
   }
-  const renderServerItem = ({ item }) => (
+
+  const joinGame = (room_name) => {
+    socket.emit('message', JSON.stringify({
+      cmd: 'JOIN_GAME',
+      name : room_name
+    }));
+  }
+
+  const renderServerItem = ({ item, index }) => (
     <View style={{
       marginBottom: '20px',
       padding: '10px',
@@ -24,16 +30,47 @@ const ServerListDialog = ({ onClose, opened }) => {
       flex: 1,
       flexDirection: 'row',
     }}>
-      <div style={{ minWidth: '150px', textAlign: 'left', color: 'white' }}>{item.id}</div>
-      <div style={{ minWidth: '150px', textAlign: 'left', color: 'white' }}>{item.name}</div>
-      <div style={{ minWidth: '150px', textAlign: 'left', color: 'white' }}>{item.info}</div>
+      {/* <div style={{ minWidth: '150px', textAlign: 'left', color: 'white' }}>{item.id}</div> */}
+      <div style={{ margin: 'auto', textAlign: 'left', color: 'white' }}>{item.name}</div>
+      <div style={{ margin: 'auto', textAlign: 'left', color: 'white' }}>
+        <button style={{
+          width: '100px',
+          height: '40px',
+          background: 'rgba(255,255,255,0.2)',
+          borderRadius: '20px',
+          cursor: 'pointer'
+        }}
+          onClick={() => { joinGame(item.name) }}
+        >JOIN</button>
+      </div>
       {/* <Text>Players: {item.players}/{item.maxPlayers}</Text> */}
-    </View>
+    </View >
   );
 
-  const onFunc = () => {
-    window.alert('clicked the finding server')    ;
+  const [servers, setServers] = useState([]);
+
+  const refreshServers = () => {
+    socket.emit('message', JSON.stringify({
+      cmd: 'GET_SERVERS'
+    }));
   }
+
+  useEffect(() => {
+    const handleSocketRoom = (data) => {
+      if (data.cmd == 'GOT_SERVERS') {
+        setServers(data.servers);
+      } else if (data.cmd == 'GOT_JOINED') {
+        setContextGameMap(data.globalMap);
+        navigation.navigate("GameScreen_2");
+      }
+    };
+
+    socket.on('ROOM', handleSocketRoom);
+
+    return () => {
+      socket.off('ROOM', handleSocketRoom);
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -41,7 +78,7 @@ const ServerListDialog = ({ onClose, opened }) => {
 
       <View style={{ width: '80%', justifyContent: 'center', margin: 'auto', flex: 1, flexDirection: 'column' }}>
 
-        <View style={{
+        {/* <View style={{
           marginBottom: '40px',
           padding: '10px',
 
@@ -54,20 +91,21 @@ const ServerListDialog = ({ onClose, opened }) => {
               textAlign: 'left',
               color: 'white',
               fontSize: '20px',
-              textDecoration : 'underline',
-              fontWeight : '800'
+              textDecoration: 'underline',
+              fontWeight: '800'
 
             }}>{header}</div>
           })}
-        </View>
+        </View> */}
 
         <FlatList data={servers}
           renderItem={renderServerItem}
-          keyExtractor={server => server.id.toString()}>
+        // keyExtractor={server => server.id.toString()}
+        >
 
         </FlatList>
 
-        <View style={{ width: '100%', margin: '50px', flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ width: '100%', flex: 1, flexDirection: 'row', alignItems: 'center' }}>
           <button style={{
             width: '160px',
             height: '40px',
@@ -79,7 +117,7 @@ const ServerListDialog = ({ onClose, opened }) => {
             cursor: 'pointer',
             margin: 'auto',
 
-          }} onClick={onClose} > Refresh </button>
+          }} onClick={refreshServers} > Refresh </button>
           <button style={{
             width: '160px',
             height: '40px',
@@ -91,7 +129,7 @@ const ServerListDialog = ({ onClose, opened }) => {
             cursor: 'pointer',
             margin: 'auto',
 
-          }} onClick = {() => onClose(false)} > Cancel </button>
+          }} onClick={() => onClose(false)} > Cancel </button>
         </View>
 
       </View>
@@ -101,7 +139,8 @@ const ServerListDialog = ({ onClose, opened }) => {
 
 const styles = StyleSheet.create({
   container: {
-    zIndex : 5000,
+    borderRadius: '100px',
+    zIndex: 5000,
     padding: 20,
     borderRadius: 10,
     elevation: 5,

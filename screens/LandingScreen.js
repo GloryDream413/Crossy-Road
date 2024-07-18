@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import GameContext from '../context/GameContext';
 import ServerListDialog from './ServerListDialog';
+import { globalMap } from "../global/globalMap";
 
 import io from 'socket.io-client';
 
@@ -16,7 +17,7 @@ const LandingScreen = () => {
     const [open, setOpen] = useState(false);            //  showing the find server dlg or not
 
     const navigation = useNavigation();
-    const { gameMode, setGameMode } = React.useContext(GameContext);
+    const { gameMode, setGameMode, contextGameMap, setContextGameMap } = React.useContext(GameContext);
     const [roomName, setRoomName] = useState("");
 
     const closeServers = () => {
@@ -37,10 +38,19 @@ const LandingScreen = () => {
             }
         };
 
+        const handleSocketRoom = (data) => {
+            if (data.cmd == "GOT_JOINED") {
+                setContextGameMap(data.globalMap);
+                navigation.navigate("GameScreen_2");
+            }
+        }
+
+        socket.on('ROOM', handleSocketRoom);
         socket.on('message', handleSocketMessage);
 
         return () => {
             socket.off('message', handleSocketMessage);
+            socket.off('ROOM', handleSocketRoom);
         };
     }, []);
 
@@ -65,19 +75,17 @@ const LandingScreen = () => {
     const handleOnePlayerLocal = () => {
         navigation.navigate("GameScreen");
         setGameMode(0);
-        console.log("Set the gameMode to ", gameMode);
     };
 
     const handleTwoPlayersLocal = () => {
         navigation.navigate("GameScreen_1");
         setGameMode(1);
-        console.log("Set the gameMode to ", gameMode);
     };
 
     const handleCreateRoom = () => {
         socket.emit('message', JSON.stringify({
             cmd: 'CREATE_ROOM',
-            map: 'I will set it after!'
+            map: globalMap
         }));
     };
 
@@ -103,7 +111,8 @@ const LandingScreen = () => {
             <ServerListDialog
                 opened={open}
                 onClose={setOpen}
-                ></ServerListDialog>
+                socket={socket}
+            />
             {createStars()}
 
             <div style={{
@@ -158,7 +167,7 @@ const styles = `
     .title {
         color : white;
         font-size : 60px;
-        margin-bottom : 50px;
+        margin-bottom : 80px;
         transition : all 2s;
         transform : scale(1);
         cursor : pointer;
@@ -215,19 +224,3 @@ const styleSheet = document.createElement('style');
 styleSheet.type = 'text/css';
 styleSheet.innerText = styles;
 document.head.appendChild(styleSheet);
-
-
-
-// socket.on('connect', () => {
-//     console.log('Socket.IO connection established.');
-//     // You can send data or perform actions once the connection is open
-//     socket.emit('hello', 'Hello Server!');
-// });
-
-// socket.on('error', (error) => {
-//     console.error('Socket.IO error:', error);
-// });
-
-// socket.on('disconnect', () => {
-//     console.log('Socket.IO connection closed.');
-// });

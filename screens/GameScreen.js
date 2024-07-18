@@ -315,7 +315,7 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
 
 function GameScreen(props) {
   const scheme = useColorScheme();
-  const { character } = React.useContext(GameContext);
+  const { character , contextGameMap} = React.useContext(GameContext);
 
   const gameMode = props.gameMode;
 
@@ -347,7 +347,7 @@ function GameScreen(props) {
       >Back to Menu</button>
       {gameMode == 0 ? (
         <Game {...props}  globalMap={globalMap} keyMap={keyMap_Both} character={character} isDarkMode={scheme === "dark"} />
-      ) : (
+      ) : ( gameMode == 1 ? (
         <div style={{ flex: 1, flexDirection: 'row' }}>
           <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
             <Game {...props}
@@ -358,7 +358,18 @@ function GameScreen(props) {
               globalMap={globalMap} keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
           </div>
         </div>
-      )}
+      ) : (
+        <div style={{ flex: 1, flexDirection: 'row' }}>
+        <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
+          <Game {...props}
+            globalMap={contextGameMap} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
+        </div>
+        <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
+          <Game {...props}
+            globalMap={contextGameMap} keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
+        </div>
+      </div>
+      ))}
     </>
   );
 }

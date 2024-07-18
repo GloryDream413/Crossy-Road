@@ -33,6 +33,7 @@ export default function GameProvider({ children }) {
   const [character, setCharacter] = React.useState(defaultState.character);
   const [highscore, setHighscore] = React.useState(defaultState.highscore);
   const [gameMode, setGameMode] = React.useState(0); // 0 : PVE , 1 : PVP  
+  const [contextGameMap, setContextGameMap] = React.useState([]);
 
   React.useEffect(() => {
     const parseModulesAsync = async () => {
@@ -53,17 +54,22 @@ export default function GameProvider({ children }) {
         character,
         setCharacter: (character) => {
           setCharacter(character);
-          cacheAsync({ character, highscore , gameMode});
+          cacheAsync({ character, highscore , gameMode, contextGameMap});
         },
         highscore,
         setHighscore: (highscore) => {
           setHighscore(highscore);
-          cacheAsync({ character, highscore , gameMode});
+          cacheAsync({ character, highscore , gameMode, contextGameMap});
         },
         gameMode,
         setGameMode : (_gameMode) => {
           setGameMode(_gameMode);
-          cacheAsync({ character, highscore , gameMode});
+          cacheAsync({ character, highscore , gameMode, contextGameMap});
+        },
+        contextGameMap, 
+        setContextGameMap : (_newMap) => {
+          setContextGameMap(_newMap);
+          cacheAsync({ character, highscore , gameMode, contextGameMap});
         }
       }}
     >
