@@ -35,9 +35,9 @@ export default class Road extends Object3D {
     let speed = Math.random() * 0.06 + 0.02;
     let numCars = Math.floor(Math.random() * 2) + 1;
 
-    console.log("!!! Car !!!") ;
-    console.log("speed : ", speed);
-    console.log("numCars : ", numCars);
+    // console.log("!!! Car !!!") ;
+    // console.log("speed : ", speed);
+    // console.log("numCars : ", numCars);
     let xDir = 1;
 
     if (Math.random() > 0.5) {

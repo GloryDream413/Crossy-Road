@@ -5,6 +5,7 @@ import GameContext from "./GameContext";
 
 import { CrossyGameMap } from "../src/CrossyGame";
 
+import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const STORAGE_KEY = "@BouncyBrent:Character";
@@ -34,14 +35,23 @@ export default function GameProvider({ children }) {
   const [highscore, setHighscore] = React.useState(defaultState.highscore);
   const [gameMode, setGameMode] = React.useState(0); // 0 : PVE , 1 : PVP  
   const [contextGameMap, setContextGameMap] = React.useState([]);
+  const [role, setRole] = React.useState("");
+  const [keyMap_Server, setKeyMap_Server] = React.useState(keyMap_None);
+  const [keyMap_Client, setKeyMap_Client] = React.useState(keyMap_None);
 
   React.useEffect(() => {
     const parseModulesAsync = async () => {
       try {
-        const { character, highscore } = await rehydrateAsync();
+        const { character, highscore , gameMode, contextGameMap, role, keyMap_Server, keyMap_Client} = await rehydrateAsync();
         setCharacter(character);
         setHighscore(highscore);
-      } catch (ignored) {}
+        setGameMode(gameMode);
+        setContextGameMap(contextGameMap);
+        setRole(role);
+        setKeyMap_Server(keyMap_Server);
+        setKeyMap_Client(keyMap_Client);
+
+      } catch (ignored) { }
       //   setLoaded(true);
     };
 
@@ -54,22 +64,37 @@ export default function GameProvider({ children }) {
         character,
         setCharacter: (character) => {
           setCharacter(character);
-          cacheAsync({ character, highscore , gameMode, contextGameMap});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
         },
         highscore,
         setHighscore: (highscore) => {
           setHighscore(highscore);
-          cacheAsync({ character, highscore , gameMode, contextGameMap});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
         },
         gameMode,
-        setGameMode : (_gameMode) => {
+        setGameMode: (_gameMode) => {
           setGameMode(_gameMode);
-          cacheAsync({ character, highscore , gameMode, contextGameMap});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
         },
-        contextGameMap, 
-        setContextGameMap : (_newMap) => {
+        contextGameMap,
+        setContextGameMap: (_newMap) => {
           setContextGameMap(_newMap);
-          cacheAsync({ character, highscore , gameMode, contextGameMap});
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+        },
+        role,
+        setRole: (_role) => {
+          setRole(_role);
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+        },
+        keyMap_Server, 
+        setKeyMap_Server : (_newKeyMap) => {
+          setKeyMap_Server(_newKeyMap);
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
+        },
+        keyMap_Client,
+        setKeyMap_Client : (_newKeyMap) => {
+          setKeyMap_Client(_newKeyMap),
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role , keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client});
         }
       }}
     >

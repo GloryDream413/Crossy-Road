@@ -19,7 +19,7 @@ import HomeScreen from "./HomeScreen";
 import SettingsScreen from "./SettingsScreen";
 import GameContext from "../context/GameContext";
 
-import { keyMap_1, keyMap_2, keyMap_Both } from "../global/keyMap";
+import { keyMap_None, keyMap_1, keyMap_2, keyMap_Both } from "../global/keyMap";
 import { globalMap } from "../global/globalMap";
 
 import { useNavigation } from "@react-navigation/native";
@@ -241,6 +241,8 @@ class Game extends Component {
   render() {
     const { keyMap, globalMap, isDarkMode, isPaused } = this.props;
 
+    console.log("GGGGGGGGGGAME : ", keyMap);
+
     return (
       <View
         pointerEvents="box-none"
@@ -290,6 +292,9 @@ class Game extends Component {
 }
 
 const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
+
+  console.log("GestureView : ", props);
+
   const config = {
     velocityThreshold: 0.2,
     directionalOffsetThreshold: 80,
@@ -315,7 +320,9 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
 
 function GameScreen(props) {
   const scheme = useColorScheme();
-  const { character , contextGameMap} = React.useContext(GameContext);
+  const { character, contextGameMap, role, setRole } = React.useContext(GameContext);
+
+  console.log("RRRRRRRRRRRRRR : ", role);
 
   const gameMode = props.gameMode;
 
@@ -340,36 +347,42 @@ function GameScreen(props) {
           right: '30px',
           top: '30px',
           cursor: 'pointer',
-          fontSize : '32px',
-          padding : '15px',
+          fontSize: '32px',
+          padding: '15px',
         }}
         onClick={gotoMenu}
       >Back to Menu</button>
-      {gameMode == 0 ? (
-        <Game {...props}  globalMap={globalMap} keyMap={keyMap_Both} character={character} isDarkMode={scheme === "dark"} />
-      ) : ( gameMode == 1 ? (
-        <div style={{ flex: 1, flexDirection: 'row' }}>
-          <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
-            <Game {...props}
-              globalMap={globalMap} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
-          </div>
-          <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
-            <Game {...props}
-              globalMap={globalMap} keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
-          </div>
-        </div>
-      ) : (
-        <div style={{ flex: 1, flexDirection: 'row' }}>
+
+      {/* // Mono Play */}
+      {gameMode == 0 && <Game {...props} globalMap={globalMap} keyMap={keyMap_Both} character={character} isDarkMode={scheme === "dark"} />}
+
+      {/* Two players in the local */}
+      {gameMode == 1 && <div style={{ flex: 1, flexDirection: 'row' }}>
         <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
           <Game {...props}
-            globalMap={contextGameMap} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
+            globalMap={globalMap} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
         </div>
         <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
           <Game {...props}
-            globalMap={contextGameMap} keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
+            globalMap={globalMap} keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
         </div>
-      </div>
-      ))}
+      </div>}
+
+      {/* Multi players via network */}
+      {gameMode == 2 && (
+        <div style={{ flex: 1, flexDirection: 'row' }}>
+          <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
+            <Game {...props}
+              globalMap={contextGameMap} keyMap={role == 'server' ? keyMap_Both : keyMap_None} character={character} isDarkMode={scheme === "dark"} />
+          </div>
+          <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
+            <Game {...props}
+              globalMap={contextGameMap} keyMap={role == 'client' ? keyMap_Both : keyMap_None} character={character} isDarkMode={scheme === "dark"} />
+          </div>
+        </div>
+      )
+      }
+
     </>
   );
 }

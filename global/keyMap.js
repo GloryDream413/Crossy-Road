@@ -26,3 +26,7 @@ export const keyMap_2 = {
     ArrowLeft: "SWIPE_LEFT",
     ArrowRight: "SWIPE_RIGHT",
 };
+
+export const keyMap_None = {
+
+};

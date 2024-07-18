@@ -4,10 +4,14 @@ import { useNavigation } from "@react-navigation/native";
 import GameContext from "../context/GameContext";
 
 const server_headers = ["No", "Server", "Information"];
+import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
 
 const ServerListDialog = ({ onClose, opened, socket }) => {
 
-  const {contextGameMap, setContextGameMap} = useContext(GameContext);
+  const { gameMode, setGameMode,
+    keyMap_Client, setKeyMap_Client,
+    role, setRole,
+    contextGameMap, setContextGameMap } = React.useContext(GameContext);
 
   const navigation = useNavigation();
 
@@ -18,7 +22,7 @@ const ServerListDialog = ({ onClose, opened, socket }) => {
   const joinGame = (room_name) => {
     socket.emit('message', JSON.stringify({
       cmd: 'JOIN_GAME',
-      name : room_name
+      name: room_name
     }));
   }
 
@@ -59,9 +63,16 @@ const ServerListDialog = ({ onClose, opened, socket }) => {
     const handleSocketRoom = (data) => {
       if (data.cmd == 'GOT_SERVERS') {
         setServers(data.servers);
-      } else if (data.cmd == 'GOT_JOINED') {
+      } else if (data.cmd == 'GOT_JOINED_TO_CLIENT') {
+        // Set the Network-Game mode.
+        setGameMode(2);
+        setRole('client');
+        setKeyMap_Client(keyMap_2);
         setContextGameMap(data.globalMap);
-        navigation.navigate("GameScreen_2");
+
+        // window.alert('client');
+
+        start_game();
       }
     };
 
@@ -71,6 +82,10 @@ const ServerListDialog = ({ onClose, opened, socket }) => {
       socket.off('ROOM', handleSocketRoom);
     };
   }, []);
+
+  const start_game = () => {
+    navigation.navigate("GameScreen_2");
+  }
 
   return (
     <View style={styles.container}>
@@ -105,7 +120,7 @@ const ServerListDialog = ({ onClose, opened, socket }) => {
 
         </FlatList>
 
-        <View style={{ width: '100%', flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ width: '100%', maxHeight: '100px', flex: 1, flexDirection: 'row', alignItems: 'center' }}>
           <button style={{
             width: '160px',
             height: '40px',
@@ -116,7 +131,6 @@ const ServerListDialog = ({ onClose, opened, socket }) => {
             letterSpacing: '3px',
             cursor: 'pointer',
             margin: 'auto',
-
           }} onClick={refreshServers} > Refresh </button>
           <button style={{
             width: '160px',

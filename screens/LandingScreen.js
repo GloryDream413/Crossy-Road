@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import GameContext from '../context/GameContext';
 import ServerListDialog from './ServerListDialog';
 import { globalMap } from "../global/globalMap";
+import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
 
 import io from 'socket.io-client';
 
@@ -17,7 +18,10 @@ const LandingScreen = () => {
     const [open, setOpen] = useState(false);            //  showing the find server dlg or not
 
     const navigation = useNavigation();
-    const { gameMode, setGameMode, contextGameMap, setContextGameMap } = React.useContext(GameContext);
+    const { gameMode, setGameMode,
+        keyMap_Server, setKeyMap_Server,
+        role, setRole,
+        contextGameMap, setContextGameMap } = React.useContext(GameContext);
     const [roomName, setRoomName] = useState("");
 
     const closeServers = () => {
@@ -39,9 +43,27 @@ const LandingScreen = () => {
         };
 
         const handleSocketRoom = (data) => {
-            if (data.cmd == "GOT_JOINED") {
-                setContextGameMap(data.globalMap);
-                navigation.navigate("GameScreen_2");
+            if (data.cmd == "GOT_JOINED_TO_SERVER") {
+
+                // Client joined to this server....
+                // window.alert(roomName);
+
+                // if (roomName == data.roomName) 
+                    {
+                    console.log("kjs:",data);
+
+                    // Set the Network-Game mode.
+    
+                    setGameMode(2);
+                    setKeyMap_Server(keyMap_1);
+                    setContextGameMap(data.globalMap);
+                    setRole('server');
+    
+                    // window.alert('server');
+    
+                    start_game();
+                }
+
             }
         }
 
@@ -53,6 +75,15 @@ const LandingScreen = () => {
             socket.off('ROOM', handleSocketRoom);
         };
     }, []);
+
+    const start_game = () => {
+
+
+        console.log("@@@@@@@@@@@@@@@@@@@@@@ starting game :", role, keyMap_Server);
+
+        // START THE GAME AS PLAYER=======1
+        navigation.navigate("GameScreen_2");
+    }
 
     const createStars = () => {
         const stars = [];

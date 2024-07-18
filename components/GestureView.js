@@ -49,7 +49,7 @@ class GestureView extends Component {
     super(props, context);
     this._keyMap = props.keyMap;
 
-    console.log ("&&&&&&&&&&&&&&&&: ", this.keyMap);
+    console.log("&&&&&&&&&&&&&&&&: ", this._keyMap);
     this.swipeConfig = Object.assign(swipeConfig, props.config);
     this._panResponder = PanResponder.create({
 
@@ -81,16 +81,24 @@ class GestureView extends Component {
   }
 
   onKeyDown = (e) => {
-    const direction = this._keyMap[e.code];
-    if (direction) {
-      this.props.onResponderGrant();
+    console.log("fff : keydown");
+    console.log("fff : keymap : ", this._keyMap);
+    // debugger;
+    if (this._keyMap) {
+      const direction = this._keyMap[e.code];
+      if (direction) {
+        this.props.onResponderGrant();
+      }
     }
   };
 
   onKeyUp = (e) => {
-    const direction = this._keyMap[e.code];
-    if (direction) {
-      this.props.onSwipe(direction);
+    console.log("fff : keyup");
+    if (this._keyMap) {
+      const direction = this._keyMap[e.code];
+      if (direction) {
+        this.props.onSwipe(direction);
+      }
     }
   };
 
