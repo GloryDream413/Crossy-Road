@@ -16,7 +16,7 @@ const LandingScreen = () => {
     const [open, setOpen] = useState(false);            //  Showing the find server dlg or not
 
     const navigation = useNavigation();
-    const { 
+    const {
         setSocket,
         gameMode, setGameMode,
         keyMap_Server, setKeyMap_Server,
@@ -46,26 +46,14 @@ const LandingScreen = () => {
 
         const handleSocketRoom = (data) => {
             if (data.cmd == "GOT_JOINED_TO_SERVER") {
+                // Set the Network-Game mode.
 
-                // Client joined to this server....
-                // window.alert(roomName);
+                setGameMode(2);
+                setKeyMap_Server(keyMap_1);
+                setContextGameMap(data.globalMap);
+                setRole('server');
 
-                // if (roomName == data.roomName) 
-                    {
-                    console.log("kjs:",data);
-
-                    // Set the Network-Game mode.
-    
-                    setGameMode(2);
-                    setKeyMap_Server(keyMap_1);
-                    setContextGameMap(data.globalMap);
-                    setRole('server');
-    
-                    // window.alert('server');
-    
-                    start_game();
-                }
-
+                start_game();
             }
         }
 
@@ -79,8 +67,6 @@ const LandingScreen = () => {
     }, []);
 
     const start_game = () => {
-
-
         console.log("@@@@@@@@@@@@@@@@@@@@@@ starting game :", role, keyMap_Server);
 
         // START THE GAME AS PLAYER=======1

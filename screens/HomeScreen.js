@@ -33,26 +33,13 @@ function Screen(props) {
 
   React.useEffect(() => {
     function onKeyUp({ keyCode }) {
-      // Space, up-arrow
-      // When the player click the space the start game. (38 arrow up is ommited)
       if ([32].includes(keyCode)) {
-
-        // window.alert(gameMode + " role :" + role);
-
-        // GAME-START
         if (gameMode == 2) {
           socket.emit('message', JSON.stringify({
             cmd: 'START_PLAY_GAME',
             msg: "Let's start game!",
             role: role
           }));
-
-
-
-          // return () => {
-          //   socket.off('START_PLAY_GAME_APPROVED', handleSocketStartGame);
-          // };
-
         } else {
           props.onPlay();
         }
@@ -63,8 +50,6 @@ function Screen(props) {
     return () => {
       window.removeEventListener("keyup", onKeyUp);
     };
-
-
 
   }, []);
 

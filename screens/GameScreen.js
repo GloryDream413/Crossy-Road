@@ -1,5 +1,5 @@
 import { GLView } from "expo-gl";
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import {
   Animated,
   Dimensions,
@@ -23,6 +23,8 @@ import { keyMap_None, keyMap_1, keyMap_2, keyMap_Both } from "../global/keyMap";
 import { globalMap } from "../global/globalMap";
 
 import { useNavigation } from "@react-navigation/native";
+
+
 
 const DEBUG_CAMERA_CONTROLS = false;
 class Game extends Component {
@@ -179,7 +181,7 @@ class Game extends Component {
 
   onSwipe = (gestureName) => this.engine.moveWithDirection(gestureName);
 
-  renderGame = (keyMap, globalMap) => {
+  renderGame = (keyMap, globalMap, gameMode) => {
     if (!this.state.ready) return;
 
     return (
@@ -187,6 +189,7 @@ class Game extends Component {
         pointerEvents={DEBUG_CAMERA_CONTROLS ? "none" : undefined}
         onStartGesture={this.engine.beginMoveWithDirection}
         keyMap={keyMap}
+        gameMode={gameMode}
         globalMap={globalMap}
         onSwipe={this.onSwipe}
       >
@@ -242,7 +245,7 @@ class Game extends Component {
   }
 
   render() {
-    const { keyMap, globalMap, isDarkMode, isPaused } = this.props;
+    const { keyMap, globalMap, gameMode, isDarkMode, isPaused } = this.props;
 
     console.log("GGGGGGGGGGAME : ", keyMap);
 
@@ -262,7 +265,7 @@ class Game extends Component {
         <Animated.View
           style={{ flex: 1, opacity: this.transitionScreensValue }}
         >
-          {this.renderGame(keyMap, globalMap)}
+          {this.renderGame(keyMap, globalMap, gameMode)}
         </Animated.View>
 
         <Score
@@ -297,6 +300,7 @@ class Game extends Component {
 const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
 
   console.log("GestureView : ", props);
+  const {socket, role} = useContext(GameContext);
 
   const config = {
     velocityThreshold: 0.2,
@@ -316,6 +320,8 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
         onSwipe(swipeDirections.SWIPE_UP);
       }}
       style={{ flex: 1 }}
+      socket = {socket}
+      role = {role}
       {...props}
     />
   );
@@ -375,17 +381,17 @@ function GameScreen(props) {
       >Back to Menu</button>
 
       {/* // Mono Play */}
-      {gameMode == 0 && <Game {...props} globalMap={globalMap} keyMap={keyMap_Both} character={character} isDarkMode={scheme === "dark"} />}
+      {gameMode == 0 && <Game {...props} gameMode={gameMode} globalMap={globalMap} keyMap={keyMap_Both} character={character} isDarkMode={scheme === "dark"} />}
 
       {/* Two players in the local */}
       {gameMode == 1 && <div style={{ flex: 1, flexDirection: 'row' }}>
         <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
           <Game {...props}
-            globalMap={globalMap} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
+            globalMap={globalMap} gameMode={gameMode} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
         </div>
         <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
           <Game {...props}
-            globalMap={globalMap} keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
+            globalMap={globalMap} gameMode={gameMode} keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
         </div>
       </div>}
 
@@ -394,11 +400,11 @@ function GameScreen(props) {
         <div style={{ flex: 1, flexDirection: 'row' }}>
           <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
             <Game {...props}
-              globalMap={contextGameMap} keyMap={role == 'server' ? keyMap_Both : keyMap_None} character={character} isDarkMode={scheme === "dark"} />
+              globalMap={contextGameMap} gameMode={gameMode} keyMap={role == 'server' ? keyMap_1 : keyMap_None} character={character} isDarkMode={scheme === "dark"} />
           </div>
           <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
             <Game {...props}
-              globalMap={contextGameMap} keyMap={role == 'client' ? keyMap_Both : keyMap_None} character={character} isDarkMode={scheme === "dark"} />
+              globalMap={contextGameMap} gameMode={gameMode} keyMap={role == 'client' ? keyMap_2 : keyMap_None} character={character} isDarkMode={scheme === "dark"} />
           </div>
         </div>
       )

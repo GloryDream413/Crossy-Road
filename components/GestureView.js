@@ -1,5 +1,5 @@
 "use strict";
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import {
   PanResponder,
   View,
@@ -7,6 +7,9 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { findDOMNode } from "react-dom";
+import { keyMap_Both, keyMap_1, keyMap_2, keyMap_None } from "../global/keyMap";
+
+import GameContext from "../context/GameContext";
 
 const getElement = (component) => {
   try {
@@ -27,8 +30,6 @@ const swipeConfig = {
   directionalOffsetThreshold: 80,
 };
 
-
-
 function isValidSwipe(
   velocity,
   velocityThreshold,
@@ -44,10 +45,31 @@ function isValidSwipe(
 const freezeBody = (e) => {
   e.preventDefault();
 };
+
 class GestureView extends Component {
+
   constructor(props, context) {
     super(props, context);
     this._keyMap = props.keyMap;
+    this.gameMode = props.gameMode;
+    this.socket = props.socket;
+    this.role = props.role;
+
+    if (this.role == 'server') {
+      this.align = 'left';
+      if (this._keyMap == keyMap_None)
+        this.align = 'right';
+    } else if (this.role == 'client') {
+      this.align = 'right';
+      if (this._keyMap == keyMap_None)
+        this.align = 'left';
+
+    }
+
+
+    console.log("align : ", this.align);
+
+    this.socket.on('MOVE_PERSON_APPROVED', this.handleMoving);
 
     console.log("&&&&&&&&&&&&&&&&: ", this._keyMap);
     this.swipeConfig = Object.assign(swipeConfig, props.config);
@@ -78,12 +100,10 @@ class GestureView extends Component {
 
   UNSAFE_componentWillReceiveProps(props) {
     this.swipeConfig = Object.assign(swipeConfig, props.config);
+
   }
 
   onKeyDown = (e) => {
-    console.log("fff : keydown");
-    console.log("fff : keymap : ", this._keyMap);
-    // debugger;
     if (this._keyMap) {
       const direction = this._keyMap[e.code];
       if (direction) {
@@ -92,12 +112,80 @@ class GestureView extends Component {
     }
   };
 
+  handleMoving = (data) => {
+
+    console.log("RECEIVED ::: ", data);
+
+    if (this.role == data.role && this.align == data.align) {
+
+      this.props.onResponderGrant();
+      this.props.onSwipe(data.direction);
+
+      console.log("RECEIVED : ", data);
+    }
+    // this.socket.off('MOVE_PERSON_APPROVED', handleMoving);
+  }
+
+
   onKeyUp = (e) => {
-    console.log("fff : keyup");
-    if (this._keyMap) {
-      const direction = this._keyMap[e.code];
-      if (direction) {
-        this.props.onSwipe(direction);
+    if (this.gameMode == 2) {
+
+      if (keyMap_Both[e.code]) { // if direction key ?
+        if (this.role == 'server') {
+          const direction = this._keyMap[e.code];
+
+          if (direction) {
+            this.socket.emit('message', JSON.stringify({
+              cmd: 'MOVE_PERSON',
+              direction: direction,
+              role: this.role,
+              keyMap: this._keyMap,
+              align: this.align
+            }));
+          }
+
+        } else if (this.role = 'client') {
+          const direction = this._keyMap[e.code];
+
+          if (direction) {
+            this.socket.emit('message', JSON.stringify({
+              cmd: 'MOVE_PERSON',
+              direction: direction,
+              role: this.role,
+              keyMap: this._keyMap,
+              align: this.align
+            }));
+          }
+        }
+      }
+
+
+
+
+      // if (direction) {
+
+      //   window.alert(this.role);
+
+      //   // this.socket.emit('message', JSON.stringify({
+      //   //   cmd: 'MOVE_PERSON',
+      //   //   direction: direction
+      //   // }));
+
+      //   // const handleMoving = (data) => {
+      //   //   this.props.onResponderGrant();
+      //   //   this.props.onSwipe(data.direction)
+      //   //   this.socket.off('MOVE_PERSON_APPROVED', handleMoving);
+      //   // }
+
+      //   // this.socket.on('MOVE_PERSON_APPROVED', handleMoving);
+      // }
+
+    } else {
+      if (this._keyMap) {
+        const direction = this._keyMap[e.code];
+        if (direction) {
+          this.props.onSwipe(direction);
+        }
       }
     }
   };
@@ -178,6 +266,8 @@ class GestureView extends Component {
 
   render() {
     const { style, ...props } = this.props;
+    // const {socket} = useContext(GameContext);
+
 
     return (
       <View
