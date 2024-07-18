@@ -101,8 +101,8 @@ class Game extends Component {
           this.transitionToGamePlayingState();
         } else {
           // Coming straight from the menu.
-          this.engine._hero.stopIdle();
-          this.onSwipe(swipeDirections.SWIPE_UP);
+          // this.engine._hero.stopIdle();
+          // this.onSwipe(swipeDirections.SWIPE_UP);
         }
 
         break;
@@ -336,6 +336,24 @@ function GameScreen(props) {
 
   return (
     <>
+      {gameMode == 2 &&
+        <div
+          style={{
+            position: 'absolute',
+            borderRadius: '40px',
+            padding: '10px',
+            background: 'rgba(255,255,255,0.5)',
+            border: '2px solid black',
+            zIndex: 2000,
+            right: '300px',
+            top: '30px',
+            cursor: 'pointer',
+            fontSize: '32px',
+            padding: '15px',
+          }}
+        >
+          {role}
+        </div>}
       <button
         style={{
           position: 'absolute',

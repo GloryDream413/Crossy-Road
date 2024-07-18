@@ -28,8 +28,8 @@ function Screen(props) {
   React.useEffect(() => {
     function onKeyUp({ keyCode }) {
       // Space, up-arrow
-      // When the player click the space the start game.
-      if ([32, 38].includes(keyCode)) {
+      // When the player click the space the start game. (38 arrow up is ommited)
+      if ([32].includes(keyCode)) {
         props.onPlay();
       }
     }
