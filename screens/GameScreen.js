@@ -28,7 +28,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const DEBUG_CAMERA_CONTROLS = false;
 class Game extends Component {
-  constructor (props) {
+  constructor(props) {
     // 
     super(props);
 
@@ -256,13 +256,17 @@ class Game extends Component {
 
   render() {
     const { keyMap, globalMap, gameMode, isDarkMode, isPaused } = this.props;
-    
+
     return (
       <View
         pointerEvents="box-none"
         style={[
           // StyleSheet.absoluteFill,
-          { flex: 1, backgroundColor: "#0f0f0f", padding: '20px', width: gameMode>0?'50%':'100%', height: '100%' },
+          {
+            flex: 1, backgroundColor: "#0f0f0f", padding: '20px',
+            width: gameMode > 0 ? '50%' : '100%',
+            height: '100%'
+          },
           Platform.select({
             web: { position: "fixed" },
             default: { position: "absolute" },
@@ -307,7 +311,7 @@ class Game extends Component {
 
 const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
 
-  const {socket, role} = useContext(GameContext);
+  const { socket, role } = useContext(GameContext);
 
   const config = {
     velocityThreshold: 0.2,
@@ -327,8 +331,8 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
         onSwipe(swipeDirections.SWIPE_UP);
       }}
       style={{ flex: 1 }}
-      socket = {socket}
-      role = {role}
+      socket={socket}
+      role={role}
       {...props}
     />
   );
@@ -337,15 +341,30 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
 function GameScreen(props) {
   const scheme = useColorScheme();
 
-  const { character, contextGameMap, role, setRole } = React.useContext(GameContext);
+  const { socket, character, contextGameMap, role, setRole } = React.useContext(GameContext);
   console.log("NEW GAME WITH THE NEW MAP : ", contextGameMap);
 
   const gameMode = props.gameMode;
 
   const navigation = useNavigation();
 
+  const handleSocketEndGame = (data) => {
+    if (data.cmd == "END_GAME") {
+      navigation.navigate("LandingScreen");
+    }
+  }
+
+  socket.on('ROOM', handleSocketEndGame);
+
   const gotoMenu = () => {
-    navigation.navigate("LandingScreen");
+    if (gameMode == 2) {
+
+      socket.emit('message', JSON.stringify({
+        cmd: 'END_GAME',
+      }));
+    } else {
+      navigation.navigate("LandingScreen");
+    }
   };
 
   // const appState = useAppState();
@@ -353,39 +372,54 @@ function GameScreen(props) {
   return (
     <>
       {gameMode == 2 &&
-        <div
+
+        <button
           style={{
             position: 'absolute',
-            borderRadius: '40px',
-            padding: '10px',
-            background: 'rgba(255,255,255,0.5)',
-            border: '2px solid black',
+            borderRadius: '50px',
+            padding: '10px 20px',
+            background: role === 'server' ? 'linear-gradient(45deg, #9C27B0, #673AB7)' : 'linear-gradient(45deg, #000, #000)',
+            border: '2px solid #333',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
             zIndex: 2000,
             right: '300px',
             top: '30px',
             cursor: 'pointer',
-            fontSize: '32px',
-            padding: '15px',
+            fontSize: '24px',
+            color: '#fff',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            transition: 'background 0.3s, transform 0.2s',
           }}
         >
           {role}
-        </div>}
+        </button>
+      }
       <button
         style={{
           position: 'absolute',
-          borderRadius: '40px',
-          padding: '10px',
-          background: 'rgba(255,255,255,0.5)',
-          border: '2px solid black',
+          borderRadius: '50px',
+          padding: '10px 20px',
+          background: 'linear-gradient(45deg, #4CAF50, #2196F3)',
+          border: '2px solid #333',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           zIndex: 2000,
           right: '30px',
           top: '30px',
           cursor: 'pointer',
-          fontSize: '32px',
-          padding: '15px',
+          fontSize: '24px',
+          color: '#fff',
+          fontWeight: 'bold',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          transition: 'background 0.3s, transform 0.2s',
         }}
         onClick={gotoMenu}
-      >Back to Menu</button>
+      >
+        Back to Menu
+      </button>
+
 
       {/* // Mono Play */}
       {gameMode == 0 && <Game {...props} gameMode={gameMode} newGlobalMap={globalMap} keyMap={keyMap_Both} character={character} isDarkMode={scheme === "dark"} />}

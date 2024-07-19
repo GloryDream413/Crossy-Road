@@ -37,15 +37,20 @@ const ServerListDialog = ({ onClose, opened, socket }) => {
       {/* <div style={{ minWidth: '150px', textAlign: 'left', color: 'white' }}>{item.id}</div> */}
       <div style={{ margin: 'auto', textAlign: 'left', color: 'white' }}>{item.name}</div>
       <div style={{ margin: 'auto', textAlign: 'left', color: 'white' }}>
+
         <button style={{
           width: '100px',
           height: '40px',
           background: 'rgba(255,255,255,0.2)',
           borderRadius: '20px',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          color: 'white'
         }}
+          disabled={item.status > 0 || item.mine}
           onClick={() => { joinGame(item.name) }}
-        >JOIN</button>
+        >{item.mine ? "My Server" :
+          (item.status == 0 ? "JOIN" : "Playing")
+          }</button>
       </div>
       {/* <Text>Players: {item.players}/{item.maxPlayers}</Text> */}
     </View >

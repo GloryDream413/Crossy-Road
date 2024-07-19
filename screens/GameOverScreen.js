@@ -1,5 +1,5 @@
 import React, { Component, useContext } from "react";
-import { Alert, Animated, Easing, StyleSheet, View } from "react-native";
+import { Image, Alert, Animated, Easing, StyleSheet, View } from "react-native";
 import { useSafeArea } from "react-native-safe-area-context";
 
 import Banner from "../components/GameOver/Banner";
@@ -17,7 +17,7 @@ import GameContext from "../context/GameContext";
 const banner = [
   {
     color: "#3640eb",
-    title: "Get Updates Subscribe Now",
+    title: "YOU ARE DEAD !",
     button: {
       onPress: (_) => {
         Alert.alert(
@@ -38,11 +38,11 @@ const banner = [
   },
   {
     color: "#368FEB",
-    title: "Free Gift in 2h 51m",
+    title: "YOU LOST 1000 CASH TOKENS",
   },
   {
     color: "#36D6EB",
-    title: "44 Coins To Go",
+    title: "PAY 1000 TOKENS TO GO",
   },
 ];
 
@@ -132,14 +132,14 @@ function GameOver({ ...props }) {
 
     <View
       style={[
-        { top : "30%", left : "2.5%", right : "2.5%"}
-        
+        { top: "30%", left: "2.5%", right: "2.5%" }
+
         // props.style,
         // , gameMode > 0 && { width: "45%" }
       ]}
     >
       <View key="content" style={[{ flex: 1, justifyContent: "center" }
-        
+
       ]}>
         {banner.map((val, index) => (
 
@@ -153,7 +153,7 @@ function GameOver({ ...props }) {
             style={{
               backgroundColor: val.color,
               minWidth: "100%",
-              width : '100%',
+              width: '100%',
               transform: [
                 {
                   scaleY: animations[index].interpolate({
@@ -169,14 +169,26 @@ function GameOver({ ...props }) {
           />
 
         ))}
+
+        {/* <View style={{
+          minWidth: "100%",
+          width: '100%',
+        }}>
+          <Image
+            source={require("../assets/images/game_over.png")}
+          />
+        </View> */}
       </View>
 
+
+
+      {/* 
       <Footer
         style={{ paddingLeft: left || 4, paddingRight: right || 4 }}
         showSettings={props.showSettings}
         setGameState={props.setGameState}
         navigation={props.navigation}
-      />
+      /> */}
     </View>
   );
 }
