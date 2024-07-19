@@ -10,7 +10,7 @@ import Water from './Particles/Water';
 import Rows from './Row';
 import { Fill } from './Row/Grass';
 
-import {globalMap, globalMap_Limit } from '../global/globalMap';
+import { globalMap, globalMap_Limit } from '../global/globalMap';
 
 
 // TODO Add to state - disable/enable when battery is low
@@ -192,18 +192,39 @@ export class CrossyGameMap extends GameMap {
   railRoads = new EntityContainer();
   rowCount = 0;
 
-  constructor({ heroWidth, onCollide, scene , newGlobalMap}) {
+  constructor({ heroWidth, onCollide, scene, newGlobalMap }) {
     super();
 
     this.heroWidth = heroWidth;
     this.globalMap = newGlobalMap;
 
-    console.log("CrossyGameMap :: constructor () ==> GLOBAL MAP : ",this.globalMap)
+    console.log("CrossyGameMap :: constructor () ==> GLOBAL MAP : ", this.globalMap)
+
+    // let tree_i = 0;
+    // let road_i = 0;
+
+    // for (let i = 0; i < maxRows + maxRows; i++) {
+    //   switch (this.globalMap[i].type) {
+    //     case "grass":
+    //       this.grasses[tree_i] = new Rows.Grass(this.heroWidth);
+    //       scene.world.add(this.grasses[tree_i]);
+    //       tree_i++;
+    //       break;
+    //     case "roadtype":
+    //       this.roads[road_i] = new Rows.Road(this.heroWidth, onCollide);
+    //       scene.world.add(this.roads[road_i]);
+    //       break;
+    //     default:
+    //       break;
+    //   }
+
+    // }
+
 
     // Assign mesh to corresponding array
     // and add mesh to scene
     for (let i = 0; i < maxRows; i++) {
-      this.grasses.items[i] = new Rows.Grass(this.heroWidth);
+      this.grasses.items[i] = new Rows.Grass(this.heroWidth, onCollide, this.globalMap[i].randVal);
       // this.water.items[i] = new Rows.Water(this.heroWidth, onCollide);
       this.roads.items[i] = new Rows.Road(this.heroWidth, onCollide);
       // this.railRoads.items[i] = new Rows.RailRoad(this.heroWidth, onCollide);
@@ -269,7 +290,7 @@ export class CrossyGameMap extends GameMap {
           const previousRowType = (this.getRow(this.rowCount - 1) || {}).type;
           this.roads.items[this.roads.count].isFirstLane(previousRowType !== 'road')
           this.roads.items[this.roads.count].active = true;
-          
+
           this.setRow(this.rowCount, {
             type: 'road',
             entity: this.roads.items[this.roads.count],
@@ -305,7 +326,7 @@ export class CrossyGameMap extends GameMap {
   // Setup initial scene
   init = () => {
 
-    console.log("CrossyGameMap :: init () ==> GLOBAL MAP : ",this.globalMap)
+    console.log("CrossyGameMap :: init () ==> GLOBAL MAP : ", this.globalMap)
 
     for (let i = 0; i < maxRows; i++) {
       this.grasses.items[i].position.z = MAP_OFFSET;

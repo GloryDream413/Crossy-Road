@@ -181,7 +181,6 @@ const styles = StyleSheet.create({
     // maxWidth: 600,
     width: "100%",
     height: 300,
-    marginLeft: -screenWidth / 2,
     marginTop: - screenHeight
   },
   coins: {

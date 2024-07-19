@@ -2,6 +2,8 @@ const row_types = ["grass", "roadtype"];
 
 const initial_size = 10;
 const maxRows = 20;
+
+const internal_limit = 100;
 export const globalMap_Limit = 50;
 
 const initGlobalMap = () => {
@@ -17,7 +19,9 @@ const initGlobalMap = () => {
         }
         const randomRowType = row_types[randomIndex];
 
-        globalMap.push({ id: i, row_type: randomRowType });
+        let randVal = Math.floor(Math.random() * internal_limit);
+
+        globalMap.push({ id: i, row_type: randomRowType , randVal : randVal});
     }
 
     return globalMap;

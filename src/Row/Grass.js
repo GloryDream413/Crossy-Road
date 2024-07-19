@@ -40,14 +40,24 @@ export default class Grass extends Object3D {
   obstacleMap = {};
   addObstacle = x => {
     let mesh;
-    if (HAS_VARIETY) {
-      mesh =
-        Math.random() < 0.4
-          ? ModelLoader._boulder.getRandom()
-          : ModelLoader._tree.getRandom();
+
+    
+    if (HAS_VARIETY || true) 
+      {
+      // mesh = ModelLoader._tree.getRandom();
+      if (this.randVal % 2) {
+        mesh = ModelLoader._boulder.getRandom_ByMap(this.randVal);
+      } else {
+        mesh = ModelLoader._tree.getRandom_ByMap(this.randVal);
+      }
+      // Math.random() < 0.4
+      //   ? ModelLoader._boulder.getRandom()
+      //   : ModelLoader._tree.getRandom();
     } else {
-      mesh = ModelLoader._tree.getRandom();
+      mesh = ModelLoader._tree.getRandom_ByMap(this.randVal);
     }
+
+
     this.obstacleMap[`${x | 0}`] = { index: this.entities.length };
     this.entities.push({ mesh });
     this.floor.add(mesh);
@@ -55,9 +65,11 @@ export default class Grass extends Object3D {
   };
 
   treeGen = type => {
+
     // 0 - 8
     let _rowCount = 0;
-    const count = Math.round(Math.random() * 2) + 1;
+    // const count = Math.round(Math.random() * 2) + 1;
+    const count = 2;
     for (let x = -3; x < 12; x++) {
       const _x = x - 4;
       if (type === Fill.solid) {
@@ -75,19 +87,22 @@ export default class Grass extends Object3D {
 
       if (HAS_OBSTACLES) {
         if (_rowCount < count) {
-          if (_x !== 0 && Math.random() > 0.6) {
+          // if (_x !== 0 && Math.random() > 0.6) {
+          if (_x !== 0 && this.randVal / 100 > 0.5) {
             this.addObstacle(_x);
             _rowCount++;
           }
         }
       }
+
     }
   };
 
-  constructor(heroWidth, onCollide) {
+  constructor(heroWidth, onCollide,randVal) {
     super();
     this.onCollide = onCollide;
     const { _grass } = ModelLoader;
+    this.randVal = randVal;
 
     this.floor = _grass.getNode();
     this.add(this.floor);

@@ -133,8 +133,9 @@ function GameOver({ ...props }) {
     <View
       style={[
         { top : "30%", left : "2.5%", right : "2.5%"}
-        , gameMode > 0 && { width: "45%" }
+        
         // props.style,
+        // , gameMode > 0 && { width: "45%" }
       ]}
     >
       <View key="content" style={[{ flex: 1, justifyContent: "center" }
@@ -151,7 +152,8 @@ function GameOver({ ...props }) {
             key={index}
             style={{
               backgroundColor: val.color,
-              minWidth: "50%",
+              minWidth: "100%",
+              width : '100%',
               transform: [
                 {
                   scaleY: animations[index].interpolate({

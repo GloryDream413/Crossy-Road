@@ -262,7 +262,7 @@ class Game extends Component {
         pointerEvents="box-none"
         style={[
           // StyleSheet.absoluteFill,
-          { flex: 1, backgroundColor: "#0f0f0f", padding: '20px', width: '100%', height: '100%' },
+          { flex: 1, backgroundColor: "#0f0f0f", padding: '20px', width: gameMode>0?'50%':'100%', height: '100%' },
           Platform.select({
             web: { position: "fixed" },
             default: { position: "absolute" },
