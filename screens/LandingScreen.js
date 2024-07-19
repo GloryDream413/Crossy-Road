@@ -67,7 +67,6 @@ const LandingScreen = () => {
     }, []);
 
     const start_game = () => {
-        console.log("@@@@@@@@@@@@@@@@@@@@@@ starting game :", role, keyMap_Server);
 
         // START THE GAME AS PLAYER=======1
         navigation.navigate("GameScreen_2");

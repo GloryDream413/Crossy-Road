@@ -75,7 +75,6 @@ function Screen(props) {
 
     ],
   };
-  // console.log(props);
   return (
     <View
       style={[

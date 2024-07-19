@@ -2,7 +2,7 @@ const row_types = ["grass", "roadtype"];
 
 const initial_size = 10;
 const maxRows = 20;
-export const globalMap_Limit = 1000;
+export const globalMap_Limit = 50;
 
 const initGlobalMap = () => {
     const globalMap = [

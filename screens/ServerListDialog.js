@@ -68,6 +68,8 @@ const ServerListDialog = ({ onClose, opened, socket }) => {
         setGameMode(2);
         setRole('client');
         setKeyMap_Client(keyMap_2);
+
+        console.log("NEW MAP RECEIVED FROM SERVER");
         setContextGameMap(data.globalMap);
 
         // window.alert('client');

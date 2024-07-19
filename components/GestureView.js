@@ -67,11 +67,8 @@ class GestureView extends Component {
     }
 
 
-    console.log("align : ", this.align);
-
     this.socket.on('MOVE_PERSON_APPROVED', this.handleMoving);
 
-    console.log("&&&&&&&&&&&&&&&&: ", this._keyMap);
     this.swipeConfig = Object.assign(swipeConfig, props.config);
     this._panResponder = PanResponder.create({
 
@@ -114,14 +111,11 @@ class GestureView extends Component {
 
   handleMoving = (data) => {
 
-    console.log("RECEIVED ::: ", data);
-
     if (this.role == data.role && this.align == data.align) {
 
       this.props.onResponderGrant();
       this.props.onSwipe(data.direction);
 
-      console.log("RECEIVED : ", data);
     }
     // this.socket.off('MOVE_PERSON_APPROVED', handleMoving);
   }

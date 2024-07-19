@@ -69,7 +69,7 @@ export default class Road extends Object3D {
     }
   };
 
-  constructor(heroWidth, onCollide, cur_map) {
+  constructor(heroWidth, onCollide) {
     super();
     this.heroWidth = heroWidth;
     this.onCollide = onCollide;
