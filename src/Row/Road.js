@@ -35,12 +35,21 @@ export default class Road extends Object3D {
     let speed = Math.random() * 0.06 + 0.02;
     let numCars = Math.floor(Math.random() * 2) + 1;
 
-    // console.log("!!! Car !!!") ;
-    // console.log("speed : ", speed);
-    // console.log("numCars : ", numCars);
+    console.log("speed : ", speed);
+    console.log("numCars : ", numCars);
+
+
+    console.log(this.randValArray.length);
+    console.log(this.randValArray[0] / 100 + 0.02);
+
+    numCars = this.randValArray.length
+    speed = this.randValArray[0] / 1000 + 0.02
+
+
+
     let xDir = 1;
 
-    if (Math.random() > 0.5) {
+    if (this.randValArray[0] / 100 > 0.5) {
       xDir = -1;
     }
 
@@ -48,7 +57,8 @@ export default class Road extends Object3D {
 
     for (let x = 0; x < numCars; x++) {
       if (this.cars.length - 1 < x) {
-        let mesh = ModelLoader._car.getRandom();
+        // let mesh = ModelLoader._car.getRandom();
+        let mesh = ModelLoader._car.getRandom_ByMap(this.randValArray[x]);
         const width = this.getWidth(mesh);
 
         this.cars.push({
@@ -65,11 +75,12 @@ export default class Road extends Object3D {
       this.cars[x].speed = speed * xDir;
       this.cars[x].mesh.rotation.y = Math.PI / 2 * xDir;
 
-      xPos -= (Math.random() * 3 + 5) * xDir;
+      // xPos -= (Math.random() * 3 + 5) * xDir;
+      xPos -= (this.randValArray[0] / 100 * 3 + 5) * xDir;
     }
   };
 
-  constructor(heroWidth, onCollide) {
+  constructor(heroWidth, onCollide, randValArray) {
     super();
     this.heroWidth = heroWidth;
     this.onCollide = onCollide;
@@ -77,6 +88,8 @@ export default class Road extends Object3D {
 
     this.road = _road.models['1'].children[0].clone();
     this.add(this.road);
+
+    this.randValArray = randValArray;
 
     // console.log("Almost there : ", cur_map);
     this.carGen();

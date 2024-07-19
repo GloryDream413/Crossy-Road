@@ -55,8 +55,8 @@ export default class Generic {
 
   getRandom_ByMap = (randVal) => {
     let keys = Object.keys(this.models);
-    // let index = (randVal) % (keys.length + 1);
-    let index = 0;
+    let index = (randVal) % (keys.length);
+    // let index = 0;
     // const key = keys[(keys.length * Math.random()) << 0];
     const key = keys[index];
     return this.models[key].clone();

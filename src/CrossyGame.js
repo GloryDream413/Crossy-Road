@@ -226,7 +226,7 @@ export class CrossyGameMap extends GameMap {
     for (let i = 0; i < maxRows; i++) {
       this.grasses.items[i] = new Rows.Grass(this.heroWidth, onCollide, this.globalMap[i].randVal);
       // this.water.items[i] = new Rows.Water(this.heroWidth, onCollide);
-      this.roads.items[i] = new Rows.Road(this.heroWidth, onCollide);
+      this.roads.items[i] = new Rows.Road(this.heroWidth, onCollide, this.globalMap[i].randValArray);
       // this.railRoads.items[i] = new Rows.RailRoad(this.heroWidth, onCollide);
       scene.world.add(this.grasses.items[i]);
       // scene.world.add(this.water.items[i]);

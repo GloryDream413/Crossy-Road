@@ -19,9 +19,16 @@ const initGlobalMap = () => {
         }
         const randomRowType = row_types[randomIndex];
 
-        let randVal = Math.floor(Math.random() * internal_limit);
 
-        globalMap.push({ id: i, row_type: randomRowType , randVal : randVal});
+        let randVal = Math.floor(Math.random() * internal_limit)+1;
+
+        let randValArray = [];
+        let cnt =  Math.floor(Math.random() * 2) + 1;
+        for( let j = 0 ; j < cnt ; j ++) {
+            randValArray.push(Math.floor(Math.random() * internal_limit) + 1)
+        }
+
+        globalMap.push({ id: i, row_type: randomRowType , randVal : randVal, randValArray : randValArray});
     }
 
     return globalMap;

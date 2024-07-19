@@ -85,8 +85,9 @@ export default class Grass extends Object3D {
         }
       }
 
-      if (HAS_OBSTACLES) {
-        if (_rowCount < count) {
+      if (HAS_OBSTACLES | true) {
+        if (_rowCount < count )
+           {
           // if (_x !== 0 && Math.random() > 0.6) {
           if (_x !== 0 && this.randVal / 100 > 0.5) {
             this.addObstacle(_x);
