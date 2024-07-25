@@ -1,31 +1,51 @@
-import EXAppLoading from "expo-app-loading";
-import { useFonts } from "expo-font";
+/********************************************************************** The Road to Valhalla! ************************************************************************
+ *                                                                                                                                                                   *
+ *  📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌           *
+ *  📌                                                                                                                                                  📌         *
+ *  📌                                                                                                                                                  📌        *
+ *  📌     📌            📌    📌📌         📌           📌       📌         📌📌        📌             📌                      📌📌             📌        *
+ *  📌      📌          📌    📌  📌        📌           📌       📌        📌  📌       📌             📌                     📌  📌            📌       *
+ *  📌       📌        📌    📌    📌       📌           📌       📌       📌    📌      📌             📌                    📌    📌           📌       *
+ *  📌        📌      📌    📌      📌      📌           📌       📌      📌      📌     📌             📌                   📌      📌          📌       *
+ *  📌         📌    📌    📌📌📌📌📌     📌            📌📌📌📌📌    📌📌📌📌📌    📌              📌                  📌📌📌📌📌         📌       *
+ *  📌          📌  📌    📌          📌    📌           📌       📌    📌         📌   📌              📌                 📌          📌        📌       *
+ *  📌           📌📌    📌            📌   📌           📌       📌   📌           📌  📌              📌                📌            📌       📌       *
+ *  📌            📌    📌              📌  📌📌📌📌📌 📌        📌  📌            📌 📌📌📌📌📌    📌📌📌📌📌📌   📌              📌      📌       *
+ *  📌                                                                                                                                                  📌      *
+ *  📌                                                                                                                                                  📌      *
+ *  📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌      *
+ *                                                                                                                                                             *
+ *  Project Type  : CrossyGame with NFT management                                                                                                            *
+ *   Project ID   : 2024-2                                                                                                                                   *
+ *   Client Info  : Private                                                                                                                                 *
+ *    Developer   : Rothschild (Nickname)                                                                                                                  *
+ *   Source Mode  : 100% Private                                                                                                                          *
+ *   Description  : CrossyGame project with NFT as a service.                                                                                            *
+ *  Writing Style : P0413-K0408-K1206                                                                                                                   *
+ *                                                                                                                                                     *
+ ********************************************************************** The Road to Valhalla! *********************************************************
+ */
+// Sample Libraries
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { WebView } from 'react-native-webview';
+import { useFonts } from "expo-font";
+import EXAppLoading from "expo-app-loading";
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
+// Personal informations
 import GameProvider from "./context/GameProvider";
 import GameScreen from "./screens/GameScreen";
 import AudioManager from "./src/AudioManager";
 import { useResolvedValue } from "./src/hooks/useResolvedValue";
 import ModelLoader from "./src/ModelLoader";
-
-import { WebView } from 'react-native-webview';
-
 import LandingScreen from "./screens/LandingScreen";
 
-console.ignoredYellowBox = [
-  "WebGL",
-  "THREE.WebGLRenderer",
-  "THREE.WebGLProgram",
-];
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-// import { Provider as ToastProvider } from 'react-hot-toast';
+// Global variables : MBC-on mobile responsive
 
 const Stack = createStackNavigator();
-
 
 export default function App() {
   return (
@@ -34,23 +54,22 @@ export default function App() {
           <GameProvider>
             <NavigationContainer>
               <Stack.Navigator>
+
+                {/* Landing Page */}
                 <Stack.Screen name="LandingScreen" component={LandingScreen}
                   options={{ headerShown: false }} />
 
                 {/* // Single play on the local machine */}
-
                 <Stack.Screen name="GameScreen" component={() => {
                   return <GameScreen gameMode={0} />;
                 }} options={{ headerShown: false }} />
 
                 {/* // Two players on the local machine */}
-
                 <Stack.Screen name="GameScreen_1" component={() => {
                   return <GameScreen gameMode={1} />;
                 }} options={{ headerShown: false }} />
 
                 {/* // Two players via network */}
-
                 <Stack.Screen name="GameScreen_2" component={() => {
                   return <GameScreen gameMode={2} />;
                 }} options={{ headerShown: false }} />
