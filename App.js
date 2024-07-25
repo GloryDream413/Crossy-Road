@@ -10,6 +10,8 @@ import AudioManager from "./src/AudioManager";
 import { useResolvedValue } from "./src/hooks/useResolvedValue";
 import ModelLoader from "./src/ModelLoader";
 
+import { WebView } from 'react-native-webview';
+
 import LandingScreen from "./screens/LandingScreen";
 
 console.ignoredYellowBox = [
@@ -20,43 +22,45 @@ console.ignoredYellowBox = [
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+// import { Provider as ToastProvider } from 'react-hot-toast';
 
 const Stack = createStackNavigator();
 
 
 export default function App() {
   return (
-    <AssetLoading>
-      <SafeAreaProvider>
-        <GameProvider>
-          <NavigationContainer>
-            <Stack.Navigator>
-              <Stack.Screen name="LandingScreen" component={LandingScreen}
-                options={{ headerShown: false }} />
+      <AssetLoading>
+        <SafeAreaProvider>
+          <GameProvider>
+            <NavigationContainer>
+              <Stack.Navigator>
+                <Stack.Screen name="LandingScreen" component={LandingScreen}
+                  options={{ headerShown: false }} />
 
-{/* // Single play on the local machine */}
+                {/* // Single play on the local machine */}
 
-              <Stack.Screen name="GameScreen" component={() => {
-                return <GameScreen gameMode={0} />;
-              }} options={{ headerShown: false }} />
+                <Stack.Screen name="GameScreen" component={() => {
+                  return <GameScreen gameMode={0} />;
+                }} options={{ headerShown: false }} />
 
-{/* // Two players on the local machine */}
+                {/* // Two players on the local machine */}
 
-              <Stack.Screen name="GameScreen_1" component={() => {
-                return <GameScreen gameMode={1} />;
-              }} options={{ headerShown: false }} />
+                <Stack.Screen name="GameScreen_1" component={() => {
+                  return <GameScreen gameMode={1} />;
+                }} options={{ headerShown: false }} />
 
-{/* // Two players via network */}
+                {/* // Two players via network */}
 
-              <Stack.Screen name="GameScreen_2" component={() => {
-                return <GameScreen gameMode={2} />;
-              }} options={{ headerShown: false }} />
+                <Stack.Screen name="GameScreen_2" component={() => {
+                  return <GameScreen gameMode={2} />;
+                }} options={{ headerShown: false }} />
 
-            </Stack.Navigator>
-          </NavigationContainer>
-        </GameProvider>
-      </SafeAreaProvider>
-    </AssetLoading>
+              </Stack.Navigator>
+            </NavigationContainer>
+          </GameProvider>
+        </SafeAreaProvider>
+      </AssetLoading>
+
   );
 }
 

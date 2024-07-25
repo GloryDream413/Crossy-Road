@@ -1,77 +1,72 @@
+/********************************************************************** The Road to Valhalla! ************************************************************************
+ *                                                                                                                                                                   *
+ *  📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌           *
+ *  📌                                                                                                                                                  📌         *
+ *  📌                                                                                                                                                  📌        *
+ *  📌     📌            📌    📌📌         📌           📌       📌         📌📌        📌             📌                      📌📌             📌        *
+ *  📌      📌          📌    📌  📌        📌           📌       📌        📌  📌       📌             📌                     📌  📌            📌       *
+ *  📌       📌        📌    📌    📌       📌           📌       📌       📌    📌      📌             📌                    📌    📌           📌       *
+ *  📌        📌      📌    📌      📌      📌           📌       📌      📌      📌     📌             📌                   📌      📌          📌       *
+ *  📌         📌    📌    📌📌📌📌📌     📌            📌📌📌📌📌    📌📌📌📌📌    📌              📌                  📌📌📌📌📌         📌       *
+ *  📌          📌  📌    📌          📌    📌           📌       📌    📌         📌   📌              📌                 📌          📌        📌       *
+ *  📌           📌📌    📌            📌   📌           📌       📌   📌           📌  📌              📌                📌            📌       📌       *
+ *  📌            📌    📌              📌  📌📌📌📌📌 📌        📌  📌            📌 📌📌📌📌📌    📌📌📌📌📌📌   📌              📌      📌       *
+ *  📌                                                                                                                                                  📌      *
+ *  📌                                                                                                                                                  📌      *
+ *  📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌      *
+ *                                                                                                                                                             *
+ *  Project Type  : CrossyGame with NFT management                                                                                                            *
+ *   Project ID   : 2024-2                                                                                                                                   *
+ *   Client Info  : Private                                                                                                                                 *
+ *    Developer   : Rothschild (Nickname)                                                                                                                  *
+ *   Source Mode  : 100% Private                                                                                                                          *
+ *   Description  : CrossyGame project with NFT as a service.                                                                                            *
+ *  Writing Style : P0413-K0408-K1206                                                                                                                   *
+ *                                                                                                                                                     *
+ ********************************************************************** The Road to Valhalla! *********************************************************
+ */
+
+// Sample Libraries
 import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 import { useNavigation } from "@react-navigation/native";
+
+// Personal informations
 import GameContext from '../context/GameContext';
 import ServerListDialog from './ServerListDialog';
 import { globalMap } from "../global/globalMap";
 import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
-import io from 'socket.io-client';
 
-export const SERVER_URL = "http://192.168.140.49:3000";
+// Global variables : MBC-on mobile responsive
+export const SERVER_URL = "http://localhost:2024";
 export const socket = io(SERVER_URL);
 
-const status_room = 0;  // Room is not created yet.
-
+// Landing Page component
 const LandingScreen = () => {
-    const [flag, setFlag] = useState(status_room);      //  Created the server or not
-    const [open, setOpen] = useState(false);            //  Showing the find server dlg or not
 
+    // Initial Variables
     const navigation = useNavigation();
     const {
+        // set the socket to the context
         setSocket,
+        // set gameMode to the context
         gameMode, setGameMode,
+        // set the globalKepMap to the context : MBC-on update
         keyMap_Server, setKeyMap_Server,
+        // set the role to the context : MBC-on on update
         role, setRole,
+        // set the global map to the context 
         contextGameMap, setContextGameMap } = React.useContext(GameContext);
 
-    const [roomName, setRoomName] = useState("");
-
-    const closeServers = () => {
-        setFlag(0);
-    }
-
+    // Initial hook functions 
     useEffect(() => {
-        setFlag(status_room);
         setSocket(socket);
     }, []);
 
-    useEffect(() => {
-        const handleSocketMessage = (data) => {
-            if (data.cmd === "ROOM_CREATED") {
-                setRoomName(data.name);
-                setFlag(1);
-            } else if (data.cmd === "ROOM_CLOSED") {
-                setFlag(0);
-            }
-        };
+    // Personal variables
+    const [userName, setUserName] = useState("");
 
-        const handleSocketRoom = (data) => {
-            if (data.cmd == "GOT_JOINED_TO_SERVER") {
-                // Set the Network-Game mode.
-
-                setGameMode(2);
-                setKeyMap_Server(keyMap_1);
-                setContextGameMap(data.globalMap);
-                setRole('server');
-
-                start_game();
-            }
-        }
-
-        socket.on('ROOM', handleSocketRoom);
-        socket.on('message', handleSocketMessage);
-
-        return () => {
-            socket.off('message', handleSocketMessage);
-            socket.off('ROOM', handleSocketRoom);
-        };
-    }, []);
-
-    const start_game = () => {
-
-        // START THE GAME AS PLAYER=======1
-        navigation.navigate("GameScreen_2");
-    }
-
+    // For the landing page GUI
     const createStars = () => {
         const stars = [];
         for (let i = 0; i < 200; i++) {
@@ -90,47 +85,24 @@ const LandingScreen = () => {
         return stars;
     };
 
-    const handleOnePlayerLocal = () => {
-        navigation.navigate("GameScreen");
-        setGameMode(0);
-    };
-
-    const handleTwoPlayersLocal = () => {
-        navigation.navigate("GameScreen_1");
-        setGameMode(1);
-    };
-
-    const handleCreateRoom = () => {
-        socket.emit('message', JSON.stringify({
-            cmd: 'CREATE_ROOM',
-            map: globalMap
-        }));
-    };
-
-    const handleCloseRoom = () => {
-        socket.emit('message', JSON.stringify({
-            cmd: 'CLOSE_ROOM',
-            name: roomName,
-            map: 'I will set it after!'
-        }));
-    };
-
-    const handleFindServers = () => {
-        setOpen(true);
-    }
-
     return (
-        <div className="landing-screen" style={{
+        <div style={{
             position: 'relative',
-            overflow: 'hidden',
             height: '100vh',
-            background: 'black'
+            overflow: 'hidden',
+            background: 'black',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
         }}>
-            <ServerListDialog
+
+            {/* <ServerListDialog
                 opened={open}
                 onClose={setOpen}
                 socket={socket}
-            />
+            /> */}
+            {/* <img src={require("../assets/images/back/fire.png")}
+                style={{ position : 'absolute', top : '0px', left : '0px', height : '400px'}}></img> */}
             {createStars()}
 
             <div style={{
@@ -138,20 +110,51 @@ const LandingScreen = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: '100%',
+                margin: 'auto',
             }}>
-                <h1 className="title">The Road to Valhalla!</h1>
 
-                <button className="decoration-button" onClick={handleOnePlayerLocal}>SINGLE PLAYER</button>
-                <button className="decoration-button" onClick={handleTwoPlayersLocal}>MULTI PLAYERS</button>
+                <div>
+                    <h1 className='title'>The Road to Valhalla!</h1>
+                </div>
+                <div style={{
+                    background: 'rgba(0,0,255,0.4)',
+                    borderRadius: '1rem',
+                    padding: '1rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                }}>
+                    <img src={require("../assets/avatar/crossy_avatar.jpg")}
+                        style={{ borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)' }}></img>
+                    <div style={{
+                        display: "flex",
+                        flexDirection: 'row',
+                        color: 'white',
+                        fontSize: '1rem',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        margin: '1rem',
+                        height: '2.5rem'
+                    }}>
+                        <input style={{ padding: '0.5rem', flex: 1, border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f5f5f5', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', outline: 'none', fontSize: '1rem', color: '#333', transition: 'box-shadow 0.3s, border-color 0.3s', lineHeight: '1.5' }}
+                            type="text" placeholder="Enter your name"
+                            value={userName}
+                            onChange={(e) => {
+                                setUserName(e.target.value);
+                            }}
+                            autoFocus />
+                    </div>
 
-                {flag === 0 ? (
-                    <button className="decoration-button" onClick={handleCreateRoom}>CREATE SERVER</button>
-                ) : (
-                    <button className="decoration-button" style={{ background: 'rgba(255, 0, 0, 0.4)' }} onClick={handleCloseRoom}>CLOSE ROOM</button>
-                )}
+                    <button className="decoration-button" onClick={() => {
+                        if (userName !== "") {
+                            setGameMode(0);
+                            navigation.navigate("GameScreen");
+                        }
+                    }} >Play !</button>
+                    <button className="decoration-button" >Create Private Room</button>
+                </div>
 
-                <button className="decoration-button" onClick={handleFindServers}>FIND SERVERS</button>
+
             </div>
         </div>
     );
@@ -160,7 +163,7 @@ const LandingScreen = () => {
 export default LandingScreen;
 
 
-// CSS styles
+// CSS styles for drawing the stars actively moving everywhere.
 const styles = `
     .star {
         position: absolute;
@@ -199,25 +202,25 @@ const styles = `
 
     .decoration-button {
         background-color: transparent;
-        border-radius : 20px;
+        border-radius : 1rem;
         color: white;
-        margin : 20px;
+        margin : 1rem;
+        margin-top : 0.75rem;
+        margin-bottom : 0.75rem;
         letter-spacing : 2px;
         border: 2px solid white;
-        padding: 10px 20px;
         font-size: 16px;
         cursor: pointer;
         transition: all 0.3s;
-        width : 300px;
-        height : 75px;
+        height : 3rem;
     }
 
     .decoration-button:hover {
-        background-color: rgba(255,255,255,0.1);
+        background-color: rgba(0,0,255,0.2);
         color : white;
         border : 2px solid green;
         transition : 1s all;
-        transform : scale(1.25);
+        transform : scale(1.1);
     }
 
     @keyframes glow {
