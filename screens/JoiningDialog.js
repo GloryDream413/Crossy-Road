@@ -36,7 +36,7 @@ import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
 
 // Global variables : MBC-on mobile responsive
 
-const JoiningDialog = ({ onClose, opened }) => {
+const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverId }) => {
 
   const navigation = useNavigation();
   const { socket, gameMode, keyMap_Client, setKeyMap_Client,
@@ -49,51 +49,98 @@ const JoiningDialog = ({ onClose, opened }) => {
 
   return (
     <View style={styles.container}>
-      <img src={require("../assets/images/close.jpg")} style = {{
-        position : 'absolute',
-        top : '1rem',
-        right : '1rem',
-        borderRadius : '50%',
-        width : '2rem',
-        cursor : 'pointer',
-        zIndex : 6000
+      <img src={require("../assets/images/close.jpg")} style={{
+        position: 'absolute',
+        top: '1rem',
+        right: '1rem',
+        borderRadius: '50%',
+        width: '2rem',
+        cursor: 'pointer',
+        zIndex: 6000
       }}
-      onClick = {()=>{
-        onClose(false);
-      }}
-      
-      ></img>
-      <View style={styles.players}>
-        <View style={styles.player1}>
-          <h1>Player 1</h1>
-          <img src={require("../assets/avatar/crossy_avatar.jpg")} style={{
-            width: '200px', borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)'
-          }}></img>
-        </View>
+        onClick={() => {
+          onClose(false);
+        }}
 
-        <View style={styles.player2}>
-          <h1>Player 2</h1>
-          <img
-            src={require("../assets/avatar/hourglass.png")}
-            style={{
-              width: '200px',
-              filter : 'grayscale(1)',
-              borderRadius: '50%',
-              margin: '1rem',
-              boxShadow: '10px 10px 10px rgba(255, 0, 0, 0.4)',
-              animation: 'spin 2s linear infinite'
-            }}
-          />
+      ></img>
+
+      {serverId == "" &&
+        <View style={styles.players}>
+          <View style={styles.player1}>
+            <h1>{userName}</h1>
+            <img src={require("../assets/avatar/avatar_server.jpg")}
+              style={{
+                width: '200px', borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)'
+              }}></img>
+          </View>
+
+          {otherName == "waiting..." ?
+            <View style={styles.player2}>
+              <h1>{otherName}</h1>
+              <img
+                src={require("../assets/avatar/hourglass.png")}
+                style={{
+                  width: '200px',
+                  filter: 'grayscale(1)',
+                  borderRadius: '50%',
+                  margin: '1rem',
+                  boxShadow: '10px 10px 10px rgba(255, 0, 0, 0.4)',
+                  animation: 'spin 2s linear infinite'
+                }}
+              />
+            </View>
+            :
+            <View style={styles.player1}>
+              <h1>{otherName}</h1>
+              <img src={require("../assets/avatar/avatar_client.jpg")}
+                style={{
+                  width: '200px', borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)'
+                }}></img>
+            </View>
+          }
+
         </View>
-      </View>
+      }
+
+      {serverId != "" &&
+        <View style={styles.players}>
+
+          <View style={styles.player1}>
+            <h1>{otherName}</h1>
+            <img src={require("../assets/avatar/avatar_server.jpg")}
+              style={{
+                width: '200px', borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)'
+              }}></img>
+          </View>
+
+          <View style={styles.player1}>
+            <h1>{userName}</h1>
+            <img src={require("../assets/avatar/avatar_client.jpg")}
+              style={{
+                width: '200px', borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)'
+              }}></img>
+          </View>
+
+
+        </View>
+      }
+
+
       <View style={styles.linkPad}>
         <input style={{ padding: '0.5rem', margin: '1rem', flex: 1, border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f5f5f5', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', outline: 'none', fontSize: '1rem', color: '#333', transition: 'box-shadow 0.3s, border-color 0.3s', lineHeight: '1.5' }}
+          value={roomPath}
           type="text" placeholder="Getting the room link from the server ..."
           disabled
           autoFocus />
         <button className="decoration-button" onClick={() => {
-          onClose(0);
-        }} >Copy Link!</button>
+          navigator.clipboard.writeText(roomPath)
+            .then(() => {
+              // window.alert("copied");
+            })
+            .catch(err => {
+              window.alert("error link");
+            });
+        }} >&nbsp;Copy Link!&nbsp;</button>
         {/* <button className="decoration-button" onClick={() => {
         }} >Cancel</button> */}
       </View>
@@ -142,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: '2rem',
     justifyContent: 'center',
     alignItems: 'center',
-    
+
   },
 
   playerVS: {
@@ -167,7 +214,7 @@ const styles = StyleSheet.create({
     fontSize: '2rem',
     justifyContent: 'center',
     alignItems: 'center',
-    
+
   },
 
   linkPad: {

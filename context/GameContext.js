@@ -6,7 +6,7 @@ export default createContext({
     gameMode: 1,
     contextGameMap : [],
     setContextGameMap() {},
-    role : 'KJSKJSKJS',
+    role : 'server',
     setRole() {},
     keyMap_Server : [],
     setKeyMap_Server() {},

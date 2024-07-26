@@ -31,15 +31,17 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useNavigation } from "@react-navigation/native";
 
-// Personal informations
+// Personal informations 
 import GameContext from '../context/GameContext';
 import ServerListDialog from './ServerListDialog';
 import { globalMap } from "../global/globalMap";
 import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
 import JoiningDialog from './JoiningDialog';
+import { Linking } from 'react-native';
 
 // Global variables : MBC-on mobile responsive
-export const SERVER_URL = "http://localhost:2024";
+export const FRONTEND_URL = "http://localhost:19006";
+export const SERVER_URL = "http://localhost:7000";
 export const socket = io(SERVER_URL);
 
 // Landing Page component
@@ -61,12 +63,26 @@ const LandingScreen = () => {
 
     // Initial hook functions 
     useEffect(() => {
+        setRole('server');
         setSocket(socket);
+        Linking.getInitialURL().then(url => {
+            if (url) {
+                const _serverId = url.split('/?')[1];
+                console.log("server id : ", _serverId);
+                if (_serverId) {
+                    setServerId(_serverId);
+                }
+            }
+        }).catch(err => console.error('An error occurred', err));
     }, []);
 
     // Personal variables
     const [userName, setUserName] = useState("");
+    const [otherName, setOtherName] = useState("waiting...");
+
+    const [roomPath, setRoomPath] = useState(FRONTEND_URL);
     const [openRoom, setOpenRoom] = useState(false);
+    const [serverId, setServerId] = useState('');
 
     // For the landing page GUI
     const createStars = () => {
@@ -87,6 +103,40 @@ const LandingScreen = () => {
         return stars;
     };
 
+    // Receiving events from the server
+    useEffect(() => {
+        const handleSocketMessage = (data) => {
+            if (data.cmd === "ROOM_CREATED") {
+                setRole('server');
+                setRoomPath(FRONTEND_URL + "/?" + data.name);
+                setOpenRoom(true);
+            }
+        };
+        const handleSocketRoom = (data) => {
+
+            console.log("Received : ", data);
+
+            if (data.cmd == "GOT_JOINED_TO_CLIENT") {
+                setRole('client');
+                setOtherName(data.player1);
+                setOpenRoom(true);
+
+            }
+            if (data.cmd == "GOT_JOINED_TO_SERVER") {
+                setRole('server');
+                setOtherName(data.player2);
+            }
+        }
+
+        socket.on('message', handleSocketMessage);
+        socket.on('ROOM', handleSocketRoom);
+
+        return () => {
+            socket.off('message', handleSocketMessage);
+            socket.off('ROOM', handleSocketRoom);
+        };
+    }, []);
+
     return (
         <div style={{
             position: 'relative',
@@ -98,14 +148,13 @@ const LandingScreen = () => {
             justifyContent: 'center',
         }}>
             <JoiningDialog
+                userName={userName}
+                otherName={otherName}
+                roomPath={roomPath}
                 opened={openRoom}
+                serverId={serverId}
                 onClose={setOpenRoom}
             />
-            {/* <ServerListDialog
-                opened={open}
-                onClose={setOpen}
-                socket={socket}
-            /> */}
 
             {createStars()}
 
@@ -128,8 +177,11 @@ const LandingScreen = () => {
                     flexDirection: 'column',
                     justifyContent: 'center'
                 }}>
-                    <img src={require("../assets/avatar/crossy_avatar.jpg")}
-                        style={{ borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)' }}></img>
+                    <img src={serverId == "" ? require("../assets/avatar/avatar_server.jpg") : require("../assets/avatar/avatar_client.jpg")}
+                        style={{
+                            borderRadius: '50%', margin: '1rem',
+                            boxShadow: serverId == "" ? '10px 10px 10px rgba(255,0,0,0.4)' : '10px 10px 10px rgba(0,2550,0.4)'
+                        }}></img>
                     <div style={{
                         display: "flex",
                         flexDirection: 'row',
@@ -155,8 +207,36 @@ const LandingScreen = () => {
                             navigation.navigate("GameScreen");
                         }
                     }} >Play !</button>
+
+
+                    {serverId &&
+                        <button className="decoration-button" onClick={() => {
+                            if (userName == "") {
+                                window.alert("Enter UserName !");
+                                return;
+                            }
+
+                            socket.emit('message', JSON.stringify({
+                                cmd: 'JOIN_GAME',
+                                name: serverId,
+                                player2: userName
+                            }));
+
+                        }} >Join Server
+                        </button>}
+
                     <button className="decoration-button" onClick={() => {
-                        setOpenRoom(true);
+                        // Creating the room
+                        if (userName == "") {
+                            window.alert("Enter UserName !");
+                            return;
+                        }
+
+                        socket.emit('message', JSON.stringify({
+                            cmd: 'CREATE_ROOM',
+                            player1: userName,
+                            map: globalMap
+                        }));
                     }}>Create Private Room</button>
                 </div>
 
