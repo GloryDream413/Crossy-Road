@@ -36,6 +36,7 @@ import GameContext from '../context/GameContext';
 import ServerListDialog from './ServerListDialog';
 import { globalMap } from "../global/globalMap";
 import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
+import JoiningDialog from './JoiningDialog';
 
 // Global variables : MBC-on mobile responsive
 export const SERVER_URL = "http://localhost:2024";
@@ -65,6 +66,7 @@ const LandingScreen = () => {
 
     // Personal variables
     const [userName, setUserName] = useState("");
+    const [openRoom, setOpenRoom] = useState(false);
 
     // For the landing page GUI
     const createStars = () => {
@@ -95,14 +97,16 @@ const LandingScreen = () => {
             alignItems: 'center',
             justifyContent: 'center',
         }}>
-
+            <JoiningDialog
+                opened={openRoom}
+                onClose={setOpenRoom}
+            />
             {/* <ServerListDialog
                 opened={open}
                 onClose={setOpen}
                 socket={socket}
             /> */}
-            {/* <img src={require("../assets/images/back/fire.png")}
-                style={{ position : 'absolute', top : '0px', left : '0px', height : '400px'}}></img> */}
+
             {createStars()}
 
             <div style={{
@@ -151,7 +155,9 @@ const LandingScreen = () => {
                             navigation.navigate("GameScreen");
                         }
                     }} >Play !</button>
-                    <button className="decoration-button" >Create Private Room</button>
+                    <button className="decoration-button" onClick={() => {
+                        setOpenRoom(true);
+                    }}>Create Private Room</button>
                 </div>
 
 
@@ -182,6 +188,15 @@ const styles = `
         100% {
             transform: translate(150vw, 150vh) scale(0.9);
             opacity: 1;
+        }
+    }
+        
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
         }
     }
 

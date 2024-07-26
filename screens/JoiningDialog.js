@@ -26,152 +26,157 @@
  ********************************************************************** The Road to Valhalla! *********************************************************
  */
 // Sample Libraries
-import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { WebView } from 'react-native-webview';
-import { useFonts } from "expo-font";
-import EXAppLoading from "expo-app-loading";
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 
-// Personal informations
-import GameProvider from "./context/GameProvider";
-import GameScreen from "./screens/GameScreen";
-import AudioManager from "./src/AudioManager";
-import { useResolvedValue } from "./src/hooks/useResolvedValue";
-import ModelLoader from "./src/ModelLoader";
-import LandingScreen from "./screens/LandingScreen";
+// Personal informations MBC-
+import GameContext from "../context/GameContext";
+import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
 
-// Global variables
-const Stack = createStackNavigator();
+// Global variables : MBC-on mobile responsive
 
-export default function App() {
+const JoiningDialog = ({ onClose, opened }) => {
+
+  const navigation = useNavigation();
+  const { socket, gameMode, keyMap_Client, setKeyMap_Client,
+    role, setRole, contextGameMap, setContextGameMap, userNa } = React.useContext(GameContext);
+
+  // Deny everything on this condition
+  if (!opened | !socket) {
+    return null;
+  }
+
   return (
-      <AssetLoading>
-        <SafeAreaProvider>
-          <GameProvider>
-            <NavigationContainer>
-              <Stack.Navigator>
+    <View style={styles.container}>
+      <img src={require("../assets/images/close.jpg")} style = {{
+        position : 'absolute',
+        top : '1rem',
+        right : '1rem',
+        borderRadius : '50%',
+        width : '2rem',
+        cursor : 'pointer',
+        zIndex : 6000
+      }}
+      onClick = {()=>{
+        onClose(false);
+      }}
+      
+      ></img>
+      <View style={styles.players}>
+        <View style={styles.player1}>
+          <h1>Player 1</h1>
+          <img src={require("../assets/avatar/crossy_avatar.jpg")} style={{
+            width: '200px', borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)'
+          }}></img>
+        </View>
 
-                {/* Landing Page */}
-                <Stack.Screen name="LandingScreen" component={LandingScreen}
-                  options={{ headerShown: false }} />
-
-                {/* // Single play on the local machine */}
-                <Stack.Screen name="GameScreen" component={() => {
-                  return <GameScreen gameMode={0} />;
-                }} options={{ headerShown: false }} />
-
-                {/* // Two players on the local machine */}
-                <Stack.Screen name="GameScreen_1" component={() => {
-                  return <GameScreen gameMode={1} />;
-                }} options={{ headerShown: false }} />
-
-                {/* // Two players via network */}
-                <Stack.Screen name="GameScreen_2" component={() => {
-                  return <GameScreen gameMode={2} />;
-                }} options={{ headerShown: false }} />
-
-              </Stack.Navigator>
-            </NavigationContainer>
-          </GameProvider>
-        </SafeAreaProvider>
-      </AssetLoading>
-
+        <View style={styles.player2}>
+          <h1>Player 2</h1>
+          <img
+            src={require("../assets/avatar/hourglass.png")}
+            style={{
+              width: '200px',
+              filter : 'grayscale(1)',
+              borderRadius: '50%',
+              margin: '1rem',
+              boxShadow: '10px 10px 10px rgba(255, 0, 0, 0.4)',
+              animation: 'spin 2s linear infinite'
+            }}
+          />
+        </View>
+      </View>
+      <View style={styles.linkPad}>
+        <input style={{ padding: '0.5rem', margin: '1rem', flex: 1, border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f5f5f5', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', outline: 'none', fontSize: '1rem', color: '#333', transition: 'box-shadow 0.3s, border-color 0.3s', lineHeight: '1.5' }}
+          type="text" placeholder="Getting the room link from the server ..."
+          disabled
+          autoFocus />
+        <button className="decoration-button" onClick={() => {
+          onClose(0);
+        }} >Copy Link!</button>
+        {/* <button className="decoration-button" onClick={() => {
+        }} >Cancel</button> */}
+      </View>
+    </View>
   );
-}
-
-function AssetLoading({ children }) {
-  const [fontLoaded] = useFonts({
-    retro: require("./assets/fonts/retro.ttf"),
-  });
-
-  const [audioLoaded, audioLoadingError] = useResolvedValue(() =>
-    AudioManager.setupAsync()
-  );
-
-  const [modelsLoaded, modelLoadingError] = useResolvedValue(() =>
-    ModelLoader.loadModels()
-  );
-
-  console.log("Loading:", {
-    fonts: fontLoaded,
-    audio: audioLoaded,
-    models: modelsLoaded,
-  });
-
-  if (modelLoadingError) {
-    return (
-      <ErrorScreen
-        message={modelLoadingError.message}
-        stack={modelLoadingError.stack}
-      />
-    );
-  }
-  if (audioLoadingError) {
-    return (
-      <ErrorScreen
-        message={audioLoadingError.message}
-        stack={audioLoadingError.stack}
-      />
-    );
-  }
-  if (modelsLoaded && fontLoaded && audioLoaded) {
-    return children;
-  }
-
-  return <EXAppLoading />;
-}
-
-const ErrorScreen = ({ message, stack }) => (
-  <View style={styles.errorContainer}>
-    <ScrollView style={styles.error} contentContainerStyle={{}}>
-      <Text style={styles.errorTitle}>This is a fatal error 👋 </Text>
-      <Text style={styles.errorText}>{message}</Text>
-      {stack && (
-        <Text
-          style={[
-            styles.errorText,
-            { fontSize: 12, opacity: 0.8, marginTop: 4 },
-          ]}
-        >
-          {stack}
-        </Text>
-      )}
-    </ScrollView>
-  </View>
-);
+};
 
 const styles = StyleSheet.create({
-  splash: {
-    backgroundColor: "#87C6FF",
-    resizeMode: "contain",
+  container: {
+    position: 'absolute',
+    // width: '80%',
+    // height: '60%',
+    borderRadius: '2rem',
+    zIndex: 5000,
+    backgroundColor: 'rgba(26,26,26,1)',
+    border: '2px solid gray',
+    // left: '10%', right: '10%',
+    // top: '10%', bottom: '10%',
+    display: 'flex', flexDirection: 'column',
+    justifyContent: 'space-between'
   },
-  errorContainer: {
-    ...StyleSheet.absoluteFillObject,
-    flex: 1,
-    backgroundColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
+  players: {
+
+    display: 'flex', flexDirection: 'row',
+    justifyContent: 'space-between'
   },
-  error: {
-    maxWidth: 300,
-    maxHeight: "50%",
-    borderRadius: 8,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    backgroundColor: "#9e0000",
+  rounding: {
+    margin: '1rem',
+    backgroundColor: 'white',
+    borderRadius: '1rem',
+    height: '2rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: '2rem',
+    display: 'flex'
   },
-  errorTitle: {
-    fontSize: 30,
-    color: "white",
-    fontWeight: "bold",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(0,0,0,0.1)",
+
+  player1: {
+    padding: '2rem',
+    margin: '1rem',
+    // borderRadius: '2rem',
+    // backgroundColor: 'rgba(255,255,255,0.1)',
+    // border: '1px solid red',
+    display: 'flex',
+    flexDirection: 'column',
+    fontSize: '2rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    
   },
-  errorText: {
-    fontSize: 24,
-    color: "white",
+
+  playerVS: {
+    padding: '1rem',
+    margin: '1rem',
+    borderRadius: '2rem',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    border: '1px solid red',
+    width: '5%',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
+
+  player2: {
+    padding: '2rem',
+    margin: '1rem',
+    // borderRadius: '2rem',
+    // backgroundColor: 'rgba(255,255,255,0.1)',
+    // border: '1px solid red',
+    display: 'flex',
+    flexDirection: 'column',
+    fontSize: '2rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    
+  },
+
+  linkPad: {
+    display: 'flex',
+    flexDirection: 'row',
+    margin: '1rem',
+    padding: '2rem'
+  }
 });
+
+
+export default JoiningDialog;
