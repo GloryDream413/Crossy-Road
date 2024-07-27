@@ -397,10 +397,7 @@ function GameScreen(props) {
 
   return (
     <>
-
-
       {gameMode == 2 &&
-
         <button
           style={{
             position: 'absolute',

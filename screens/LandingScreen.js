@@ -36,8 +36,9 @@ import GameContext from '../context/GameContext';
 import ServerListDialog from './ServerListDialog';
 import { globalMap } from "../global/globalMap";
 import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
-import JoiningDialog from './JoiningDialog';
 import { Linking } from 'react-native';
+import JoiningDialog from './JoiningDialog';
+import HighScoreDialog from './HighScore';
 
 // Global variables : MBC-on mobile responsive
 // export const FRONTEND_URL = "http://192.168.140.49:19006";
@@ -83,6 +84,7 @@ const LandingScreen = () => {
 
     const [roomPath, setRoomPath] = useState(FRONTEND_URL);
     const [openRoom, setOpenRoom] = useState(false);
+    const [openHighScore, setOpenHighScore] = useState(false);
     const [serverId, setServerId] = useState('');
 
     // For the landing page GUI
@@ -132,6 +134,7 @@ const LandingScreen = () => {
             }
             if (data.cmd == "GOT_JOINED_TO_SERVER") {
                 // window.alert("setRole('server');");
+                console.log("JOined : ", data);
                 setRole('server');
                 setGameMode(2);
                 setContextGameMap(data.globalMap);
@@ -169,6 +172,10 @@ const LandingScreen = () => {
                 opened={openRoom}
                 serverId={serverId}
                 onClose={setOpenRoom}
+            />
+            <HighScoreDialog
+                opened={openHighScore}
+                onClose={setOpenHighScore}
             />
 
             {createStars()}
@@ -239,6 +246,10 @@ const LandingScreen = () => {
 
                         }} >Join Server
                         </button>}
+
+                    <button className="decoration-button" onClick={() => {
+                        setOpenHighScore(true);
+                    }}>High Scores</button>
 
                     <button className="decoration-button" onClick={() => {
                         // Creating the room

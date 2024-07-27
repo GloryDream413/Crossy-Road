@@ -182,13 +182,13 @@ function GameOver({ ...props }) {
 
 
 
-      {/* 
+      
       <Footer
         style={{ paddingLeft: left || 4, paddingRight: right || 4 }}
         showSettings={props.showSettings}
         setGameState={props.setGameState}
         navigation={props.navigation}
-      /> */}
+      />
     </View>
   );
 }

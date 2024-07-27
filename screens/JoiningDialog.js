@@ -168,11 +168,13 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
             if (serverId == "") {
               // navigation.navigate("GameScreen_2");
 
-              socket.emit('message', JSON.stringify({
-                cmd: 'START_GAME',
-                msg: "Let's start game!",
-                role: 'server'
-              }));
+              if (clientName != "waiting...") {
+                socket.emit('message', JSON.stringify({
+                  cmd: 'START_GAME',
+                  msg: "Let's start game!",
+                  role: 'server'
+                }));
+              }
 
             } else {
               // window.alert(role);

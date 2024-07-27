@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { LayoutAnimation, Share, StyleSheet, View } from 'react-native';
 import { isAvailableAsync } from 'expo-sharing';
 
+import GameContext from '../../context/GameContext';
 import Colors from '../../src/Colors';
 import Images from '../../src/Images';
 import State from '../../src/state';
 import Button from '../Button';
+
+import { useNavigation } from "@react-navigation/native";
 
 async function shareAsync() {
   await Share.share(
@@ -29,6 +32,20 @@ export default function Footer({ style, showSettings, setGameState, navigation }
 
   const [canShare, setCanShare] = useState(true);
 
+  const { socket, gameMode } = React.useContext(GameContext);
+
+  const gotoMenu = () => {
+    window.alert("haa:" + gameMode);
+    if (gameMode == 2) {
+
+      socket.emit('message', JSON.stringify({
+        cmd: 'END_GAME',
+      }));
+    } else {
+      navigation.navigate("LandingScreen");
+    }
+  };
+
   useEffect(() => {
     isAvailableAsync().then(setCanShare).catch(() => { });
   }, []);
@@ -37,7 +54,34 @@ export default function Footer({ style, showSettings, setGameState, navigation }
 
   return (
     <View style={[styles.container, style]}>
-      <Button
+
+      {/* MBC- */}
+
+      {/* <button
+        style={{
+          // position: 'absolute',
+          borderRadius: '50px',
+          padding: '10px 20px',
+          background: 'linear-gradient(45deg, #4CAF50, #2196F3)',
+          border: '2px solid #333',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          zIndex: 2000,
+          right: '30px',
+          top: '30px',
+          cursor: 'pointer',
+          fontSize: '24px',
+          color: '#fff',
+          fontWeight: 'bold',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          transition: 'background 0.3s, transform 0.2s',
+        }}
+        onClick={gotoMenu}
+      >
+        Back to Menu
+      </button> */}
+
+      {/* <Button
         onPress={() => {
           showSettings()
         }}
@@ -48,21 +92,21 @@ export default function Footer({ style, showSettings, setGameState, navigation }
         onPress={shareAsync}
         imageStyle={[styles.button, { marginRight: 4, aspectRatio: 1.9 }]}
         source={Images.button.share}
-      />}
-      <Button
+      />} */}
+      {/* <Button
         onPress={() => {
           setGameState(State.Game.none);
         }}
         imageStyle={[styles.button, { marginLeft: canShare ? 4 : 0, aspectRatio: 1.9 }]}
         source={Images.button.long_play}
-      />
-      <Button
+      /> */}
+      {/* <Button
         onPress={() => {
           console.log('Game Center'); //TODO: Add GC
         }}
         imageStyle={[styles.button, { aspectRatio: 1.25 }]}
         source={Images.button.rank}
-      />
+      /> */}
     </View>
   );
 
