@@ -48,36 +48,36 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
+    <GameProvider>
       <AssetLoading>
         <SafeAreaProvider>
-          <GameProvider>
-            <NavigationContainer>
-              <Stack.Navigator>
+          <NavigationContainer>
+            <Stack.Navigator>
 
-                {/* Landing Page */}
-                <Stack.Screen name="LandingScreen" component={LandingScreen}
-                  options={{ headerShown: false }} />
+              {/* Landing Page */}
+              <Stack.Screen name="LandingScreen" component={LandingScreen}
+                options={{ headerShown: false }} />
 
-                {/* // Single play on the local machine */}
-                <Stack.Screen name="GameScreen" component={() => {
-                  return <GameScreen gameMode={0} />;
-                }} options={{ headerShown: false }} />
+              {/* // Single play on the local machine */}
+              <Stack.Screen name="GameScreen" component={() => {
+                return <GameScreen gameMode={0} />;
+              }} options={{ headerShown: false }} />
 
-                {/* // Two players on the local machine */}
-                <Stack.Screen name="GameScreen_1" component={() => {
-                  return <GameScreen gameMode={1} />;
-                }} options={{ headerShown: false }} />
+              {/* // Two players on the local machine */}
+              <Stack.Screen name="GameScreen_1" component={() => {
+                return <GameScreen gameMode={1} />;
+              }} options={{ headerShown: false }} />
 
-                {/* // Two players via network */}
-                <Stack.Screen name="GameScreen_2" component={() => {
-                  return <GameScreen gameMode={2} />;
-                }} options={{ headerShown: false }} />
+              {/* // Two players via network */}
+              <Stack.Screen name="GameScreen_2" component={() => {
+                return <GameScreen gameMode={2} />;
+              }} options={{ headerShown: false }} />
 
-              </Stack.Navigator>
-            </NavigationContainer>
-          </GameProvider>
+            </Stack.Navigator>
+          </NavigationContainer>
         </SafeAreaProvider>
       </AssetLoading>
+    </GameProvider>
 
   );
 }

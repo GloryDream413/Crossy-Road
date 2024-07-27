@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import {
   Animated,
   Dimensions,
@@ -22,22 +22,38 @@ const halfScreenHeight = - screenHeight / 2;
 let hasShownTitle = false;
 
 function Screen(props) {
-  const { setCharacter, character, gameMode, role, socket } = React.useContext(GameContext);
+
+  const {
+    // set the socket to the context
+    socket, setSocket,
+    // set gameMode to the context
+    gameMode, setGameMode,
+    // set the globalKepMap to the context : MBC-on update
+    keyMap_Server, setKeyMap_Server,
+    // set the role to the context : MBC-on on update
+    role, setRole,
+    // set the global map to the context 
+    contextGameMap, setContextGameMap } = React.useContext(GameContext);
+
+  // const { setCharacter, character, gameMode, role, socket } = React.useContext(GameContext);
   const animation = new Animated.Value(0);
 
-  const handleSocketStartGame = (data) => {
-    props.onPlay();
-  }
-
-  socket.on('START_PLAY_GAME_APPROVED', handleSocketStartGame);
+  useEffect(() => {
+    const handleSocketPlayGame = (data) => {
+      // window.alert("I will play as a ", data.role);
+      props.onPlay();
+    }
+  
+    socket.on('PLAY_GAME_APPROVED', handleSocketPlayGame);
+  },[])
 
   React.useEffect(() => {
     function onKeyUp({ keyCode }) {
       if ([32].includes(keyCode)) {
         if (gameMode == 2) {
+          // window.alert("play game :", role);
           socket.emit('message', JSON.stringify({
-            cmd: 'START_PLAY_GAME',
-            msg: "Let's start game!",
+            cmd: 'PLAY_GAME',
             role: role
           }));
         } else {

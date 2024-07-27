@@ -64,6 +64,7 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
 
       ></img>
 
+      {/* if this is the server */}
       {serverId == "" &&
         <View style={styles.players}>
           <View style={styles.player1}>
@@ -102,6 +103,7 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
         </View>
       }
 
+      {/* if this is the client */}
       {serverId != "" &&
         <View style={styles.players}>
 
@@ -120,11 +122,8 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
                 width: '200px', borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)'
               }}></img>
           </View>
-
-
         </View>
       }
-
 
       <View style={styles.linkPad}>
         <input style={{ padding: '0.5rem', margin: '1rem', flex: 1, border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f5f5f5', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', outline: 'none', fontSize: '1rem', color: '#333', transition: 'box-shadow 0.3s, border-color 0.3s', lineHeight: '1.5' }}
@@ -135,7 +134,7 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
         <button className="decoration-button" onClick={() => {
           navigator.clipboard.writeText(roomPath)
             .then(() => {
-              // window.alert("copied");
+              // window.alert(roomPath);
             })
             .catch(err => {
               window.alert("error link");
@@ -144,6 +143,29 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
         {/* <button className="decoration-button" onClick={() => {
         }} >Cancel</button> */}
       </View>
+
+      <View style={styles.startPad}>
+        <button className="decoration-button"
+          style={{ width: '100%' }}
+          onClick={() => {
+            if (serverId == "") {
+              // navigation.navigate("GameScreen_2");
+
+              socket.emit('message', JSON.stringify({
+                cmd: 'START_GAME',
+                msg: "Let's start game!",
+                role: 'server'
+              }));
+
+            } else {
+              // window.alert(role);
+              // window.alert("Only the server can start game");
+            }
+          }}
+        // disabled={serverId!=""}
+        >&nbsp;START NOW&nbsp;</button>
+      </View>
+
     </View>
   );
 };
@@ -221,7 +243,18 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     margin: '1rem',
-    padding: '2rem'
+    marginBottom: '0px',
+    paddingLeft: '2rem',
+    paddingRight: '2rem'
+  },
+
+  startPad: {
+    display: 'flex',
+    flexDirection: 'row',
+    margin: '1rem',
+    paddingLeft: '2rem',
+    paddingRight: '2rem',
+    paddingBottom: '2rem'
   }
 });
 

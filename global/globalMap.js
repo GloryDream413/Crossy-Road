@@ -36,4 +36,4 @@ const initGlobalMap = () => {
 
 // Call the function to initialize globalMap
 export const globalMap = initGlobalMap();
-console.log(globalMap);
+console.log("GLOBAL MAP::::::::::::::", globalMap);

@@ -2,7 +2,8 @@ import { createContext } from 'react';
 // import { keyMap_1 } from '../global/keyMap';
 
 export default createContext({
-    character: 'brent', setCharacter() { }, highscore: 0, setHighscore() { },
+    character: 'brent', setCharacter() { }, 
+    highscore: 0, setHighscore() { },
     gameMode: 1,
     contextGameMap : [],
     setContextGameMap() {},

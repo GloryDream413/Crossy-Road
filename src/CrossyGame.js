@@ -87,7 +87,7 @@ export class CrossyScene extends Scene {
   };
 
   rumble = () => {
-    Vibration.vibrate();
+    // Vibration.vibrate();
 
     TweenMax.to(this.position, 0.2, {
       x: 0,
@@ -116,6 +116,13 @@ export class CrossyCamera extends OrthographicCamera {
     this.top = height * scale;
     this.bottom = -(height * scale);
     this.zoom = 300;
+
+    console.log("Update Scale !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! :");
+    console.log("left:", this.left);
+    console.log("right:", this.right);
+    console.log("top:", this.top);
+    console.log("bottom:", this.bottom);
+
     this.updateProjectionMatrix();
   };
 }

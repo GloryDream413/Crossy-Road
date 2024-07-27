@@ -95,8 +95,8 @@ export default function GameProvider({ children }) {
         },
         keyMap_Client,
         setKeyMap_Client: (_newKeyMap) => {
-          setKeyMap_Client(_newKeyMap),
-            cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
+          setKeyMap_Client(_newKeyMap);
+          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
         },
         socket,
         setSocket: (_socket) => {

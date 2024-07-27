@@ -1,15 +1,37 @@
-import { GLView } from "expo-gl";
-import React, { Component, useContext } from "react";
-import {
-  Animated,
-  Dimensions,
-  StyleSheet,
-  Platform,
-  Vibration,
-  View,
-  useColorScheme,
-} from "react-native";
+/********************************************************************** The Road to Valhalla! ************************************************************************
+ *                                                                                                                                                                   *
+ *  📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌           *
+ *  📌                                                                                                                                                  📌         *
+ *  📌                                                                                                                                                  📌        *
+ *  📌     📌            📌    📌📌         📌           📌       📌         📌📌        📌             📌                      📌📌             📌        *
+ *  📌      📌          📌    📌  📌        📌           📌       📌        📌  📌       📌             📌                     📌  📌            📌       *
+ *  📌       📌        📌    📌    📌       📌           📌       📌       📌    📌      📌             📌                    📌    📌           📌       *
+ *  📌        📌      📌    📌      📌      📌           📌       📌      📌      📌     📌             📌                   📌      📌          📌       *
+ *  📌         📌    📌    📌📌📌📌📌     📌            📌📌📌📌📌    📌📌📌📌📌    📌              📌                  📌📌📌📌📌         📌       *
+ *  📌          📌  📌    📌          📌    📌           📌       📌    📌         📌   📌              📌                 📌          📌        📌       *
+ *  📌           📌📌    📌            📌   📌           📌       📌   📌           📌  📌              📌                📌            📌       📌       *
+ *  📌            📌    📌              📌  📌📌📌📌📌 📌        📌  📌            📌 📌📌📌📌📌    📌📌📌📌📌📌   📌              📌      📌       *
+ *  📌                                                                                                                                                  📌      *
+ *  📌                                                                                                                                                  📌      *
+ *  📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌📌      *
+ *                                                                                                                                                             *
+ *  Project Type  : CrossyGame with NFT management                                                                                                            *
+ *   Project ID   : 2024-2                                                                                                                                   *
+ *   Client Info  : Private                                                                                                                                 *
+ *    Developer   : Rothschild (Nickname)                                                                                                                  *
+ *   Source Mode  : 100% Private                                                                                                                          *
+ *   Description  : CrossyGame project with NFT as a service.                                                                                            *
+ *  Writing Style : P0413-K0408-K1206                                                                                                                   *
+ *                                                                                                                                                     *
+ ********************************************************************** The Road to Valhalla! *********************************************************
+ */
 
+// Sample Libraries
+import React, { Component, useContext } from "react";
+import { GLView } from "expo-gl";
+import { Animated, Dimensions, StyleSheet, Platform, Vibration, View, useColorScheme, } from "react-native";
+
+// Personal informations MBC-
 import GestureRecognizer, { swipeDirections } from "../components/GestureView";
 import Score from "../components/ScoreText";
 import Engine from "../src/GameEngine";
@@ -18,25 +40,24 @@ import GameOverScreen from "./GameOverScreen";
 import HomeScreen from "./HomeScreen";
 import SettingsScreen from "./SettingsScreen";
 import GameContext from "../context/GameContext";
-
-import { keyMap_None, keyMap_1, keyMap_2, keyMap_Both } from "../global/keyMap";
-import { globalMap } from "../global/globalMap";
-
 import { useNavigation } from "@react-navigation/native";
 
+// Global variables : MBC-on mobile responsive
+import { keyMap_None, keyMap_1, keyMap_2, keyMap_Both } from "../global/keyMap";
+import { globalMap } from "../global/globalMap";
 
 
 const DEBUG_CAMERA_CONTROLS = false;
 class Game extends Component {
+  
   constructor(props) {
-    // 
     super(props);
 
-    console.log("~~~~~~~~~~~~~~~~~~~~~ : ", props.newGlobalMap);
-
-    this.newGlobalMap = props.newGlobalMap;
     this.gameMode = props.gameMode;
-
+    this.newGlobalMap = props.newGlobalMap;
+    this.keyMap = props.keyMap;
+    this.character = props.character;
+    this.isDarkMode = props.isDarkMode;
   }
 
   /// Reserve State for UI related updates...
@@ -59,6 +80,7 @@ class Game extends Component {
     if (this.engine && nextProps.character !== this.props.character) {
       this.engine._hero.setCharacter(nextProps.character);
     }
+    // Previous commented code and it MBC-
     // if ((this.state.gameState === State.Game.playing || this.state.gameState === State.Game.paused) && nextProps.isPaused !== this.props.isPaused) {
     //   this.setState({ gameState: nextProps.isPaused ? State.Game.paused : State.Game.playing })
     // }
@@ -94,6 +116,7 @@ class Game extends Component {
     }).start();
   };
 
+  // This is the part for starting the game
   updateWithGameState = (gameState) => {
     if (!gameState) throw new Error("gameState cannot be undefined");
 
@@ -143,6 +166,7 @@ class Game extends Component {
   }
 
   async componentDidMount() {
+    // Previous Code MBC-
     // AudioManager.sounds.bg_music.setVolumeAsync(0.05);
     // await AudioManager.playAsync(
     //   AudioManager.sounds.bg_music, true
@@ -183,7 +207,7 @@ class Game extends Component {
   }
 
   newScore = () => {
-    Vibration.cancel();
+    // Vibration.cancel();
     // this.props.setGameState(State.Game.playing);
     this.setState({ score: 0 });
     this.engine.init();
@@ -191,16 +215,16 @@ class Game extends Component {
 
   onSwipe = (gestureName) => this.engine.moveWithDirection(gestureName);
 
-  renderGame = (keyMap, globalMap, gameMode) => {
+  renderGame = () => {
     if (!this.state.ready) return;
 
     return (
       <GestureView
         pointerEvents={DEBUG_CAMERA_CONTROLS ? "none" : undefined}
         onStartGesture={this.engine.beginMoveWithDirection}
-        keyMap={keyMap}
-        gameMode={gameMode}
-        globalMap={globalMap}
+        keyMap={this.keyMap}
+        gameMode={this.gameMode}
+        globalMap={this.globalMap}
         onSwipe={this.onSwipe}
       >
         <GLView
@@ -255,7 +279,7 @@ class Game extends Component {
   }
 
   render() {
-    const { keyMap, globalMap, gameMode, isDarkMode, isPaused } = this.props;
+    const { isPaused } = this.props;
 
     return (
       <View
@@ -264,7 +288,7 @@ class Game extends Component {
           // StyleSheet.absoluteFill,
           {
             flex: 1, backgroundColor: "#0f0f0f", padding: '20px',
-            width: gameMode > 0 ? '50%' : '100%',
+            width: this.gameMode > 0 ? '50%' : '100%',
             height: '100%'
           },
           Platform.select({
@@ -277,7 +301,7 @@ class Game extends Component {
         <Animated.View
           style={{ flex: 1, opacity: this.transitionScreensValue }}
         >
-          {this.renderGame(keyMap, globalMap, gameMode)}
+          {this.renderGame()}
         </Animated.View>
 
         <Score
@@ -318,6 +342,11 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
     directionalOffsetThreshold: 80,
   };
 
+  React.useEffect(() => {
+    // window.alert('asdf' + role);
+  }, []);
+
+
   return (
     <GestureRecognizer
       onResponderGrant={() => {
@@ -340,112 +369,35 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
 
 function GameScreen(props) {
   const scheme = useColorScheme();
-
-  const { socket, character, contextGameMap, role, setRole } = React.useContext(GameContext);
-  console.log("NEW GAME WITH THE NEW MAP : ", contextGameMap);
-
-  const gameMode = props.gameMode;
-
   const navigation = useNavigation();
 
-  const handleSocketEndGame = (data) => {
-    if (data.cmd == "END_GAME") {
-      navigation.navigate("LandingScreen");
-    }
-  }
+  const { gameMode, socket, character, contextGameMap, role, setRole } = React.useContext(GameContext);
 
-  socket.on('ROOM', handleSocketEndGame);
-
-  const gotoMenu = () => {
-    if (gameMode == 2) {
-
-      socket.emit('message', JSON.stringify({
-        cmd: 'END_GAME',
-      }));
-    } else {
-      navigation.navigate("LandingScreen");
-    }
-  };
-
-  // const appState = useAppState();
+  const server_keyMaps = [keyMap_1, keyMap_None];
+  const client_keyMaps = [keyMap_None, keyMap_2];
 
   return (
     <>
-      {gameMode == 2 &&
-
-        <button
-          style={{
-            position: 'absolute',
-            borderRadius: '50px',
-            padding: '10px 20px',
-            background: role === 'server' ? 'linear-gradient(45deg, #9C27B0, #673AB7)' : 'linear-gradient(45deg, #000, #000)',
-            border: '2px solid #333',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            zIndex: 2000,
-            right: '300px',
-            top: '30px',
-            cursor: 'pointer',
-            fontSize: '24px',
-            color: '#fff',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-            transition: 'background 0.3s, transform 0.2s',
-          }}
-        >
-          {role}
-        </button>
-      }
-      <button
-        style={{
-          position: 'absolute',
-          borderRadius: '50px',
-          padding: '10px 20px',
-          background: 'linear-gradient(45deg, #4CAF50, #2196F3)',
-          border: '2px solid #333',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          zIndex: 2000,
-          right: '30px',
-          top: '30px',
-          cursor: 'pointer',
-          fontSize: '24px',
-          color: '#fff',
-          fontWeight: 'bold',
-          textTransform: 'uppercase',
-          letterSpacing: '1px',
-          transition: 'background 0.3s, transform 0.2s',
-        }}
-        onClick={gotoMenu}
-      >
-        Back to Menu
-      </button>
-
-
-      {/* // Mono Play */}
-      {gameMode == 0 && <Game {...props} gameMode={gameMode} newGlobalMap={globalMap} keyMap={keyMap_Both} character={character} isDarkMode={scheme === "dark"} />}
-
-      {/* Two players in the local */}
-      {gameMode == 1 && <div style={{ flex: 1, flexDirection: 'row' }}>
-        <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
-          <Game {...props}
-            newGlobalMap={globalMap} gameMode={gameMode} keyMap={keyMap_1} character={character} isDarkMode={scheme === "dark"} />
-        </div>
-        <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
-          <Game {...props}
-            newGlobalMap={globalMap} gameMode={gameMode} keyMap={keyMap_2} character={character} isDarkMode={scheme === "dark"} />
-        </div>
-      </div>}
-
       {/* Multi players via network */}
+      
       {gameMode == 2 && (
         <div style={{ flex: 1, flexDirection: 'row' }}>
           <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
             <Game {...props}
-              newGlobalMap={contextGameMap} gameMode={gameMode} keyMap={role == 'server' ? keyMap_1 : keyMap_None} character={character} isDarkMode={scheme === "dark"} />
+              gameMode={gameMode}
+              newGlobalMap={contextGameMap}
+              keyMap={role == 'server' ? server_keyMaps[0] : client_keyMaps[0]}
+              character={character}
+              isDarkMode={scheme === "dark"} />
           </div>
+
           <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
             <Game {...props}
-              newGlobalMap={contextGameMap} gameMode={gameMode} keyMap={role == 'client' ? keyMap_2 : keyMap_None} character={character} isDarkMode={scheme === "dark"} />
+              gameMode={gameMode}
+              newGlobalMap={contextGameMap}
+              keyMap={role == 'server' ? server_keyMaps[1] : client_keyMaps[1]}
+              character={character}
+              isDarkMode={scheme === "dark"} />
           </div>
         </div>
       )

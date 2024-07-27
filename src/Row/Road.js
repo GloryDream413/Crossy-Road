@@ -35,12 +35,12 @@ export default class Road extends Object3D {
     let speed = Math.random() * 0.06 + 0.02;
     let numCars = Math.floor(Math.random() * 2) + 1;
 
-    console.log("speed : ", speed);
-    console.log("numCars : ", numCars);
+    // console.log("speed : ", speed);
+    // console.log("numCars : ", numCars);
 
 
-    console.log(this.randValArray.length);
-    console.log(this.randValArray[0] / 100 + 0.02);
+    // console.log(this.randValArray.length);
+    // console.log(this.randValArray[0] / 100 + 0.02);
 
     numCars = this.randValArray.length
     speed = this.randValArray[0] / 1000 + 0.02

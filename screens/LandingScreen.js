@@ -40,6 +40,7 @@ import JoiningDialog from './JoiningDialog';
 import { Linking } from 'react-native';
 
 // Global variables : MBC-on mobile responsive
+// export const FRONTEND_URL = "http://192.168.140.49:19006";
 export const FRONTEND_URL = "http://localhost:19006";
 export const SERVER_URL = "http://localhost:7000";
 export const socket = io(SERVER_URL);
@@ -63,7 +64,6 @@ const LandingScreen = () => {
 
     // Initial hook functions 
     useEffect(() => {
-        setRole('server');
         setSocket(socket);
         Linking.getInitialURL().then(url => {
             if (url) {
@@ -72,6 +72,7 @@ const LandingScreen = () => {
                 if (_serverId) {
                     setServerId(_serverId);
                 }
+                setRoomPath(FRONTEND_URL + "/?" + _serverId);
             }
         }).catch(err => console.error('An error occurred', err));
     }, []);
@@ -108,6 +109,7 @@ const LandingScreen = () => {
         const handleSocketMessage = (data) => {
             if (data.cmd === "ROOM_CREATED") {
                 setRole('server');
+                setGameMode(2);
                 setRoomPath(FRONTEND_URL + "/?" + data.name);
                 setOpenRoom(true);
             }
@@ -117,14 +119,23 @@ const LandingScreen = () => {
             console.log("Received : ", data);
 
             if (data.cmd == "GOT_JOINED_TO_CLIENT") {
+                
                 setRole('client');
+                setGameMode(2);
+                setContextGameMap(data.globalMap);
                 setOtherName(data.player1);
                 setOpenRoom(true);
-
             }
             if (data.cmd == "GOT_JOINED_TO_SERVER") {
+                // window.alert("setRole('server');");
                 setRole('server');
+                setGameMode(2);
+                setContextGameMap(data.globalMap);
                 setOtherName(data.player2);
+            }
+            if (data.cmd == "START_GAME_APPROVED") {
+                // window.alert("ROLE:", role);
+                navigation.navigate("GameScreen_2");
             }
         }
 
@@ -231,6 +242,7 @@ const LandingScreen = () => {
                             window.alert("Enter UserName !");
                             return;
                         }
+                        setOtherName("waiting...");
 
                         socket.emit('message', JSON.stringify({
                             cmd: 'CREATE_ROOM',

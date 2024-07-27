@@ -33,11 +33,19 @@ const normalizeAngle = (angle) => {
 export default class Engine {
   updateScale = () => {
     const { width, height, scale } = Dimensions.get("window");
+    let _width = width;
+
+    console.log("CCCCCCCCCCCCCCCCCCCamera info");
+    console.log("width:", _width);
+    console.log("height:", height);
+    console.log("scale:", scale);
+
+
     if (this.camera) {
-      this.camera.updateScale({ width, height, scale });
+      this.camera.updateScale({ width, height, scale});
     }
     if (this.renderer) {
-      this.renderer.setSize(width * scale, height * scale);
+      this.renderer.setSize(_width * scale, height * scale);
     }
   };
 
@@ -53,13 +61,13 @@ export default class Engine {
     this.scene.worldWithCamera.position.z = -startingRow;
 
     this.updateScale();
-    console.log("Engine :: setupGame () ==> GLOBAL MAP : ",globalMap)
+    console.log("Engine :: setupGame () ==> GLOBAL MAP : ", globalMap)
 
     this.gameMap = new CrossyGameMap({
       heroWidth: 0.7,
       scene: this.scene,
       onCollide: this.onCollide,
-      newGlobalMap : globalMap
+      newGlobalMap: globalMap
     });
 
     this.camCount = 0;
@@ -123,7 +131,7 @@ export default class Engine {
       Math.max(
         -2,
         this.scene.world.position.x +
-          (this._hero.position.x - this.scene.world.position.x) * CAMERA_EASING
+        (this._hero.position.x - this.scene.world.position.x) * CAMERA_EASING
       )
     );
 
