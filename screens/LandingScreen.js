@@ -119,12 +119,16 @@ const LandingScreen = () => {
             console.log("Received : ", data);
 
             if (data.cmd == "GOT_JOINED_TO_CLIENT") {
-                
-                setRole('client');
-                setGameMode(2);
-                setContextGameMap(data.globalMap);
-                setOtherName(data.player1);
-                setOpenRoom(true);
+                if (data.state) {
+                    setRole('client');
+                    setGameMode(2);
+                    setContextGameMap(data.globalMap);
+                    setOtherName(data.player1);
+                    setOpenRoom(true);
+                } else {
+                    window.alert(data.reason);
+                }
+
             }
             if (data.cmd == "GOT_JOINED_TO_SERVER") {
                 // window.alert("setRole('server');");

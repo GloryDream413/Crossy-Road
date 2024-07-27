@@ -41,11 +41,28 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
   const navigation = useNavigation();
   const { socket, gameMode, keyMap_Client, setKeyMap_Client,
     role, setRole, contextGameMap, setContextGameMap, userNa } = React.useContext(GameContext);
+  const [clientName, setClientName] = useState(otherName);
+
+  useEffect(() => {
+    setClientName(otherName);
+  }, [otherName])
 
   // Deny everything on this condition
   if (!opened | !socket) {
     return null;
   }
+
+
+  const handleSocketEndRoom = (data) => {
+    if (data.who == "server") {
+      onClose(false);
+      navigation.navigate("LandingScreen");
+    } else if (data.who == 'client') {
+      setClientName("waiting...");
+    }
+  }
+
+  socket.on('END_ROOM', handleSocketEndRoom);
 
   return (
     <View style={styles.container}>
@@ -59,7 +76,7 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
         zIndex: 6000
       }}
         onClick={() => {
-          onClose(false);
+          socket.emit("message", JSON.stringify({ cmd: 'END_ROOM' }));
         }}
 
       ></img>
@@ -75,9 +92,9 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
               }}></img>
           </View>
 
-          {otherName == "waiting..." ?
+          {clientName == "waiting..." ?
             <View style={styles.player2}>
-              <h1>{otherName}</h1>
+              <h1>{clientName}</h1>
               <img
                 src={require("../assets/avatar/hourglass.png")}
                 style={{
@@ -92,7 +109,7 @@ const JoiningDialog = ({ onClose, opened, userName, otherName, roomPath, serverI
             </View>
             :
             <View style={styles.player1}>
-              <h1>{otherName}</h1>
+              <h1>{clientName}</h1>
               <img src={require("../assets/avatar/avatar_client.jpg")}
                 style={{
                   width: '200px', borderRadius: '50%', margin: '1rem', boxShadow: '10px 10px 10px rgba(255,0,0,0.4)'

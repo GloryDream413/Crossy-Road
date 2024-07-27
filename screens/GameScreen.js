@@ -49,7 +49,7 @@ import { globalMap } from "../global/globalMap";
 
 const DEBUG_CAMERA_CONTROLS = false;
 class Game extends Component {
-  
+
   constructor(props) {
     super(props);
 
@@ -376,13 +376,90 @@ function GameScreen(props) {
   const server_keyMaps = [keyMap_1, keyMap_None];
   const client_keyMaps = [keyMap_None, keyMap_2];
 
+  const handleSocketEndGame = (data) => {
+    if (data.cmd == "END_GAME") {
+      navigation.navigate("LandingScreen");
+    }
+  }
+
+  socket.on('ROOM', handleSocketEndGame);
+
+  const gotoMenu = () => {
+    if (gameMode == 2) {
+
+      socket.emit('message', JSON.stringify({
+        cmd: 'END_GAME',
+      }));
+    } else {
+      navigation.navigate("LandingScreen");
+    }
+  };
+
   return (
     <>
+
+
+      {gameMode == 2 &&
+
+        <button
+          style={{
+            position: 'absolute',
+            borderRadius: '50px',
+            padding: '10px 20px',
+            background: role === 'server' ? 'linear-gradient(45deg, #9C27B0, #673AB7)' : 'linear-gradient(45deg, #000, #000)',
+            border: '2px solid #333',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            zIndex: 2000,
+            right: '300px',
+            top: '30px',
+            cursor: 'pointer',
+            fontSize: '24px',
+            color: '#fff',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            transition: 'background 0.3s, transform 0.2s',
+          }}
+        >
+          {role}
+        </button>
+      }
+      <button
+        style={{
+          position: 'absolute',
+          borderRadius: '50px',
+          padding: '10px 20px',
+          background: 'linear-gradient(45deg, #4CAF50, #2196F3)',
+          border: '2px solid #333',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          zIndex: 2000,
+          right: '30px',
+          top: '30px',
+          cursor: 'pointer',
+          fontSize: '24px',
+          color: '#fff',
+          fontWeight: 'bold',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          transition: 'background 0.3s, transform 0.2s',
+        }}
+        onClick={gotoMenu}
+      >
+        Back to Menu
+      </button>
+
+
       {/* Multi players via network */}
-      
+      {gameMode == 0 && <Game {...props}
+        gameMode={gameMode}
+        newGlobalMap={globalMap}
+        keyMap={keyMap_Both}
+        character={character} isDarkMode={scheme === "dark"} />}
+
+
       {gameMode == 2 && (
         <div style={{ flex: 1, flexDirection: 'row' }}>
-          <div style={{ position: 'absolute', left: '0px', width: '50%', flex: 1 }}>
+          <div style={{ position: 'absolute', left: '0px', width: '50%', height: '100%', flex: 1 }}>
             <Game {...props}
               gameMode={gameMode}
               newGlobalMap={contextGameMap}
