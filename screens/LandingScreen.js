@@ -42,8 +42,8 @@ import HighScoreDialog from './HighScore';
 
 // Global variables : MBC-on mobile responsive
 // export const FRONTEND_URL = "http://192.168.140.49:19006";
-export const FRONTEND_URL = "https://andrewtate-mufasa.com";
-export const SERVER_URL = "https://andrewtate-mufasa.com";
+export const FRONTEND_URL = "https://valhalla.proskillowner.com";
+export const SERVER_URL = "https://valhalla.proskillowner.com";
 export const socket = io(SERVER_URL);
 
 // Landing Page component
