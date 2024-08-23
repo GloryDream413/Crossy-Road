@@ -110,7 +110,7 @@ const LoadingScreen = ({ path }) => {
                     <>
                         <Text style={{
                             fontFamily: myFont,
-                            fontSize : '20px',
+                            fontSize: '20px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'home' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -123,7 +123,7 @@ const LoadingScreen = ({ path }) => {
                         </Text>
                         <Text style={{
                             fontFamily: myFont,
-                            fontSize : '20px',
+                            fontSize: '20px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'guide' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -136,7 +136,7 @@ const LoadingScreen = ({ path }) => {
                         </Text>
                         <Text style={{
                             fontFamily: myFont,
-                            fontSize : '20px',
+                            fontSize: '20px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'leaderboard' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -145,13 +145,13 @@ const LoadingScreen = ({ path }) => {
                         </Text>
                         <Text style={{
                             fontFamily: myFont,
-                            fontSize : '20px',
+                            fontSize: '20px',
                             padding: '10px',
                             background: 'rgba(239, 88, 123, 1)',
                             boxShadow: '0px 3px 10px red',
                             borderRadius: '20px',
                             cursor: 'pointer',
-                            color : 'white'
+                            color: 'white'
                         }}>
                             New Game
                         </Text>
@@ -162,11 +162,14 @@ const LoadingScreen = ({ path }) => {
                         <View style={{
                             padding: '10px',
                             cursor: 'pointer',
-                            color: 'rgba(239, 88, 123, 1)',
+
                             zIndex: '5000'
                         }}
                             onClick={handleCloseMenu} >
-                            <Text style={{ color: 'white', fontFamily: myFont }}>Close</Text>
+                            <Text style={{
+                                fontFamily: myFont,
+                                color: 'rgba(239, 88, 123, 1)',
+                            }}>Close</Text>
                         </View> :
                         <View style={{
                             padding: '10px',
@@ -216,8 +219,8 @@ const LoadingScreen = ({ path }) => {
                         }}>
 
                         <Text style={{
-                            fontFamily : myFont,
-                            fontSize : '32px',
+                            fontFamily: myFont,
+                            fontSize: '32px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'home' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -231,8 +234,8 @@ const LoadingScreen = ({ path }) => {
                             Home
                         </Text>
                         <Text style={{
-                            fontFamily : myFont,
-                            fontSize : '32px',
+                            fontFamily: myFont,
+                            fontSize: '32px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'guide' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -244,8 +247,8 @@ const LoadingScreen = ({ path }) => {
                             How to Play
                         </Text>
                         <Text style={{
-                            fontFamily : myFont,
-                            fontSize : '32px',
+                            fontFamily: myFont,
+                            fontSize: '32px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'leaderboard' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -253,14 +256,14 @@ const LoadingScreen = ({ path }) => {
                             Leaderboard
                         </Text>
                         <Text style={{
-                            fontFamily : myFont,
-                            fontSize : '32px',
+                            fontFamily: myFont,
+                            fontSize: '32px',
                             padding: '10px',
                             background: 'rgba(239, 88, 123, 1)',
                             boxShadow: '0px 3px 10px red',
                             borderRadius: '20px',
                             cursor: 'pointer',
-                            color : 'white'
+                            color: 'white'
                         }}>
                             New Game
                         </Text>
