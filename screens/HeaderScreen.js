@@ -35,7 +35,7 @@ import { View, Text, Image, Platform, Dimensions } from 'react-native';
 const LoadingScreen = () => {
 
     /* ================================ For Mobile Responsive ===============================*/
-    
+
     const [evalWidth, setEvalWidth] = useState(768);
     const [isMobile, setIsMobile] = useState(Dimensions.get('window').width < evalWidth);
     const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
@@ -57,73 +57,74 @@ const LoadingScreen = () => {
     const navigation = useNavigation();
 
     // Personal variables
-    const [isLoading, setIsLoading] = useState(true);
-    const [loadingPercent, setLoadingPercent] = useState(1);
-    const [speed, setSpeed] = useState(1); // MBC- Change the speed to 1 on the devMode
-
-    useEffect(() => {
-        if (loadingPercent < 100) {
-            const intervalId = setInterval(() => {
-                setLoadingPercent(prev => {
-                    if (prev >= 99) {
-                        clearInterval(intervalId);
-                        return 100;
-                    }
-                    if (prev >= 95) return prev + 1;
-                    if (prev >= 90) return prev + 2;
-                    else if (prev >= 60) return prev + 3;
-                    else if (prev >= 10) return prev + 2;
-                    else return prev + 1;
-                });
-            }, speed);
-            return () => clearInterval(intervalId);
-        }
-    }, [])
-
-    useEffect(() => {
-        if (loadingPercent >= 100) {
-            setIsLoading(false);
-
-            setTimeout(() => {
-                navigation.navigate("LandingScreen");
-            }, 10); // MBC - this must be changed which shows the delay after loading
-        }
-    }, [loadingPercent]); // Monitor loadingPercent changes
 
     return (
         <View style={{
-            position: 'relative',
+            width: '100%',
+            height: '100px',
+            minHeight: '100px',
+            minHeight: '100px',
             display: 'flex',
-            flexDirection: 'column',
-            height: '100vh',
-            overflow: 'hidden',
+            flexDirection: 'row',
             background: 'black',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            borderBottom: '1px solid white',
+            zIndex: 5000,
         }}>
-            <Image source={require("../assets/crossy_logo.png")}
-                style={{ width: 300, height: 300 }}
-            />
-
-            <Text style={{
-                position: 'absolute',
-                textAlign: 'center',
-                right: '1rem',
-                bottom: '1rem',
-                fontSize: isPC ? '100px' : '72px',
-                left: isMobile ? '0px' : 'undefined',
-                fontWeight: '800',
-                padding: '5px',
-                fontWeight : '900',
-                color: 'rgba(253, 198, 211, 1)',
-                WebkitTextStroke: '2px rgba(239, 88, 123, 1)',
-                filter: 'drop-shadow(3px 5px 8px #ff0000)',
-                textShadow: '0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff00de, 0 0 30px #ff00de, 0 0 40px #ff00de'
-                // ...(isMobile ? { left: '0px' } : {}), 
+            <View style={{
+                width: '100px', height: '100px',
+                borderRight: '1px solid white',
             }}>
-                {loadingPercent} %
-            </Text>
+                <Image source={require("../assets/crossy_logo.png")}
+                    style={{
+                        width: 75, height: 75,
+                        margin: 'auto'
+                    }}
+                />
+            </View>
+            <View style={{
+                position: 'relative',
+                background: 'black',
+                color: 'white',
+                width: 'calc(100vw - 100px)',
+                display: 'flex', flexDirection: 'row',
+                justifyContent: 'end',
+                alignItems: 'center',
+                columnGap: '10px',
+                paddingRight: '20px'
+            }}>
+                {isPC &&
+                    <>
+                        <View style={{
+                            padding: '10px',
+                            cursor: 'pointer'
+                        }}>
+                            How to Play
+                        </View>
+                        <View style={{
+                            padding: '10px',
+                            cursor: 'pointer'
+                        }}>
+                            Leaderboard
+                        </View>
+                        <View style={{
+                            padding: '10px',
+                            background: 'rgba(239, 88, 123, 1)',
+                            boxShadow: '0px 3px 10px red',
+                            borderRadius: '20px',
+                            cursor: 'pointer'
+                        }}>
+                            New Game
+                        </View>
+                    </>
+                }
+                {isMobile && <View style={{
+                    padding: '10px',
+                    cursor: 'pointer'
+                }}>
+                    Menu
+                </View>}
+            </View>
+
         </View>
     );
 };

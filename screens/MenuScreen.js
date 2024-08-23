@@ -30,18 +30,16 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TextInput, Image, Platform, Dimensions, Linking } from 'react-native';
 
 // Personal informations 
 import GameContext from '../context/GameContext';
 import ServerListDialog from './ServerListDialog';
 import { globalMap } from "../global/globalMap";
 import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
+import { Linking } from 'react-native';
 import JoiningDialog from './JoiningDialog';
 import HighScoreDialog from './HighScore';
-import HeaderScreen from "./HeaderScreen";
-
-import { myFont } from '../global/myFont';
+import { View, Text, Image, Platform, Dimensions } from 'react-native';
 
 // Global variables : MBC-on mobile responsive
 export const FRONTEND_URL = "http://192.168.140.49:19006";
@@ -161,10 +159,14 @@ const LandingScreen = () => {
     }, []);
 
     return (
-        <View style={{
+        <div style={{
+            position: 'relative',
+            height: '100vh',
+            overflow: 'hidden',
+            background: 'black',
             display: 'flex',
-            flexDirection: 'column',
-            fontFamily: myFont
+            alignItems: 'center',
+            justifyContent: 'center',
         }}>
             <JoiningDialog
                 userName={userName}
@@ -179,93 +181,96 @@ const LandingScreen = () => {
                 onClose={setOpenHighScore}
             />
 
-            <HeaderScreen></HeaderScreen>
-
-            <View style={{
-                position: 'relative',
-                height: 'calc(100vh - 100px)',
-                background: 'black',
+            <div style={{
                 display: 'flex',
-                flexDirection: isPC ? 'row' : 'column',
+                flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'space-between',
+                justifyContent: 'center',
+                margin: 'auto',
             }}>
-                {isPC &&
-                    <View style={{
-                        width: '50%', height: '100%',
-                        display: 'flex',
-                        borderRight: '1px solid white'
-                    }}>
-                        <Image source={require("../assets/avatar/avatar_player1.png")}
-                            style={{
-                                width: '100%', height: '100%',
-                                margin: 'auto'
-                            }}
-                        />
-                    </View>
-                }
 
-                <View style={{
-                    position: 'relative',
+                <div>
+                    <h1 className='title'>The Road to Valhalla!</h1>
+                </div>
+                <div style={{
+                    background: 'rgba(0,0,255,0.4)',
+                    borderRadius: '1rem',
+                    padding: '1rem',
                     display: 'flex',
                     flexDirection: 'column',
-                    columnGap: '10px',
-                    width: '50%',
-                    textAlign: 'center',
-                    alignItems: 'center',
-                    // rowGap: '25px',
-                    padding : '25px'
+                    justifyContent: 'center'
                 }}>
-                    <Text style={{ color: 'white', fontSize: '24px', fontFamily: myFont }}>Welcome To</Text>
-                    <Text style={{
-                        color: 'white', fontSize: '72px',
-                        color: 'rgba(253, 198, 211, 1)',
-                        WebkitTextStroke: '2px rgba(239, 88, 123, 1)',
-                        filter: 'drop-shadow(3px 5px 8px #ff0000)',
-                        fontWeight: '900',
-                        textShadow: '0 0 5px #fff'
-                    }}>MOBBER</Text>
-
-                    <TextInput style={{
-                        padding: '0.5rem',
-                        flex: 1,
-                        border: '1px solid gray',
-                        borderRadius: '30px',
-                        background: 'transparent',
-                        marginTop: '20px',
-                        textAlign: 'center',
-                        lineHeight: '2',
-                        color: 'white'
-                    }}
-                        type="text" placeholder="Your Name"
-                        value={userName}
-                        onChange={(e) => {
-                            setUserName(e.target.value);
-                        }}
-                        autoFocus />
-                    <View style={{
-                        padding: '10px',
-                        background: 'rgba(239, 88, 123, 1)',
-                        boxShadow: '0px 3px 10px red',
-                        borderRadius: '20px',
-                        color: 'white',
-                        cursor: 'pointer',
-                        margin: '10px'
-                    }}>
-                        Enter Mobber
-                    </View>
-
-                </View>
-
-                {isMobile &&
-                    <Image source={require("../assets/avatar/avatar_player1.png")}
+                    <img src={serverId == "" ? require("../assets/avatar/avatar_server.jpg") : require("../assets/avatar/avatar_client.jpg")}
                         style={{
-                            width: '100%', height: '50%',
-                        }}
-                    />}
-            </View>
+                            borderRadius: '50%', margin: '1rem',
+                            boxShadow: serverId == "" ? '10px 10px 10px rgba(255,0,0,0.4)' : '10px 10px 10px rgba(0,2550,0.4)'
+                        }}></img>
+                    <div style={{
+                        display: "flex",
+                        flexDirection: 'row',
+                        color: 'white',
+                        fontSize: '1rem',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        margin: '1rem',
+                        height: '2.5rem'
+                    }}>
+                        <input style={{ padding: '0.5rem', flex: 1, border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f5f5f5', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', outline: 'none', fontSize: '1rem', color: '#333', transition: 'box-shadow 0.3s, border-color 0.3s', lineHeight: '1.5' }}
+                            type="text" placeholder="Enter your name"
+                            value={userName}
+                            onChange={(e) => {
+                                setUserName(e.target.value);
+                            }}
+                            autoFocus />
+                    </div>
 
-        </View >
+                    <button className="decoration-button" onClick={() => {
+                        if (userName !== "") {
+                            setGameMode(0);
+                            navigation.navigate("GameScreen");
+                        }
+                    }} >Play !</button>
+
+
+                    {serverId &&
+                        <button className="decoration-button" onClick={() => {
+                            if (userName == "") {
+                                window.alert("Enter UserName !");
+                                return;
+                            }
+
+                            socket.emit('message', JSON.stringify({
+                                cmd: 'JOIN_GAME',
+                                name: serverId,
+                                player2: userName
+                            }));
+
+                        }} >Join Server
+                        </button>}
+
+                    <button className="decoration-button" onClick={() => {
+                        setOpenHighScore(true);
+                    }}>High Scores</button>
+
+                    <button className="decoration-button" onClick={() => {
+                        // Creating the room
+                        if (userName == "") {
+                            window.alert("Enter UserName !");
+                            return;
+                        }
+                        setOtherName("waiting...");
+
+                        socket.emit('message', JSON.stringify({
+                            cmd: 'CREATE_ROOM',
+                            player1: userName,
+                            map: globalMap
+                        }));
+                    }}>Create Private Room</button>
+                </div>
+
+
+            </div>
+        </div>
     );
 };
 
@@ -363,44 +368,3 @@ const styleSheet = document.createElement('style');
 styleSheet.type = 'text/css';
 styleSheet.innerText = styles;
 document.head.appendChild(styleSheet);
-
-
-
-{/* 
-                        <button className="decoration-button" onClick={() => {
-                            if (userName !== "") {
-                                setGameMode(0);
-                                navigation.navigate("GameScreen");
-                            }
-                        }} >Play !</button> */}
-
-// {serverId &&
-//     <button className="decoration-button" onClick={() => {
-//         if (userName == "") {
-//             window.alert("Enter UserName !");
-//             return;
-//         }
-
-//         socket.emit('message', JSON.stringify({
-//             cmd: 'JOIN_GAME',
-//             name: serverId,
-//             player2: userName
-//         }));
-
-//     }} >Join Server
-//     </button>}
-
-// <button className="decoration-button" onClick={() => {
-//     // Creating the room
-//     if (userName == "") {
-//         window.alert("Enter UserName !");
-//         return;
-//     }
-//     setOtherName("waiting...");
-
-//     socket.emit('message', JSON.stringify({
-//         cmd: 'CREATE_ROOM',
-//         player1: userName,
-//         map: globalMap
-//     }));
-// }}>Create Private Room</button>
