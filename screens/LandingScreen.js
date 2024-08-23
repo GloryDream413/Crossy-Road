@@ -39,6 +39,7 @@ import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
 import { Linking } from 'react-native';
 import JoiningDialog from './JoiningDialog';
 import HighScoreDialog from './HighScore';
+import { View, Text, Image, Platform, Dimensions } from 'react-native';
 
 // Global variables : MBC-on mobile responsive
 export const FRONTEND_URL = "http://192.168.140.49:19006";
@@ -48,6 +49,25 @@ export const socket = io(SERVER_URL);
 
 // Landing Page component
 const LandingScreen = () => {
+
+    /* ================================ For Mobile Responsive ===============================*/
+
+    const [evalWidth, setEvalWidth] = useState(768);
+    const [isMobile, setIsMobile] = useState(Dimensions.get('window').width < evalWidth);
+    const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < evalWidth);
+            setIsPC(window.innerWidth >= evalWidth);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    /* ================================ For Mobile Responsive ===============================*/
 
     // Initial Variables
     const navigation = useNavigation();

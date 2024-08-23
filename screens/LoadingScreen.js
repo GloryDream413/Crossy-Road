@@ -34,10 +34,24 @@ import { View, Text, Image, Platform, Dimensions } from 'react-native';
 // Landing Page component
 const LoadingScreen = () => {
 
-    // const isMobile = Platform.OS !== 'web';
+    /* ================================ For Mobile Responsive ===============================*/
+    
     const [evalWidth, setEvalWidth] = useState(768);
-    const [isMobile, setIsMobile] = useState(Dimensions.get('window').width < evalWidth); // Example threshold for mobile
-    const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth); // Example threshold for mobile
+    const [isMobile, setIsMobile] = useState(Dimensions.get('window').width < evalWidth);
+    const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < evalWidth);
+            setIsPC(window.innerWidth >= evalWidth);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    /* ================================ For Mobile Responsive ===============================*/
 
     // Initial Variables
     const navigation = useNavigation();
@@ -45,19 +59,7 @@ const LoadingScreen = () => {
     // Personal variables
     const [isLoading, setIsLoading] = useState(true);
     const [loadingPercent, setLoadingPercent] = useState(1);
-    const [speed, setSpeed] = useState(100);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < evalWidth);
-            setIsPC(window.innerWidth >= evalWidth);
-            setWindowWidth(window.innerWidth);
-        };
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    const [speed, setSpeed] = useState(1); // MBC- Change the speed to 1 on the devMode
 
     useEffect(() => {
         if (loadingPercent < 100) {
@@ -67,21 +69,16 @@ const LoadingScreen = () => {
                         clearInterval(intervalId);
                         return 100;
                     }
-                    if (prev >= 95)
-                        return prev + 1;
-                    if (prev >= 90)
-                        return prev + 2;
-                    else if (prev >= 60)
-                        return prev + 3;
-                    else if (prev >= 10)
-                        return prev + 2;
-                    else
-                        return prev + 1;
+                    if (prev >= 95) return prev + 1;
+                    if (prev >= 90) return prev + 2;
+                    else if (prev >= 60) return prev + 3;
+                    else if (prev >= 10) return prev + 2;
+                    else return prev + 1;
                 });
             }, speed);
             return () => clearInterval(intervalId);
         }
-    }, []) 
+    }, [])
 
     useEffect(() => {
         if (loadingPercent >= 100) {
@@ -106,7 +103,7 @@ const LoadingScreen = () => {
             justifyContent: 'center',
         }}>
             <Image source={require("../assets/crossy_logo.png")}
-                style={{ width: '20%', height: 300 }}
+                style={{ width: 300, height: 300 }}
             />
 
             <Text style={{
