@@ -104,6 +104,7 @@ const LandingScreen = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [loadingPercent, setLoadingPercent] = useState(1);
     const [userName, setUserName] = useState("");
+    const [cUserName, setCUserName] = useState("");
     const [otherName, setOtherName] = useState("waiting...");
 
     const [roomPath, setRoomPath] = useState(FRONTEND_URL);
@@ -196,7 +197,7 @@ const LandingScreen = () => {
                         display: 'flex',
                         borderRight: '1px solid white'
                     }}>
-                        <Image source={require("../assets/avatar/avatar_player1.png")}
+                        <Image source={cUserName == "" ? require("../assets/avatar/avatar_player1.png") : require("../assets/avatar/avatar_player2.png")}
                             style={{
                                 width: '100%', height: '100%',
                                 margin: 'auto'
@@ -210,7 +211,7 @@ const LandingScreen = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     columnGap: '10px',
-                    width: '50%',
+                    width: isPC ? '50%' : '100%',
                     textAlign: 'center',
                     alignItems: 'center',
                     // rowGap: '25px',
@@ -218,7 +219,7 @@ const LandingScreen = () => {
                 }}>
                     <Text style={{ color: 'white', fontSize: '24px', fontFamily: myFont }}>Welcome To</Text>
                     <Text style={{
-                        color: 'white', fontSize: '72px',
+                        fontSize: '72px',
                         color: 'rgba(253, 198, 211, 1)',
                         WebkitTextStroke: '2px rgba(239, 88, 123, 1)',
                         filter: 'drop-shadow(3px 5px 8px #ff0000)',
@@ -226,39 +227,98 @@ const LandingScreen = () => {
                         textShadow: '0 0 5px #fff'
                     }}>MOBBER</Text>
 
-                    <TextInput style={{
-                        padding: '0.5rem',
-                        flex: 1,
-                        border: '1px solid gray',
-                        borderRadius: '30px',
-                        background: 'transparent',
-                        marginTop: '20px',
-                        textAlign: 'center',
-                        lineHeight: '2',
-                        color: 'white'
-                    }}
-                        type="text" placeholder="Your Name"
-                        value={userName}
-                        onChange={(e) => {
-                            setUserName(e.target.value);
-                        }}
-                        autoFocus />
-                    <View style={{
-                        padding: '10px',
-                        background: 'rgba(239, 88, 123, 1)',
-                        boxShadow: '0px 3px 10px red',
-                        borderRadius: '20px',
-                        color: 'white',
-                        cursor: 'pointer',
-                        marginTop : '20px'
-                    }}>
-                        Enter Mobber
-                    </View>
+                    {cUserName != "" ?
+                        <>
+                            <Text style={{ marginTop: '20px', color: 'white', fontSize: '24px', fontFamily: myFont }}>
+                                Hey, {cUserName} !
+                            </Text>
+                            <Text style={{ marginTop: '10px', color: 'white', fontSize: '18px', fontFamily: myFont }}>
+                                Choose your Game
+                            </Text>
+
+                            <View style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems : 'center',
+                                columnGap : '10px',
+                                marginTop : '25px'
+                            }}>
+                                <View style={{
+                                    padding: '10px',
+                                    background: 'rgba(239, 88, 123, 1)',
+                                    boxShadow: '0px 3px 10px red',
+                                    borderRadius: '20px',
+                                    color: 'white',
+                                    cursor: 'pointer',
+                                    marginTop: '20px',
+                                }}
+                                >
+                                    Play Single - P2E
+
+                                </View>
+
+                                <Text style={{ marginTop: '20px', color: 'gray', 
+                                    fontSize: '18px', fontFamily: myFont }}>
+                                    OR
+                                </Text>
+
+                                <View style={{
+                                    padding: '10px',
+                                    background: 'rgba(239, 88, 123, 1)',
+                                    boxShadow: '0px 3px 10px red',
+                                    borderRadius: '20px',
+                                    color: 'white',
+                                    cursor: 'pointer',
+                                    marginTop: '20px'
+                                }}
+                                >
+                                    Play Multi - PVP
+                                </View>
+                            </View>
+
+                        </>
+                        :
+                        <>
+                            <TextInput style={{
+                                padding: '0.5rem',
+                                flex: 1,
+                                border: '1px solid gray',
+                                borderRadius: '30px',
+                                background: 'transparent',
+                                marginTop: '20px',
+                                textAlign: 'center',
+                                lineHeight: '2',
+                                color: 'white'
+                            }}
+                                type="text" placeholder="Your Name"
+                                value={userName}
+                                onChange={(e) => {
+                                    setUserName(e.target.value);
+                                }}
+                                autoFocus />
+                            <View style={{
+                                padding: '10px',
+                                background: 'rgba(239, 88, 123, 1)',
+                                boxShadow: '0px 3px 10px red',
+                                borderRadius: '20px',
+                                color: 'white',
+                                cursor: 'pointer',
+                                marginTop: '20px'
+                            }}
+                                onClick={() => {
+                                    setCUserName(userName);
+                                }}
+                            >
+                                Enter Mobber
+                            </View>
+                        </>
+                    }
+
 
                 </View>
 
                 {isMobile &&
-                    <Image source={require("../assets/avatar/avatar_player1.png")}
+                    <Image source={cUserName == "" ? require("../assets/avatar/avatar_player1.png") : require("../assets/avatar/avatar_player2.png")}
                         style={{
                             width: '100%', height: '50%',
                         }}
