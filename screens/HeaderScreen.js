@@ -30,6 +30,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, Image, Platform, Dimensions } from 'react-native';
+import { myFont } from '../global/myFont';
 
 // Landing Page component
 const LoadingScreen = ({ path }) => {
@@ -102,12 +103,14 @@ const LoadingScreen = ({ path }) => {
                 display: 'flex', flexDirection: 'row',
                 justifyContent: 'end',
                 alignItems: 'center',
-                columnGap: '10px',
+                columnGap: '12px',
                 paddingRight: '20px'
             }}>
                 {isPC &&
                     <>
-                        <View style={{
+                        <Text style={{
+                            fontFamily: myFont,
+                            fontSize : '20px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'home' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -117,8 +120,10 @@ const LoadingScreen = ({ path }) => {
                             }}
                         >
                             Home
-                        </View>
-                        <View style={{
+                        </Text>
+                        <Text style={{
+                            fontFamily: myFont,
+                            fontSize : '20px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'guide' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -128,22 +133,28 @@ const LoadingScreen = ({ path }) => {
                             }}
                         >
                             How to Play
-                        </View>
-                        <View style={{
+                        </Text>
+                        <Text style={{
+                            fontFamily: myFont,
+                            fontSize : '20px',
                             padding: '10px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            color: path == 'leaderboard' ? 'rgba(239, 88, 123, 1)' : 'white',
                         }}>
                             Leaderboard
-                        </View>
-                        <View style={{
+                        </Text>
+                        <Text style={{
+                            fontFamily: myFont,
+                            fontSize : '20px',
                             padding: '10px',
                             background: 'rgba(239, 88, 123, 1)',
                             boxShadow: '0px 3px 10px red',
                             borderRadius: '20px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            color : 'white'
                         }}>
                             New Game
-                        </View>
+                        </Text>
                     </>
                 }
                 {isMobile &&
@@ -155,7 +166,7 @@ const LoadingScreen = ({ path }) => {
                             zIndex: '5000'
                         }}
                             onClick={handleCloseMenu} >
-                            Close
+                            <Text style={{ color: 'white', fontFamily: myFont }}>Close</Text>
                         </View> :
                         <View style={{
                             padding: '10px',
@@ -163,7 +174,7 @@ const LoadingScreen = ({ path }) => {
                             zIndex: '5000'
                         }}
                             onClick={handleOpenMenu} >
-                            Menu
+                            <Text style={{ color: 'white', fontFamily: myFont }}>Menu</Text>
                         </View>)
                 }
             </View>
@@ -204,7 +215,9 @@ const LoadingScreen = ({ path }) => {
                             letterSpacing: '3px'
                         }}>
 
-                        <View style={{
+                        <Text style={{
+                            fontFamily : myFont,
+                            fontSize : '32px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'home' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -216,8 +229,10 @@ const LoadingScreen = ({ path }) => {
                             }}
                         >
                             Home
-                        </View>
-                        <View style={{
+                        </Text>
+                        <Text style={{
+                            fontFamily : myFont,
+                            fontSize : '32px',
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'guide' ? 'rgba(239, 88, 123, 1)' : 'white',
@@ -227,22 +242,28 @@ const LoadingScreen = ({ path }) => {
                             }}
                         >
                             How to Play
-                        </View>
-                        <View style={{
+                        </Text>
+                        <Text style={{
+                            fontFamily : myFont,
+                            fontSize : '32px',
                             padding: '10px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            color: path == 'leaderboard' ? 'rgba(239, 88, 123, 1)' : 'white',
                         }}>
                             Leaderboard
-                        </View>
-                        <View style={{
+                        </Text>
+                        <Text style={{
+                            fontFamily : myFont,
+                            fontSize : '32px',
                             padding: '10px',
                             background: 'rgba(239, 88, 123, 1)',
                             boxShadow: '0px 3px 10px red',
                             borderRadius: '20px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            color : 'white'
                         }}>
                             New Game
-                        </View>
+                        </Text>
                     </View>
                 </>
             }
