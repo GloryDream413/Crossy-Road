@@ -214,7 +214,7 @@ const LandingScreen = () => {
                     textAlign: 'center',
                     alignItems: 'center',
                     // rowGap: '25px',
-                    padding : '25px'
+                    padding: '25px'
                 }}>
                     <Text style={{ color: 'white', fontSize: '24px', fontFamily: myFont }}>Welcome To</Text>
                     <Text style={{
@@ -272,135 +272,46 @@ const LandingScreen = () => {
 export default LandingScreen;
 
 
-// CSS styles for drawing the stars actively moving everywhere.
-const styles = `
-    .star {
-        position: absolute;
-        background-color: white;
-        border-radius: 50%;
-        width: 2px;
-        height: 2px;
-        animation: starAnimation 5s linear infinite;
-    }
-
-    @keyframes starAnimation {
-        0% {
-            transform: translate(0, 0) scale(1);
-            opacity: 1;
-        }
-        100% {
-            transform: translate(150vw, 150vh) scale(0.9);
-            opacity: 1;
-        }
-    }
-        
-    @keyframes spin {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    .title {
-        color : white;
-        font-size : 60px;
-        margin-bottom : 80px;
-        transition : all 2s;
-        transform : scale(1);
-        cursor : pointer;
-    }
-    
-    .title:hover{
-        transition : all 2s;
-        transform : scale(1.2);
-        cursor : pointer;
-    }
-
-    .decoration-button {
-        background-color: transparent;
-        border-radius : 1rem;
-        color: white;
-        margin : 1rem;
-        margin-top : 0.75rem;
-        margin-bottom : 0.75rem;
-        letter-spacing : 2px;
-        border: 2px solid white;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s;
-        height : 3rem;
-    }
-
-    .decoration-button:hover {
-        background-color: rgba(0,0,255,0.2);
-        color : white;
-        border : 2px solid green;
-        transition : 1s all;
-        transform : scale(1.1);
-    }
-
-    @keyframes glow {
-        0% {
-            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 60px #ff00de, 0 0 70px #ff00de;
-        }
-        100% {
-            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 60px #ff00de, 0 0 70px #ff00de, 0 0 80px #ff00de;
-        }
-    }
-
-    h1 {
-        color: white;
-        font-size: 40px;
-        animation: glow 1s infinite alternate;
-    }
-
-
-`;
-
-const styleSheet = document.createElement('style');
-styleSheet.type = 'text/css';
-styleSheet.innerText = styles;
-document.head.appendChild(styleSheet);
-
-
-
 {/* 
-                        <button className="decoration-button" onClick={() => {
-                            if (userName !== "") {
-                                setGameMode(0);
-                                navigation.navigate("GameScreen");
-                            }
-                        }} >Play !</button> */}
+// on click of play button 
+<button className="decoration-button" onClick={() => {
+    if (userName !== "") {
+        setGameMode(0);
+        navigation.navigate("GameScreen");
+    }
+}} >Play !</button> 
 
-// {serverId &&
-//     <button className="decoration-button" onClick={() => {
-//         if (userName == "") {
-//             window.alert("Enter UserName !");
-//             return;
-//         }
+// Join Server button
+{serverId &&
+    <button className="decoration-button" onClick={() => {
+        if (userName == "") {
+            window.alert("Enter UserName !");
+            return;
+        }
 
-//         socket.emit('message', JSON.stringify({
-//             cmd: 'JOIN_GAME',
-//             name: serverId,
-//             player2: userName
-//         }));
+        socket.emit('message', JSON.stringify({
+            cmd: 'JOIN_GAME',
+            name: serverId,
+            player2: userName
+        }));
 
-//     }} >Join Server
-//     </button>}
+    }} >Join Server
+    </button>}
 
-// <button className="decoration-button" onClick={() => {
-//     // Creating the room
-//     if (userName == "") {
-//         window.alert("Enter UserName !");
-//         return;
-//     }
-//     setOtherName("waiting...");
+// Create Private Room Button
+<button className="decoration-button" onClick={() => {
+    // Creating the room
+    if (userName == "") {
+        window.alert("Enter UserName !");
+        return;
+    }
+    setOtherName("waiting...");
 
-//     socket.emit('message', JSON.stringify({
-//         cmd: 'CREATE_ROOM',
-//         player1: userName,
-//         map: globalMap
-//     }));
-// }}>Create Private Room</button>
+    socket.emit('message', JSON.stringify({
+        cmd: 'CREATE_ROOM',
+        player1: userName,
+        map: globalMap
+    }));
+}}>Create Private Room</button>
+
+ */}
