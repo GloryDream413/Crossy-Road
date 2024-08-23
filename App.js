@@ -44,6 +44,7 @@ import ModelLoader from "./src/ModelLoader";
 import LandingScreen from "./screens/LandingScreen";
 import GuideScreen from "./screens/GuideScreen";
 import LoadingScreen from "./screens/LoadingScreen";
+import LeaderboardScreen from "./screens/LeaderboardScreen";
 
 // Global variables
 const Stack = createStackNavigator();
@@ -59,12 +60,14 @@ export default function App() {
               {/* LoadingPage Page */}
               <Stack.Screen name="LoadingScreen" component={LoadingScreen}
                 options={{ headerShown: false }} />
-              {/* Landing Page */}
 
               <Stack.Screen name="LandingScreen" component={LandingScreen}
                 options={{ headerShown: false }} />
                 
               <Stack.Screen name="GuideScreen" component={GuideScreen}
+                options={{ headerShown: false }} />
+                
+              <Stack.Screen name="LeaderboardScreen" component={LeaderboardScreen}
                 options={{ headerShown: false }} />
 
               {/* // Single play on the local machine */}

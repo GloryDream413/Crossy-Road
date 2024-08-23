@@ -140,7 +140,11 @@ const LoadingScreen = ({ path }) => {
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'leaderboard' ? 'rgba(239, 88, 123, 1)' : 'white',
-                        }}>
+                        }}
+                            onClick={() => {
+                                navigation.navigate("LeaderboardScreen");
+                            }}
+                        >
                             Leaderboard
                         </Text>
                         <Text style={{
@@ -252,7 +256,11 @@ const LoadingScreen = ({ path }) => {
                             padding: '10px',
                             cursor: 'pointer',
                             color: path == 'leaderboard' ? 'rgba(239, 88, 123, 1)' : 'white',
-                        }}>
+                        }}
+                            onClick={() => {
+                                navigation.navigate("LeaderboardScreen");
+                            }}
+                        >
                             Leaderboard
                         </Text>
                         <Text style={{
