@@ -32,7 +32,7 @@ import { useNavigation } from "@react-navigation/native";
 import { View, Text, Image, Platform, Dimensions } from 'react-native';
 
 // Landing Page component
-const LoadingScreen = () => {
+const LoadingScreen = ({ path }) => {
 
     /* ================================ For Mobile Responsive ===============================*/
 
@@ -109,8 +109,24 @@ const LoadingScreen = () => {
                     <>
                         <View style={{
                             padding: '10px',
-                            cursor: 'pointer'
-                        }}>
+                            cursor: 'pointer',
+                            color: path == 'home' ? 'rgba(239, 88, 123, 1)' : 'white',
+                        }}
+                            onClick={() => {
+                                navigation.navigate("LandingScreen");
+                            }}
+                        >
+                            Home
+                        </View>
+                        <View style={{
+                            padding: '10px',
+                            cursor: 'pointer',
+                            color: path == 'guide' ? 'rgba(239, 88, 123, 1)' : 'white',
+                        }}
+                            onClick={() => {
+                                navigation.navigate("GuideScreen");
+                            }}
+                        >
                             How to Play
                         </View>
                         <View style={{
@@ -184,24 +200,32 @@ const LoadingScreen = () => {
                             justifyContent: 'center',
                             rowGap: '50px',
                             alignItems: 'center',
-                            fontSize : '32px',
-                            letterSpacing : '3px'
+                            fontSize: '32px',
+                            letterSpacing: '3px'
                         }}>
 
                         <View style={{
                             padding: '10px',
                             cursor: 'pointer',
-                            color: 'rgba(253, 198, 211, 1)',
-                            WebkitTextStroke: '2px rgba(239, 88, 123, 1)',
+                            color: path == 'home' ? 'rgba(239, 88, 123, 1)' : 'white',
                             fontWeight: '900',
-                            textShadow: '0 0 1px #fff'
-                        }}>
+                        }}
+                            onClick={() => {
+                                navigation.navigate("LandingScreen");
+                                handleCloseMenu();
+                            }}
+                        >
                             Home
                         </View>
                         <View style={{
                             padding: '10px',
-                            cursor: 'pointer'
-                        }}>
+                            cursor: 'pointer',
+                            color: path == 'guide' ? 'rgba(239, 88, 123, 1)' : 'white',
+                        }}
+                            onClick={() => {
+                                navigation.navigate("GuideScreen");
+                            }}
+                        >
                             How to Play
                         </View>
                         <View style={{

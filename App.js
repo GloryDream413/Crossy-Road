@@ -42,6 +42,7 @@ import AudioManager from "./src/AudioManager";
 import { useResolvedValue } from "./src/hooks/useResolvedValue";
 import ModelLoader from "./src/ModelLoader";
 import LandingScreen from "./screens/LandingScreen";
+import GuideScreen from "./screens/GuideScreen";
 import LoadingScreen from "./screens/LoadingScreen";
 
 // Global variables
@@ -61,6 +62,9 @@ export default function App() {
               {/* Landing Page */}
 
               <Stack.Screen name="LandingScreen" component={LandingScreen}
+                options={{ headerShown: false }} />
+                
+              <Stack.Screen name="GuideScreen" component={GuideScreen}
                 options={{ headerShown: false }} />
 
               {/* // Single play on the local machine */}

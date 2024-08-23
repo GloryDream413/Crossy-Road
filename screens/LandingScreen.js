@@ -112,6 +112,8 @@ const LandingScreen = () => {
     const [openHighScore, setOpenHighScore] = useState(false);
     const [serverId, setServerId] = useState('');
 
+    const [path, setPath] = useState("home");
+
     // Receiving events from the server
     useEffect(() => {
         const handleSocketMessage = (data) => {
@@ -180,7 +182,7 @@ const LandingScreen = () => {
                 onClose={setOpenHighScore}
             />
 
-            <HeaderScreen></HeaderScreen>
+            <HeaderScreen path={path}></HeaderScreen>
 
             <View style={{
                 position: 'relative',
@@ -217,7 +219,7 @@ const LandingScreen = () => {
                     // rowGap: '25px',
                     padding: '25px'
                 }}>
-                    <Text style={{ color: 'white', fontSize: '24px', fontFamily: myFont }}>Welcome To</Text>
+                    <Text style={{ color: 'white', fontSize: '24px', fontFamily: myFont }}>Get Started</Text>
                     <Text style={{
                         fontSize: '72px',
                         color: 'rgba(253, 198, 211, 1)',
@@ -239,9 +241,9 @@ const LandingScreen = () => {
                             <View style={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                alignItems : 'center',
-                                columnGap : '10px',
-                                marginTop : '25px'
+                                alignItems: 'center',
+                                columnGap: '10px',
+                                marginTop: '25px'
                             }}>
                                 <View style={{
                                     padding: '10px',
@@ -257,8 +259,10 @@ const LandingScreen = () => {
 
                                 </View>
 
-                                <Text style={{ marginTop: '20px', color: 'gray', 
-                                    fontSize: '18px', fontFamily: myFont }}>
+                                <Text style={{
+                                    marginTop: '20px', color: 'gray',
+                                    fontSize: '18px', fontFamily: myFont
+                                }}>
                                     OR
                                 </Text>
 
