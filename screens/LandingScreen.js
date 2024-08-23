@@ -41,8 +41,8 @@ import JoiningDialog from './JoiningDialog';
 import HighScoreDialog from './HighScore';
 
 // Global variables : MBC-on mobile responsive
-// export const FRONTEND_URL = "http://192.168.140.49:19006";
-export const FRONTEND_URL = "https://valhalla.proskillowner.com";
+export const FRONTEND_URL = "http://192.168.140.49:19006";
+// export const FRONTEND_URL = "https://valhalla.proskillowner.com";
 export const SERVER_URL = "https://valhalla.proskillowner.com";
 export const socket = io(SERVER_URL);
 
@@ -79,6 +79,8 @@ const LandingScreen = () => {
     }, []);
 
     // Personal variables
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadingPercent, setLoadingPercent] = useState(1);
     const [userName, setUserName] = useState("");
     const [otherName, setOtherName] = useState("waiting...");
 
@@ -177,8 +179,6 @@ const LandingScreen = () => {
                 opened={openHighScore}
                 onClose={setOpenHighScore}
             />
-
-            {createStars()}
 
             <div style={{
                 display: 'flex',
