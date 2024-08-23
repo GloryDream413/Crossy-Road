@@ -250,7 +250,7 @@ const LandingScreen = () => {
                         borderRadius: '20px',
                         color: 'white',
                         cursor: 'pointer',
-                        margin: '10px'
+                        marginTop : '20px'
                     }}>
                         Enter Mobber
                     </View>

@@ -40,6 +40,8 @@ const LoadingScreen = () => {
     const [isMobile, setIsMobile] = useState(Dimensions.get('window').width < evalWidth);
     const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
 
+    const [openMenu, setOpenMenu] = useState(false);
+
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < evalWidth);
@@ -52,6 +54,17 @@ const LoadingScreen = () => {
     }, []);
 
     /* ================================ For Mobile Responsive ===============================*/
+
+    const handleOpenMenu = () => {
+
+        setOpenMenu(true);
+    };
+
+    const handleCloseMenu = () => {
+
+        setOpenMenu(false);
+    };
+
 
     // Initial Variables
     const navigation = useNavigation();
@@ -117,15 +130,99 @@ const LoadingScreen = () => {
                         </View>
                     </>
                 }
-                {isMobile && <View style={{
-                    padding: '10px',
-                    cursor: 'pointer'
-                }}>
-                    Menu
-                </View>}
+                {isMobile &&
+                    (openMenu ?
+                        <View style={{
+                            padding: '10px',
+                            cursor: 'pointer',
+                            color: 'rgba(239, 88, 123, 1)',
+                            zIndex: '5000'
+                        }}
+                            onClick={handleCloseMenu} >
+                            Close
+                        </View> :
+                        <View style={{
+                            padding: '10px',
+                            cursor: 'pointer',
+                            zIndex: '5000'
+                        }}
+                            onClick={handleOpenMenu} >
+                            Menu
+                        </View>)
+                }
             </View>
+            {openMenu &&
+                <>
+                    <View style={{
 
-        </View>
+                        width: '100vw',
+                        height: 'calc(100vh - 100px)',
+                        zIndex: '1',
+                        position: 'absolute',
+                        top: '100px',
+                        background: 'black'
+                    }}>
+                        <Image source={require("../assets/crossy_logo.png")}
+                            style={{
+                                width: '100%', height: '100%',
+                                filter: 'grayscale(1)',
+                                opacity: '0.3',
+                            }}
+                        />
+
+                    </View>
+                    <View
+                        style={{
+                            display: 'flex', flexDirection: 'column',
+                            zIndex: '6000',
+                            width: '100vw',
+                            height: 'calc(100vh - 100px)',
+                            position: 'absolute',
+                            top: '100px',
+                            color: 'white',
+                            margin: 'auto',
+                            justifyContent: 'center',
+                            rowGap: '50px',
+                            alignItems: 'center',
+                            fontSize : '32px',
+                            letterSpacing : '3px'
+                        }}>
+
+                        <View style={{
+                            padding: '10px',
+                            cursor: 'pointer',
+                            color: 'rgba(253, 198, 211, 1)',
+                            WebkitTextStroke: '2px rgba(239, 88, 123, 1)',
+                            fontWeight: '900',
+                            textShadow: '0 0 1px #fff'
+                        }}>
+                            Home
+                        </View>
+                        <View style={{
+                            padding: '10px',
+                            cursor: 'pointer'
+                        }}>
+                            How to Play
+                        </View>
+                        <View style={{
+                            padding: '10px',
+                            cursor: 'pointer'
+                        }}>
+                            Leaderboard
+                        </View>
+                        <View style={{
+                            padding: '10px',
+                            background: 'rgba(239, 88, 123, 1)',
+                            boxShadow: '0px 3px 10px red',
+                            borderRadius: '20px',
+                            cursor: 'pointer'
+                        }}>
+                            New Game
+                        </View>
+                    </View>
+                </>
+            }
+        </View >
     );
 };
 
