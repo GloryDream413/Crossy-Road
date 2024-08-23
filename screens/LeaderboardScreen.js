@@ -30,7 +30,7 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TextInput, Image, Platform, Dimensions, Linking, Switch } from 'react-native';
+import { View, Text, TextInput, Image, Platform, Dimensions, Linking, Switch, ScrollView } from 'react-native';
 
 // Personal informations 
 import HeaderScreen from "./HeaderScreen";
@@ -47,6 +47,41 @@ const LeaderboardScreen = () => {
     const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
     const [top10, setTop10] = useState(true);
 
+    const [data, setData] = useState([
+        { color: 'black', fontFamily: open, no: 1, name: 'Deagle', score: 1000 },
+        { color: 'black', fontFamily: open, no: 2, name: 'Crypto Lead', score: 900 },
+        { color: 'black', fontFamily: open, no: 3, name: 'GloryDream', score: 800 },
+        { color: 'white', fontFamily: open, no: 4, name: 'BillyBob', score: 700 },
+        { color: 'white', fontFamily: open, no: 6, name: 'AncientUnicorn38', score: 600 },
+        { color: 'white', fontFamily: open, no: 7, name: 'Ghost_90', score: 500 },
+        { color: 'white', fontFamily: open, no: 8, name: 'Firebase21', score: 400 },
+        { color: 'white', fontFamily: open, no: 9, name: 'Sky_Dawn', score: 300 },
+        { color: 'white', fontFamily: open, no: 10, name: 'Monica', score: 270 },
+        { color: 'white', fontFamily: open, no: 11, name: 'Williams', score: 210 },
+        { color: 'white', fontFamily: open, no: 12, name: 'Smith', score: 130 },
+        { color: 'white', fontFamily: open, no: 13, name: 'Jacky', score: 100 },
+        { color: 'white', fontFamily: open, no: 9, name: 'Sky_Dawn', score: 300 },
+        { color: 'white', fontFamily: open, no: 10, name: 'Monica', score: 270 },
+        { color: 'white', fontFamily: open, no: 11, name: 'Williams', score: 210 },
+        { color: 'white', fontFamily: open, no: 12, name: 'Smith', score: 130 },
+        { color: 'white', fontFamily: open, no: 13, name: 'Jacky', score: 100 },
+        { color: 'white', fontFamily: open, no: 9, name: 'Sky_Dawn', score: 300 },
+        { color: 'white', fontFamily: open, no: 10, name: 'Monica', score: 270 },
+        { color: 'white', fontFamily: open, no: 11, name: 'Williams', score: 210 },
+        { color: 'white', fontFamily: open, no: 12, name: 'Smith', score: 130 },
+        { color: 'white', fontFamily: open, no: 13, name: 'Jacky', score: 100 },
+        { color: 'white', fontFamily: open, no: 9, name: 'Sky_Dawn', score: 300 },
+        { color: 'white', fontFamily: open, no: 10, name: 'Monica', score: 270 },
+        { color: 'white', fontFamily: open, no: 11, name: 'Williams', score: 210 },
+        { color: 'white', fontFamily: open, no: 12, name: 'Smith', score: 130 },
+        { color: 'white', fontFamily: open, no: 13, name: 'Jacky', score: 100 },
+        { color: 'white', fontFamily: open, no: 9, name: 'Sky_Dawn', score: 300 },
+        { color: 'white', fontFamily: open, no: 10, name: 'Monica', score: 270 },
+        { color: 'white', fontFamily: open, no: 11, name: 'Williams', score: 210 },
+        { color: 'white', fontFamily: open, no: 12, name: 'Smith', score: 130 },
+        { color: 'white', fontFamily: open, no: 13, name: 'Jacky', score: 100 },
+    ]);
+
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < evalWidth);
@@ -60,10 +95,22 @@ const LeaderboardScreen = () => {
 
     /* ================================ For Mobile Responsive ===============================*/
 
+
     // Initial Variables
     const navigation = useNavigation();
 
     const [path, setPath] = useState("leaderboard");
+
+    const getRankStyle = (rank) => {
+        if (rank == 1) {
+            return { color: 'black', background: 'rgba(243, 179, 76, 1)', borderRadius: '50%', border: '2px solid yellow' }
+        } else if (rank == 2) {
+            return { color: 'black', background: 'gray', borderRadius: '50%', border: '2px solid white' }
+        } else if (rank == 3) {
+            return { color: 'black', background: 'rgba(200, 139, 76, 1)', borderRadius: '50%', border: '2px solid yellow' }
+        }
+        return { background: 'black', borderRadius: '50%', border: '2px solid white' }
+    }
 
     // Receiving events from the server
 
@@ -71,7 +118,7 @@ const LeaderboardScreen = () => {
         <View style={{
             display: 'flex',
             flexDirection: 'column',
-            fontFamily: myFont
+            fontFamily: myFont,
         }}>
             <HeaderScreen path={path}></HeaderScreen>
 
@@ -108,13 +155,14 @@ const LeaderboardScreen = () => {
                     height: '100%',
                     textAlign: 'center',
                     alignItems: 'center',
+                    justifyContent: 'space-between'
                 }}>
                     <View style={{
                         width: '100%',
                         height: isPC ? '300px' : '185px',
-                        borderBottom: '1px solid white',
                         justifyContent: 'center',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        borderBottom: '1px solid white',
                     }}>
                         <Text style={{ color: 'white', fontSize: '24px', fontFamily: myFont }}>Top Mobbers</Text>
                         <Text style={{
@@ -154,25 +202,28 @@ const LeaderboardScreen = () => {
                             </Text>
                         </View>
                     </View>
-                    <View style={{
-                        width: '100%',
-
-                        justifyContent: 'center',
-                        alignItems: 'center'
+                    <ScrollView style={{
+                        width: '50vw',
+                        height: '600px',
                     }}>
+                        {data.map((player, index) => {
+                            return (<View style={{
+                                display: 'flex', flexDirection: 'row',
+                                width: '100%', justifyContent: 'space-between',
+                                padding: '10px'
+                            }}>
+                                <Text style={{
+                                    color: 'white', fontSize: '20px',
+                                    width: '30px',
 
-                        <Text style={{ marginTop: '32px', color: 'white', fontSize: '40px', fontFamily: myFont }}>
-                            Title Here
-                        </Text>
-
-                        <Text style={{ marginTop: '20px', color: 'white', fontSize: '16px', fontFamily: myFont, width: '70%', textAlign: 'center' }}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus tortor tortor, convallis id maximus non, semper eu sapien. Aliquam efficitur urna ac sapien ornare, vitae ornare nunc placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi massa ante, accumsan quis sollicitudin ut, sodales eget sapien. Praesent rhoncus elit et urna cursus facilisis.
-                        </Text>
-
-                        <Text style={{ marginTop: '20px', color: 'white', fontSize: '16px', fontFamily: myFont, width: '70%', textAlign: 'center' }}>
-                            Suspendisse potenti. Quisque tristique eros id dui ultrices fringilla. Vivamus luctus magna urna, at gravida turpis cursus eu. Donec nec eros lobortis, venenatis lectus vitae, sagittis velit. Nulla sed sollicitudin metus. Mauris eget finibus nisi, et convallis ex. Mauris enim nunc, molestie vel porta ac, aliquet sit amet mauris. Pellentesque id feugiat purus.
-                        </Text>
-                    </View>
+                                    borderRadius: '50%',
+                                    ...getRankStyle(index + 1)
+                                }}>{index + 1}</Text>
+                                <Text style={{ color: 'white', fontSize: '20px', }}>{player.name}</Text>
+                                <Text style={{ color: 'white', fontSize: '20px', }}>{player.score}</Text>
+                            </View>);
+                        })}
+                    </ScrollView>
 
 
 

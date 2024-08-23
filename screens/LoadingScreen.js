@@ -96,7 +96,7 @@ const LoadingScreen = () => {
             display: 'flex',
             flexDirection: 'column',
             height: '100vh',
-            overflow: 'hidden',
+            // overflow: 'hidden',
             background: 'black',
             display: 'flex',
             alignItems: 'center',
