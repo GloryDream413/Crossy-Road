@@ -29,12 +29,15 @@
 // Sample Libraries
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, Image } from 'react-native';
-
-import useResponsiveFontSize from '../mobile/useResponsiveFontSize';
+import { View, Text, Image, Platform, Dimensions } from 'react-native';
 
 // Landing Page component
 const LoadingScreen = () => {
+
+    // const isMobile = Platform.OS !== 'web';
+    const [evalWidth, setEvalWidth] = useState(768);
+    const [isMobile, setIsMobile] = useState(Dimensions.get('window').width < evalWidth); // Example threshold for mobile
+    const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth); // Example threshold for mobile
 
     // Initial Variables
     const navigation = useNavigation();
@@ -42,7 +45,19 @@ const LoadingScreen = () => {
     // Personal variables
     const [isLoading, setIsLoading] = useState(true);
     const [loadingPercent, setLoadingPercent] = useState(1);
-    const fontSize = useResponsiveFontSize('72px', '36px'); // Default and mobile sizes
+    const [speed, setSpeed] = useState(100);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < evalWidth);
+            setIsPC(window.innerWidth >= evalWidth);
+            setWindowWidth(window.innerWidth);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     useEffect(() => {
         if (loadingPercent < 100) {
@@ -52,13 +67,31 @@ const LoadingScreen = () => {
                         clearInterval(intervalId);
                         return 100;
                     }
-                    return prev + 1;
+                    if (prev >= 95)
+                        return prev + 1;
+                    if (prev >= 90)
+                        return prev + 2;
+                    else if (prev >= 60)
+                        return prev + 3;
+                    else if (prev >= 10)
+                        return prev + 2;
+                    else
+                        return prev + 1;
                 });
-            }, 10);
-        } else {
-            setIsLoading(false);
+            }, speed);
+            return () => clearInterval(intervalId);
         }
-    }, [])
+    }, []) 
+
+    useEffect(() => {
+        if (loadingPercent >= 100) {
+            setIsLoading(false);
+
+            setTimeout(() => {
+                navigation.navigate("LandingScreen");
+            }, 1000);
+        }
+    }, [loadingPercent]); // Monitor loadingPercent changes
 
     return (
         <View style={{
@@ -73,23 +106,22 @@ const LoadingScreen = () => {
             justifyContent: 'center',
         }}>
             <Image source={require("../assets/crossy_logo.png")}
-                style={{ width: 200, height: 200 }}
+                style={{ width: '20%', height: 300 }}
             />
 
             <Text style={{
                 position: 'absolute',
-                // textAlign : 'right',
+                textAlign: 'center',
                 right: '1rem',
                 bottom: '1rem',
-                fontSize: fontSize,
+                fontSize: isPC ? '100px' : '72px',
+                left: isMobile ? '0px' : 'undefined',
                 fontWeight: '800',
                 color: 'rgba(253, 198, 211, 1)',
                 padding: '5px',
                 WebkitTextStroke: '2px rgba(239, 88, 123, 1)',
-                textShadow: `
-                    0 0 5px rgba(239, 88, 123, 0.8), 
-                    0 0 10px rgba(239, 88, 123, 0.5)
-                `
+                filter: 'drop-shadow(3px 5px 8px #ff0000)',
+                // ...(isMobile ? { left: '0px' } : {}), 
             }}>
                 {loadingPercent} %
             </Text>

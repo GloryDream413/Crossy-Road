@@ -89,25 +89,6 @@ const LandingScreen = () => {
     const [openHighScore, setOpenHighScore] = useState(false);
     const [serverId, setServerId] = useState('');
 
-    // For the landing page GUI
-    const createStars = () => {
-        const stars = [];
-        for (let i = 0; i < 200; i++) {
-            stars.push(
-                <div
-                    key={i}
-                    className="star"
-                    style={{
-                        top: `${-Math.random() * 200}vh`,
-                        left: `${-Math.random() * 200}vw`,
-                        animationDelay: `${Math.random() * 1}s`
-                    }}
-                ></div>
-            );
-        }
-        return stars;
-    };
-
     // Receiving events from the server
     useEffect(() => {
         const handleSocketMessage = (data) => {
