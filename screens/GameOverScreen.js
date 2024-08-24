@@ -82,7 +82,7 @@ function GameOver({ ...props }) {
         borderRadius: '20px',
         cursor: 'pointer',
         color: 'white',
-        marginTop: '10px',
+        marginTop: '30px',
         marginBottom: '10px'
       }}
         onClick={restartGame}

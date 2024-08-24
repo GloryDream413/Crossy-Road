@@ -53,24 +53,36 @@ export default function GameProvider({ children }) {
     };
   }, []);
 
+
   /* ================================ For Mobile Responsive ===============================*/
 
   const [rotateValue, setRotateValue] = useState(0);
+  const [innerLoading, setInnerLoading] = useState(false);
   const [loadingState, setLoadingState] = useState(false);
+  const [intervalId, setIntervalId] = useState(-1);
 
   const startAnimation = () => {
-    const intervalId = setInterval(() => {
+    const _intervalId = setInterval(() => {
       setRotateValue(prev => {
         return (prev + 1) % 360;
       });
     }, 5);
 
-    return () => clearInterval(intervalId);
+    setIntervalId(_intervalId);
   };
 
   useEffect(() => {
     if (loadingState) {
       startAnimation(); // Start the animation when the component mounts
+      setInnerLoading(true);
+    } else {
+      setTimeout(() => {
+        setInnerLoading(false);
+        if (intervalId != -1) {
+          clearInterval(intervalId);
+          setIntervalId(-1);
+        }
+      }, 1000);
     }
   }, [loadingState]);
 
@@ -94,7 +106,7 @@ export default function GameProvider({ children }) {
   return (
     <GameContext.Provider
       value={{
-        loadingState, 
+        loadingState,
         setLoadingState,
         character,
         setCharacter: (character) => {
@@ -138,7 +150,7 @@ export default function GameProvider({ children }) {
         }
       }}
     >
-      {loadingState == true &&
+      {innerLoading == true &&
         <View
           style={{
             zIndex: 5000,
@@ -147,18 +159,19 @@ export default function GameProvider({ children }) {
             height: '100%',
             justifyContent: "center",
             alignItems: "center",
-            background: 'rgba(0,0,0,0.7)'
+            background: 'rgba(0,255,0,0.1)',
+
           }}>
           <Image
             source={require("../assets/crossy_logo.png")}
             style={{
               width: isPC ? 200 : 100,
-
               height: isPC ? 200 : 100,
               borderRadius: 100,
               borderWidth: 4,
               borderColor: 'gray',
               transform: `rotateY(${rotateValue}deg)`,
+              // filter: 'grayscale(1)'
             }}
           />
         </View>
