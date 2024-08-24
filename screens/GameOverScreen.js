@@ -1,195 +1,96 @@
-import React, { Component, useContext } from "react";
-import { Image, Alert, Animated, Easing, StyleSheet, View } from "react-native";
-import { useSafeArea } from "react-native-safe-area-context";
-
-import Banner from "../components/GameOver/Banner";
-import Footer from "../components/GameOver/Footer";
-import AudioManager from "../src/AudioManager";
-import Characters from "../src/Characters";
-import useDimensions from "../src/hooks/useDimensions";
-import Images from "../src/Images";
+import React, { Component, useContext, useState, useEffect } from "react";
+import { Image, Dimensions, Text, Alert, Animated, Easing, StyleSheet, View } from "react-native";
 
 import GameContext from "../context/GameContext";
+import { myFont } from '../global/myFont';
+import { useNavigation } from "@react-navigation/native";
 
-// import { setGameState } from '../src/actions/game';
-
-//TODO: Make this dynamic
-const banner = [
-  {
-    color: "#3640eb",
-    title: "YOU ARE DEAD !",
-    button: {
-      onPress: (_) => {
-        Alert.alert(
-          "Subscribe to our mailing list",
-          "Join our mailing list and discover the latest news from Expo and Evan Bacon.\n\n Read our privacy policy on https://github.com/EvanBacon/Expo-Crossy-Road/privacy.md",
-          [
-            { text: "Cancel", onPress: () => console.log("Cancel Pressed!") },
-            { text: "OK", onPress: () => console.log("OK Pressed!") },
-          ],
-          {
-            cancelable: false,
-          }
-        );
-      },
-      source: Images.button.mail,
-      style: { aspectRatio: 1.85, height: 40 },
-    },
-  },
-  {
-    color: "#368FEB",
-    title: "YOU LOST 1000 CASH TOKENS",
-  },
-  {
-    color: "#36D6EB",
-    title: "PAY 1000 TOKENS TO GO",
-  },
-];
-
-// const AnimatedBanner = Animated.createAnimatedComponent(Banner);
 
 function GameOver({ ...props }) {
-  const { gameMode, character } = React.useContext(GameContext);
+  const { gameMode, setGameMode, character } = React.useContext(GameContext);
+  const navigation = useNavigation();
 
-  const {
-    window: { width },
-  } = useDimensions();
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-  const [characters, setCharacters] = React.useState(
-    Object.keys(Characters).map((val) => Characters[val])
-  );
-  const [animations, setAnimations] = React.useState(
-    banner.map((val) => new Animated.Value(0))
-  );
+  /* ================================ For Mobile Responsive ===============================*/
 
-  const dismiss = () => {
+  const [evalWidth, setEvalWidth] = useState(768);
+  const [isMobile, setIsMobile] = useState(Dimensions.get('window').width < evalWidth);
+  const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < evalWidth);
+      setIsPC(window.innerWidth >= evalWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  /* ================================ For Mobile Responsive ===============================*/
+
+  const restartGame = () => {
+    props.setGameState('none');
+    // setGameMode(0);
+    // navigation.navigate("GameScreen");
+
     // props.navigation.goBack();
-    props.onRestart();
+    // props.onRestart();
+    // props.setGameState(true);
   };
 
-  const pickRandom = () => {
-    const randomIndex = Math.floor(Math.random() * (characters.length - 1));
-    const randomCharacter = characters[randomIndex];
-    // props.setCharacter(randomCharacter);
-    dismiss();
-  };
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      _animateBanners();
-
-      const playBannerSound = async () => {
-        await AudioManager.playAsync(AudioManager.sounds.banner);
-        // const soundObject = new Audio.Sound();
-        // try {
-        //   await soundObject.loadAsync(AudioFiles.banner);
-        //   await soundObject.playAsync();
-        // } catch (error) {
-        //   console.warn('sound error', { error });
-        // }
-      };
-      playBannerSound();
-      setTimeout(() => playBannerSound(), 300);
-      setTimeout(() => playBannerSound(), 600);
-    }, 600);
-  });
-
-  const _animateBanners = () => {
-    const _animations = animations.map((animation) =>
-      Animated.timing(animation, {
-        useNativeDriver: true,
-        toValue: 1,
-        duration: 1000,
-        easing: Easing.elastic(),
-      })
-    );
-    Animated.stagger(300, _animations).start();
-  };
-
-  const _showResult = (result) => {
-    // if (result.action === Share.sharedAction) {
-    //   if (result.activityType) {
-    //     this.setState({result: 'shared with an activityType: ' + result.activityType});
-    //   } else {
-    //     this.setState({result: 'shared'});
-    //   }
-    // } else if (result.action === Share.dismissedAction) {
-    //   this.setState({result: 'dismissed'});
-    // }
-  };
-
-  const select = () => {
-    // props.setCharacter(characters[currentIndex]);
-    dismiss();
-  };
-
-  const { top, bottom, left, right } = useSafeArea();
-
-  const imageStyle = { width: 60, height: 48 };
-
-  // styles.container,
   return (
+    <Animated.View style={{
+      background: 'black',
+      width: isPC ? '450px' : '80%',
+      height: isPC ? '40%' : '40%',
+      display: 'flex', flexDirection: 'column',
+      justifyContent: 'center', alignItems: 'center',
+      rowGap: '20px',
+      paddingTop: '10px',
+      paddingBottom: '10px',
+      border: '3px solid gray',
+      borderRadius: '20px',
+    }}>
+      <Text style={{
+        textAlign: 'center',
+        fontSize: isPC ? '50px' : '32px',
+        fontWeight: '900',
+        color: 'rgba(253, 198, 211, 1)',
+        WebkitTextStroke: '2px rgba(239, 88, 123, 1)',
+        filter: 'drop-shadow(3px 5px 8px #ff0000)',
+        textShadow: '0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff00de, 0 0 30px #ff00de, 0 0 40px #ff00de'
+        // ...(isMobile ? { left: '0px' } : {}), 
+      }}>
+        GAME OVER !
+      </Text>
+      <Text style={{
+        textAlign: 'center',
+        fontSize: isPC ? '20px' : '14px',
+        fontWeight: '900',
+        color: 'white',
+      }}>
+        You scored&nbsp;
+        <Text style={{ color: 'rgba(239, 88, 123, 1)' }}>350</Text> Crash Tokens
+      </Text>
+      <Text style={{
+        fontFamily: myFont,
+        fontSize: '20px',
+        padding: '10px',
+        background: 'rgba(239, 88, 123, 1)',
+        boxShadow: '0px 3px 10px red',
+        borderRadius: '20px',
+        cursor: 'pointer',
+        color: 'white',
+        marginTop: '10px',
+        marginBottom: '10px'
+      }}
+        onClick={restartGame}
+      >
+        Play Again
+      </Text>
+    </Animated.View>
 
-    <View
-      style={[
-        { top: "30%", left: "2.5%", right: "2.5%" }
-
-        // props.style,
-        // , gameMode > 0 && { width: "45%" }
-      ]}
-    >
-      <View key="content" style={[{ flex: 1, justifyContent: "center" }
-
-      ]}>
-        {banner.map((val, index) => (
-
-          <Banner
-            animatedValue={animations[index].interpolate({
-              inputRange: [0.2, 1],
-              outputRange: [-width, 0],
-              extrapolate: "clamp",
-            })}
-            key={index}
-            style={{
-              backgroundColor: val.color,
-              minWidth: "100%",
-              width: '100%',
-              transform: [
-                {
-                  scaleY: animations[index].interpolate({
-                    inputRange: [0, 0.2],
-                    outputRange: [0, 1],
-                    extrapolate: "clamp",
-                  }),
-                },
-              ],
-            }}
-            title={val.title}
-            button={val.button}
-          />
-
-        ))}
-
-        {/* <View style={{
-          minWidth: "100%",
-          width: '100%',
-        }}>
-          <Image
-            source={require("../assets/images/game_over.png")}
-          />
-        </View> */}
-      </View>
-
-
-
-      
-      <Footer
-        style={{ paddingLeft: left || 4, paddingRight: right || 4 }}
-        showSettings={props.showSettings}
-        setGameState={props.setGameState}
-        navigation={props.navigation}
-      />
-    </View>
   );
 }
 

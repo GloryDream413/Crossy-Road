@@ -91,7 +91,11 @@ const LoadingScreen = ({ path }) => {
                 <Image source={require("../assets/crossy_logo.png")}
                     style={{
                         width: 75, height: 75,
-                        margin: 'auto'
+                        margin: 'auto',
+                        cursor : 'pointer'
+                    }}
+                    onClick = {() => {
+                        navigation.navigate("LandingScreen");
                     }}
                 />
             </View>

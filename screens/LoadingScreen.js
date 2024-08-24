@@ -30,6 +30,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, Image, Platform, Dimensions } from 'react-native';
+import GameContext from '../context/GameContext';
 
 // Landing Page component
 const LoadingScreen = () => {

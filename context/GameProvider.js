@@ -1,12 +1,8 @@
+import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as React from "react";
-
 import GameContext from "./GameContext";
-
-import { CrossyGameMap } from "../src/CrossyGame";
-
-import { keyMap_1, keyMap_2, keyMap_Both, keyMap_None } from "../global/keyMap";
-// import AsyncStorage from '@react-native-community/async-storage';
+import { keyMap_None } from "../global/keyMap";
+import { Animated, View, Image, Dimensions } from "react-native";
 
 const STORAGE_KEY = "@BouncyBrent:Character";
 const SHOULD_REHYDRATE = true;
@@ -38,8 +34,45 @@ export default function GameProvider({ children }) {
   const [role, setRole] = React.useState("");
   const [keyMap_Server, setKeyMap_Server] = React.useState(keyMap_None);
   const [keyMap_Client, setKeyMap_Client] = React.useState(keyMap_None);
+  const [socket, setSocket] = React.useState();
 
-  const [socket, setSocket] = React.useState()
+  /* ================================ For Mobile Responsive ===============================*/
+
+  const [evalWidth, setEvalWidth] = useState(768);
+  const [isMobile, setIsMobile] = useState(Dimensions.get('window').width < evalWidth);
+  const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(Dimensions.get('window').width < evalWidth);
+      setIsPC(Dimensions.get('window').width >= evalWidth);
+    };
+    const subscription = Dimensions.addEventListener('change', handleResize);
+    return () => {
+      subscription?.remove(); // Clean up the listener
+    };
+  }, []);
+
+  /* ================================ For Mobile Responsive ===============================*/
+
+  const [rotateValue, setRotateValue] = useState(0);
+  const [loadingState, setLoadingState] = useState(false);
+
+  const startAnimation = () => {
+    const intervalId = setInterval(() => {
+      setRotateValue(prev => {
+        return (prev + 1) % 360;
+      });
+    }, 5);
+
+    return () => clearInterval(intervalId);
+  };
+
+  useEffect(() => {
+    if (loadingState) {
+      startAnimation(); // Start the animation when the component mounts
+    }
+  }, [loadingState]);
 
   React.useEffect(() => {
     const parseModulesAsync = async () => {
@@ -52,9 +85,7 @@ export default function GameProvider({ children }) {
         setRole(role);
         setKeyMap_Server(keyMap_Server);
         setKeyMap_Client(keyMap_Client);
-
       } catch (ignored) { }
-      //   setLoaded(true);
     };
 
     parseModulesAsync();
@@ -63,6 +94,8 @@ export default function GameProvider({ children }) {
   return (
     <GameContext.Provider
       value={{
+        loadingState, 
+        setLoadingState,
         character,
         setCharacter: (character) => {
           setCharacter(character);
@@ -102,10 +135,34 @@ export default function GameProvider({ children }) {
         setSocket: (_socket) => {
           setSocket(_socket);
           cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
-
         }
       }}
     >
+      {loadingState == true &&
+        <View
+          style={{
+            zIndex: 5000,
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            justifyContent: "center",
+            alignItems: "center",
+            background: 'rgba(0,0,0,0.7)'
+          }}>
+          <Image
+            source={require("../assets/crossy_logo.png")}
+            style={{
+              width: isPC ? 200 : 100,
+
+              height: isPC ? 200 : 100,
+              borderRadius: 100,
+              borderWidth: 4,
+              borderColor: 'gray',
+              transform: `rotateY(${rotateValue}deg)`,
+            }}
+          />
+        </View>
+      }
       {children}
     </GameContext.Provider>
   );

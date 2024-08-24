@@ -27,13 +27,13 @@
  */
 
 // Sample Libraries
-import React, { Component, useContext } from "react";
+import React, { Component, useState, useEffect, useContext } from "react";
 import { GLView } from "expo-gl";
 import { Animated, Dimensions, StyleSheet, Platform, Vibration, View, useColorScheme, } from "react-native";
 
 // Personal informations MBC-
 import GestureRecognizer, { swipeDirections } from "../components/GestureView";
-import Score from "../components/ScoreText";
+import ScorePad from "../components/GameScorePad";
 import Engine from "../src/GameEngine";
 import State from "../src/state";
 import GameOverScreen from "./GameOverScreen";
@@ -45,7 +45,7 @@ import { useNavigation } from "@react-navigation/native";
 // Global variables : MBC-on mobile responsive
 import { keyMap_None, keyMap_1, keyMap_2, keyMap_Both } from "../global/keyMap";
 import { globalMap } from "../global/globalMap";
-
+import HeaderScreen from "./HeaderScreen";
 
 const DEBUG_CAMERA_CONTROLS = false;
 class Game extends Component {
@@ -241,7 +241,15 @@ class Game extends Component {
     }
 
     return (
-      <View style={StyleSheet.absoluteFillObject}>
+      <View style={[
+        StyleSheet.absoluteFill,
+        {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          zIndex: '5000'
+        }]}>
         <GameOverScreen
           showSettings={() => {
             this.setState({ showSettings: true });
@@ -285,11 +293,9 @@ class Game extends Component {
       <View
         pointerEvents="box-none"
         style={[
-          // StyleSheet.absoluteFill,
           {
-            flex: 1, backgroundColor: "#0f0f0f", padding: '20px',
             width: this.gameMode > 0 ? '50%' : '100%',
-            height: '100%'
+            height: 'calc(100vh - 100px)',
           },
           Platform.select({
             web: { position: "fixed" },
@@ -304,7 +310,7 @@ class Game extends Component {
           {this.renderGame()}
         </Animated.View>
 
-        <Score
+        <ScorePad
           score={this.state.score}
           gameOver={this.state.gameState === State.Game.gameOver}
         />
@@ -376,6 +382,26 @@ function GameScreen(props) {
   const server_keyMaps = [keyMap_1, keyMap_None];
   const client_keyMaps = [keyMap_None, keyMap_2];
 
+
+  /* ================================ For Mobile Responsive ===============================*/
+
+  const [evalWidth, setEvalWidth] = useState(768);
+  const [isMobile, setIsMobile] = useState(Dimensions.get('window').width < evalWidth);
+  const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < evalWidth);
+      setIsPC(window.innerWidth >= evalWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  /* ================================ For Mobile Responsive ===============================*/
+
   const handleSocketEndGame = (data) => {
     if (data.cmd == "END_GAME") {
       navigation.navigate("LandingScreen");
@@ -421,7 +447,7 @@ function GameScreen(props) {
           {role}
         </button>
       }
-      <button
+      {/* <button
         style={{
           position: 'absolute',
           borderRadius: '50px',
@@ -443,15 +469,27 @@ function GameScreen(props) {
         onClick={gotoMenu}
       >
         Back to Menu
-      </button>
-
+      </button> */}
 
       {/* Multi players via network */}
-      {gameMode == 0 && <Game {...props}
-        gameMode={gameMode}
-        newGlobalMap={globalMap}
-        keyMap={keyMap_Both}
-        character={character} isDarkMode={scheme === "dark"} />}
+      {gameMode == 0 &&
+        <View style={{ display: 'flex', flexDirection: 'column' }}>
+          <HeaderScreen></HeaderScreen>
+          <View style={{
+            width: '100%',
+            height: 'calc(100vh-100px)',
+            display: 'flex'
+          }}>
+
+            <Game {...props}
+              gameMode={gameMode}
+              newGlobalMap={globalMap}
+              keyMap={keyMap_Both}
+              character={character} isDarkMode={scheme === "dark"} />
+          </View>
+        </View>
+
+      }
 
 
       {gameMode == 2 && (

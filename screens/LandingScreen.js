@@ -30,7 +30,7 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TextInput, Image, Platform, Dimensions, Linking } from 'react-native';
+import { View, Text, TextInput, Image, Platform, Dimensions, Linking, Alert } from 'react-native';
 
 // Personal informations 
 import GameContext from '../context/GameContext';
@@ -83,7 +83,9 @@ const LandingScreen = () => {
         // set the role to the context : MBC-on on update
         role, setRole,
         // set the global map to the context 
-        contextGameMap, setContextGameMap } = React.useContext(GameContext);
+        contextGameMap, setContextGameMap,
+        setLoadingState,
+    } = React.useContext(GameContext);
 
     // Initial hook functions 
     useEffect(() => {
@@ -104,7 +106,7 @@ const LandingScreen = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [loadingPercent, setLoadingPercent] = useState(1);
     const [userName, setUserName] = useState("");
-    const [cUserName, setCUserName] = useState("");
+    const [cUserName, setCUserName] = useState("Rothschild"); // MBC - Name
     const [otherName, setOtherName] = useState("waiting...");
 
     const [roomPath, setRoomPath] = useState(FRONTEND_URL);
@@ -118,10 +120,16 @@ const LandingScreen = () => {
     useEffect(() => {
         const handleSocketMessage = (data) => {
             if (data.cmd === "ROOM_CREATED") {
-                setRole('server');
-                setGameMode(2);
-                setRoomPath(FRONTEND_URL + "/?" + data.name);
-                setOpenRoom(true);
+                setLoadingState(false);
+
+                if (data.status) {
+                    setRole('server');
+                    setGameMode(2);
+                    setRoomPath(FRONTEND_URL + "/?" + data.name);
+                    navigation.navigate("GameRoomScreen");
+                } else {
+                    //window.alert(data.msg);
+                }
             }
         };
         const handleSocketRoom = (data) => {
@@ -245,7 +253,7 @@ const LandingScreen = () => {
                                 columnGap: '10px',
                                 marginTop: '25px'
                             }}>
-                                <View style={{
+                                <Text style={{
                                     padding: '10px',
                                     background: 'rgba(239, 88, 123, 1)',
                                     boxShadow: '0px 3px 10px red',
@@ -253,11 +261,15 @@ const LandingScreen = () => {
                                     color: 'white',
                                     cursor: 'pointer',
                                     marginTop: '20px',
+                                    fontWeight: '800',
                                 }}
+                                    onClick={() => {
+                                        setGameMode(0);
+                                        navigation.navigate("GameScreen");
+                                    }}
                                 >
                                     Play Single - P2E
-
-                                </View>
+                                </Text>
 
                                 <Text style={{
                                     marginTop: '20px', color: 'gray',
@@ -266,18 +278,26 @@ const LandingScreen = () => {
                                     OR
                                 </Text>
 
-                                <View style={{
+                                <Text style={{
                                     padding: '10px',
                                     background: 'rgba(239, 88, 123, 1)',
                                     boxShadow: '0px 3px 10px red',
                                     borderRadius: '20px',
                                     color: 'white',
                                     cursor: 'pointer',
-                                    marginTop: '20px'
+                                    marginTop: '20px',
+                                    fontWeight: '800',
                                 }}
-                                >
+                                    onClick={() => {
+                                        setLoadingState(true);
+                                        socket.emit('message', JSON.stringify({
+                                            cmd: 'CREATE_ROOM',
+                                            player1: cUserName,
+                                            map: globalMap
+                                        }));
+                                    }}>
                                     Play Multi - PVP
-                                </View>
+                                </Text>
                             </View>
 
                         </>
@@ -300,7 +320,7 @@ const LandingScreen = () => {
                                     setUserName(e.target.value);
                                 }}
                                 autoFocus />
-                            <View style={{
+                            <Text style={{
                                 padding: '10px',
                                 background: 'rgba(239, 88, 123, 1)',
                                 boxShadow: '0px 3px 10px red',
@@ -314,7 +334,7 @@ const LandingScreen = () => {
                                 }}
                             >
                                 Enter Mobber
-                            </View>
+                            </Text>
                         </>
                     }
 

@@ -45,6 +45,7 @@ import LandingScreen from "./screens/LandingScreen";
 import GuideScreen from "./screens/GuideScreen";
 import LoadingScreen from "./screens/LoadingScreen";
 import LeaderboardScreen from "./screens/LeaderboardScreen";
+import GameRoomScreen from "./screens/GameRoomScreen";
 
 // Global variables
 const Stack = createStackNavigator();
@@ -64,6 +65,9 @@ export default function App() {
               <Stack.Screen name="LandingScreen" component={LandingScreen}
                 options={{ headerShown: false }} />
                 
+              <Stack.Screen name="GameRoomScreen" component={GameRoomScreen}
+                options={{ headerShown: false }} />
+
               <Stack.Screen name="GuideScreen" component={GuideScreen}
                 options={{ headerShown: false }} />
                 
