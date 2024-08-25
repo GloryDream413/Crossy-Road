@@ -109,7 +109,7 @@ const LandingScreen = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [loadingPercent, setLoadingPercent] = useState(1);
     const [userName, setUserName] = useState("");
-    const [cUserName, setCUserName] = useState("Rothschild"); // MBC - Name
+    const [cUserName, setCUserName] = useState(""); // MBC - Name
     const [otherName, setOtherName] = useState("waiting...");
 
     const [roomPath, setRoomPath] = useState(FRONTEND_URL);
@@ -121,38 +121,66 @@ const LandingScreen = () => {
 
     // Receiving events from the server
     useEffect(() => {
-        const handleSocketMessage = (data) => {
+        const handleSocketRoom = (data) => {
             if (data.cmd === "SIGNAL_ROOM_CREATED") {
                 setLoadingState(false);
 
                 if (data.status) {
                     setGameMode(2);
                     setRole('server');
-                    setMyRoomInfo({
-                        ...myRoomInfo,
-                        room_state : 'opened',
-                        room_name : data.name,
-                        room_path : FRONTEND_URL + "/?" + data.name,
-                        room_my_role : 0,
-                        players : data.players
-                    });
+
+                    setMyRoomInfo(prevRoomInfo => ({
+                        ...prevRoomInfo,
+                        room_state: 'opened',
+                        room_name: data.name,
+                        room_path: FRONTEND_URL + "/?" + data.name,
+                        room_my_role: 0,
+                        players: data.players
+                    }));
+
+                    console.log("After creating room : ", myRoomInfo);
                     navigation.navigate("GameRoomScreen");
                 } else {
                     window.alert(data.msg);
                 }
             }
-        };
-        const handleSocketRoom = (data) => {
+            else if (data.cmd == "SIGNAL_ROOM_JOINED") {
+                if (data.status) {
+                    setLoadingState(false);
+                    // Client JOINED
+                    if (data.role == 'server') {
+                        setRole('server');
+                        setGameMode(2);
+                        setContextGameMap(data.globalMap);
 
-            console.log("Received : ", data);
+                        setMyRoomInfo(prevRoomInfo => ({
+                            ...prevRoomInfo,
+                            room_state: 'opened',
+                            room_my_role: 0,
+                            players: data.players,
+                        }));
 
-            if (data.cmd == "GOT_JOINED_TO_CLIENT") {
-                if (data.state) {
-                    setRole('client');
-                    setGameMode(2);
-                    setContextGameMap(data.globalMap);
-                    setOtherName(data.player1);
-                    setOpenRoom(true);
+                        console.log("Joined : ", myRoomInfo);
+
+                    } else if (data.role == 'client') {
+                        setRole('client');
+                        setGameMode(2);
+                        setContextGameMap(data.globalMap);
+
+                        setMyRoomInfo(prevRoomInfo => ({
+                            ...prevRoomInfo,
+                            room_state: 'opened',
+                            room_my_role: 1,
+                            players: data.players,
+                        }));
+
+                        console.log("Joined : ", myRoomInfo);
+
+                        navigation.navigate("GameRoomScreen");
+                    } else {
+                        window.alert("Someone joined in an untracked way!");
+                        return;
+                    }
                 } else {
                     window.alert(data.reason);
                 }
@@ -160,11 +188,7 @@ const LandingScreen = () => {
             }
             if (data.cmd == "GOT_JOINED_TO_SERVER") {
                 // window.alert("setRole('server');");
-                console.log("JOined : ", data);
-                setRole('server');
-                setGameMode(2);
-                setContextGameMap(data.globalMap);
-                setOtherName(data.player2);
+
             }
             if (data.cmd == "START_GAME_APPROVED") {
                 // window.alert("ROLE:", role);
@@ -172,11 +196,9 @@ const LandingScreen = () => {
             }
         }
 
-        socket.on('message', handleSocketMessage);
         socket.on('ROOM', handleSocketRoom);
 
         return () => {
-            socket.off('message', handleSocketMessage);
             socket.off('ROOM', handleSocketRoom);
         };
     }, []);
@@ -300,11 +322,19 @@ const LandingScreen = () => {
                                 }}
                                     onClick={() => {
                                         setLoadingState(true);
-                                        socket.emit('message', JSON.stringify({
-                                            cmd: 'ACTION_CREATE_ROOM',
-                                            player1: cUserName,
-                                            map: globalMap
-                                        }));
+                                        if (serverId) {     // JOIN TO THE OTHER SERVER SPECIFIED IN THE SERVER ID
+                                            socket.emit('message', JSON.stringify({
+                                                cmd: 'ACTION_JOIN_GAME',
+                                                name: serverId,
+                                                player2: userName
+                                            }));
+                                        } else {
+                                            socket.emit('message', JSON.stringify({
+                                                cmd: 'ACTION_CREATE_ROOM',
+                                                player1: cUserName,
+                                                map: globalMap
+                                            }));
+                                        }
                                     }}>
                                     Play Multi - PVP
                                 </Text>
@@ -337,7 +367,8 @@ const LandingScreen = () => {
                                 borderRadius: '20px',
                                 color: 'white',
                                 cursor: 'pointer',
-                                marginTop: '20px'
+                                marginTop: '20px',
+                                fontSize: '20px'
                             }}
                                 onClick={() => {
                                     setCUserName(userName);
