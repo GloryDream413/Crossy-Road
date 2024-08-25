@@ -71,12 +71,50 @@ const GameRoomScreen = () => {
     } = React.useContext(GameContext);
 
     const [path, setPath] = useState("room");
+    const [copied, setCopied] = useState(false);
 
     const reduceString = (str, len = 40) => {
-        if (str.toString().length <= len) 
+        if (str.toString().length <= len)
             return str;
-        return str.slice(0,20) + "..." + str.slice(-17);
+        return str.slice(0, 20) + "..." + str.slice(-17);
     }
+
+    const readFromClipboard = () => {
+        // Create a temporary input element
+        const input = document.createElement('input');
+        document.body.appendChild(input);
+        input.style.position = 'absolute'; // Position it off-screen
+        input.style.opacity = '0'; // Make it invisible
+        input.focus();
+
+        // Allow the user to paste into the input field
+        input.select();
+        document.execCommand('paste'); // This may not work in all browsers
+
+        // Get the pasted text
+        const text = input.value;
+        console.log(text);
+
+        // Clean up the input element
+        document.body.removeChild(input);
+    };
+
+    const copyToClipboard = (value) => {
+        const textArea = document.createElement('textarea');
+        textArea.value = value;
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            setCopied(true);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+
+        document.body.removeChild(textArea);
+    };
+
 
     // Receiving events from the server
 
@@ -160,11 +198,18 @@ const GameRoomScreen = () => {
 
                     {myRoomInfo.room_state == 'opened' &&
                         < View style={{ display: 'flex', flexDirection: 'row', columnGap: '10px', alignItems: 'center' }}>
-                            <Text style={{ fontSize: isPC ? '18px' : '12px', color: 'rgba(239, 88, 123, 1)', fontWeight: '800', textDecoration: 'underline' , textUnderlineOffset : '10px', cursor: 'pointer' }}>
+                            <Text style={{ fontSize: isPC ? '18px' : '12px', color: copied ? 'rgba(239, 88, 123, 0.8)' : 'rgba(239, 88, 123, 1)', fontWeight: '800', textDecoration: 'underline', textUnderlineOffset: '10px', cursor: 'pointer' }}
+                                onClick={() => {
+                                    copyToClipboard(myRoomInfo.room_path);
+                                }}>
+
                                 {reduceString(myRoomInfo.room_path)}
                             </Text>
                             <Image source={require("../assets/icons/copyIcon.png")}
-                                style={{ width: isPC ? '20px' : '14px', height: isPC ? '20px' : '14px', cursor: 'pointer' }}></Image>
+                                style={{ width: isPC ? '20px' : '14px', height: isPC ? '20px' : '14px', cursor: 'pointer' }}
+                                onClick={() => {
+                                    copyToClipboard(myRoomInfo.room_path);
+                                }} />
 
                         </View>}
 
