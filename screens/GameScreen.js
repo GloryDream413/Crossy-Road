@@ -52,7 +52,8 @@ class Game extends Component {
 
   constructor(props) {
     super(props);
-
+    this.isMobile = props.isMobile;
+    this.side = props.side;
     this.gameMode = props.gameMode;
     this.newGlobalMap = props.newGlobalMap;
     this.keyMap = props.keyMap;
@@ -228,7 +229,7 @@ class Game extends Component {
         onSwipe={this.onSwipe}
       >
         <GLView
-          style={{ flex: 1, height: "100%", overflow: "hidden" }}
+          style={{ flex: 1, height: "100%", overflow: "hidden" , borderBottomLeftRadius : '50px'}}
           onContextCreate={this.engine._onGLContextCreate}
         />
       </GestureView>
@@ -294,8 +295,14 @@ class Game extends Component {
         pointerEvents="box-none"
         style={[
           {
-            width: this.gameMode > 0 ? '50%' : '100%',
-            height: 'calc(100vh - 100px)',
+            width: this.side == 'left' ? '100%' : (this.isMobile ? '45%' : '20%'),
+            height: this.side == 'left' ? 'calc(100vh - 100px)' : (this.isMobile ? '15%' : '20%'),
+            marginTop: this.side == 'right' ? '100px' : '0px',
+            right: '0px',
+
+            borderLeft: this.side == 'right'? '2px solid gray' : '0px solid gray',
+            borderBottom: this.side == 'right'? '2px solid gray' : '0px solid gray',
+            borderBottomLeftRadius: this.side == 'right' ? '50px' : '0px',
           },
           Platform.select({
             web: { position: "fixed" },
@@ -305,17 +312,21 @@ class Game extends Component {
         ]}
       >
         <Animated.View
-          style={{ flex: 1, opacity: this.transitionScreensValue }}
+          style={{ flex: 1, opacity: this.transitionScreensValue,
+            borderBottomLeftRadius : '50px'
+           }}
         >
           {this.renderGame()}
         </Animated.View>
 
-        <ScorePad
-          score={this.state.score}
-          gameOver={this.state.gameState === State.Game.gameOver}
-        />
+        {this.side == "left" ?
+          <ScorePad
+            score={this.state.score}
+            gameOver={this.state.gameState === State.Game.gameOver}
+          /> : <></>
+        }
 
-        {this.renderGameOver()}
+        {this.side == "left" ? this.renderGameOver() : <></>}
 
         {this.renderHomeScreen()}
 
@@ -390,6 +401,9 @@ function GameScreen(props) {
   const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
 
   useEffect(() => {
+
+    console.log("GameScreen")
+
     const handleResize = () => {
       setIsMobile(window.innerWidth < evalWidth);
       setIsPC(window.innerWidth >= evalWidth);
@@ -423,54 +437,6 @@ function GameScreen(props) {
 
   return (
     <>
-      {gameMode == 2 &&
-        <button
-          style={{
-            position: 'absolute',
-            borderRadius: '50px',
-            padding: '10px 20px',
-            background: role === 'server' ? 'linear-gradient(45deg, #9C27B0, #673AB7)' : 'linear-gradient(45deg, #000, #000)',
-            border: '2px solid #333',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            zIndex: 2000,
-            right: '300px',
-            top: '30px',
-            cursor: 'pointer',
-            fontSize: '24px',
-            color: '#fff',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-            transition: 'background 0.3s, transform 0.2s',
-          }}
-        >
-          {role}
-        </button>
-      }
-      {/* <button
-        style={{
-          position: 'absolute',
-          borderRadius: '50px',
-          padding: '10px 20px',
-          background: 'linear-gradient(45deg, #4CAF50, #2196F3)',
-          border: '2px solid #333',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          zIndex: 2000,
-          right: '30px',
-          top: '30px',
-          cursor: 'pointer',
-          fontSize: '24px',
-          color: '#fff',
-          fontWeight: 'bold',
-          textTransform: 'uppercase',
-          letterSpacing: '1px',
-          transition: 'background 0.3s, transform 0.2s',
-        }}
-        onClick={gotoMenu}
-      >
-        Back to Menu
-      </button> */}
-
       {/* Multi players via network */}
       {gameMode == 0 &&
         <View style={{ display: 'flex', flexDirection: 'column' }}>
@@ -485,33 +451,75 @@ function GameScreen(props) {
               gameMode={gameMode}
               newGlobalMap={globalMap}
               keyMap={keyMap_Both}
-              character={character} isDarkMode={scheme === "dark"} />
+              character={character} isDarkMode={scheme === "dark"}
+              side="left"
+            />
           </View>
         </View>
 
       }
 
-
       {gameMode == 2 && (
-        <div style={{ flex: 1, flexDirection: 'row' }}>
-          <div style={{ position: 'absolute', left: '0px', width: '50%', height: '100%', flex: 1 }}>
-            <Game {...props}
-              gameMode={gameMode}
-              newGlobalMap={contextGameMap}
-              keyMap={role == 'server' ? server_keyMaps[0] : client_keyMaps[0]}
-              character={character}
-              isDarkMode={scheme === "dark"} />
-          </div>
+        <View style={{ flex: 1, flexDirection: 'column' }}>
+          <HeaderScreen></HeaderScreen>
 
-          <div style={{ position: 'absolute', right: '0px', width: '50%', flex: 1 }}>
-            <Game {...props}
-              gameMode={gameMode}
-              newGlobalMap={contextGameMap}
-              keyMap={role == 'server' ? server_keyMaps[1] : client_keyMaps[1]}
-              character={character}
-              isDarkMode={scheme === "dark"} />
-          </div>
-        </div>
+          {role == 'server' ?
+            <>
+              <View style={{ width: '100%', height: '100%', flex: 1 }}>
+                <Game {...props}
+                  gameMode={gameMode}
+                  newGlobalMap={contextGameMap}
+                  keyMap={server_keyMaps[0]}
+                  character={character}
+                  isDarkMode={scheme === "dark"}
+                  side="left"
+                  isMobile={isMobile}
+                  style={{ background: 'red' }}
+                />
+              </View>
+
+              <View style={{ position: 'absolute', right: '0px', top: '0px', width: '50%', height: '50%', flex: 1 }}>
+                <Game {...props}
+                  gameMode={gameMode}
+                  newGlobalMap={contextGameMap}
+                  keyMap={client_keyMaps[0]}
+                  character={character}
+                  side="right"
+                  isMobile={isMobile}
+                  isDarkMode={scheme === "dark"}
+                />
+
+              </View>
+            </> :
+            // client screen view
+            <>
+              <View style={{ width: '100%', height: '100%', flex: 1 }}>
+                <Game {...props}
+                  gameMode={gameMode}
+                  newGlobalMap={contextGameMap}
+                  keyMap={client_keyMaps[1]}
+                  character={character}
+                  side="left"
+                  isMobile={isMobile}
+                  isDarkMode={scheme === "dark"}
+                />
+              </View>
+
+              <View style={{ position: 'absolute', right: '0px', top: '0px', width: '50%', height: '50%', flex: 1 }}>
+                <Game {...props}
+                  gameMode={gameMode}
+                  newGlobalMap={contextGameMap}
+                  keyMap={server_keyMaps[1]}
+                  character={character}
+                  side="right"
+                  isMobile={isMobile}
+                  isDarkMode={scheme === "dark"}
+                />
+              </View>
+            </>}
+
+
+        </View>
       )
       }
 

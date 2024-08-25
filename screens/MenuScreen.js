@@ -133,7 +133,6 @@ const LandingScreen = () => {
                 } else {
                     window.alert(data.reason);
                 }
-
             }
             if (data.cmd == "GOT_JOINED_TO_SERVER") {
                 // window.alert("setRole('server');");

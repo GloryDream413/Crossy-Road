@@ -69,7 +69,7 @@ const GameRoomScreen = () => {
     // Initial Variables
     const navigation = useNavigation();
     const {
-        gameMode, myRoomInfo, role, setMyRoomInfo,
+        socket, gameMode, setGameMode, myRoomInfo, role, setMyRoomInfo,
     } = React.useContext(GameContext);
 
     const [path, setPath] = useState("room");
@@ -225,15 +225,23 @@ const GameRoomScreen = () => {
                         color: 'white',
                         margin: '20px'
                     }}
-                    onClick = {() => {
-                        if (myRoomInfo.room_my_role == 0) {
-                            window.alert('server');
-                        } else if (myRoomInfo.room_my_role == 1){
-                            window.alert('client');
-                        } else {
-                            window.alert("Someone joined in an untracked way!");
-                        }
-                    }}
+                        onClick={() => {
+                            if (myRoomInfo.room_my_role == 0) {
+                                if (myRoomInfo.players[1].player_name != undefined &&
+                                    myRoomInfo.players[1].player_state == 1
+                                ) {
+                                    socket.emit('message', JSON.stringify({
+                                        cmd: 'ACTION_START_GAME'
+                                    }));
+                                } else {
+                                    window.alert('Client not joined');
+                                }
+                            } else if (myRoomInfo.room_my_role == 1) {
+                                window.alert('client has no permission to start game');
+                            } else {
+                                window.alert("Someone joined in an untracked way!");
+                            }
+                        }}
                     >
                         Play Mobber!
                     </Text>

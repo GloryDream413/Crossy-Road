@@ -194,15 +194,16 @@ const LandingScreen = () => {
                 } else {
                     window.alert(data.msg);
                 }
-
             }
-            if (data.cmd == "GOT_JOINED_TO_SERVER") {
-                // window.alert("setRole('server');");
 
-            }
-            if (data.cmd == "START_GAME_APPROVED") {
-                // window.alert("ROLE:", role);
-                navigation.navigate("GameScreen_2");
+            if (data.cmd == "SIGNAL_GAME_STARTED") {
+                if (data.status) {
+                    // window.alert("started");
+                    setGameMode(2);
+                    navigation.navigate("GameScreen");
+                } else  {
+                    window.alert(data.msg);
+                }
             }
         }
 
@@ -331,7 +332,7 @@ const LandingScreen = () => {
                                     fontWeight: '800',
                                 }}
                                     onClick={() => {
-                                        
+
                                         setLoadingState(true);
                                         if (serverId) {     // JOIN TO THE OTHER SERVER SPECIFIED IN THE SERVER ID
                                             socket.emit('message', JSON.stringify({
