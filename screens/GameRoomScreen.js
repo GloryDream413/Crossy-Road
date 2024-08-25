@@ -66,8 +66,7 @@ const GameRoomScreen = () => {
     // Initial Variables
     const navigation = useNavigation();
     const {
-        gameMode,
-        myRoomInfo, setMyRoomInfo,
+        gameMode, myRoomInfo, role, setMyRoomInfo,
     } = React.useContext(GameContext);
 
     const [path, setPath] = useState("room");
@@ -179,7 +178,7 @@ const GameRoomScreen = () => {
                         <View style={{ display: "flex", flexDirection: 'column', justifyContent: 'center', alignItems: 'center', rowGap: '10px' }}>
                             <Image source={
                                 myRoomInfo.players[0].player_state ? require("../assets/avatar/avatar_player4.png") : require("../assets/avatar/avatar_empty.png")}
-                                style={{ width: isPC ? '100px' : '60px', height: isPC ? '100px' : '60px', border: '2px solid gray', borderRadius: '50%' }}></Image>
+                                style={{ width: isPC ? '100px' : '60px', height: isPC ? '100px' : '60px', border: myRoomInfo.room_my_role == 0 ? '2px solid rgba(239, 88, 123, 1)' : '2px solid gray', borderRadius: '50%' }}></Image>
                             <Text style={{ fontSize: '24px', fontFamily: myFont, color: 'white' }}>
                                 {myRoomInfo.players[0].player_state ? myRoomInfo.players[0].player_name : 'Server'}
                             </Text>
@@ -189,20 +188,19 @@ const GameRoomScreen = () => {
                             <Image source={
                                 myRoomInfo.players[1].player_state ? require("../assets/avatar/avatar_player1.png") : require("../assets/avatar/avatar_empty.png")
                             }
-                                style={{ width: isPC ? '100px' : '60px', height: isPC ? '100px' : '60px', border: '2px solid gray', borderRadius: '50%' }}></Image>
+                                style={{ width: isPC ? '100px' : '60px', height: isPC ? '100px' : '60px', border: myRoomInfo.room_my_role == 0 ? '2px solid gray' : '2px solid rgba(239, 88, 123, 1)', borderRadius: '50%' }}></Image>
                             <Text style={{ fontSize: '24px', fontFamily: myFont, color: 'white' }}>
                                 {myRoomInfo.players[1].player_state ? myRoomInfo.players[1].player_name : 'Client'}
                             </Text>
                         </View>
                     </View>
 
-                    {true &&
+                    {myRoomInfo && myRoomInfo.room_my_role == 0 &&
                         < View style={{ display: 'flex', flexDirection: 'row', columnGap: '10px', alignItems: 'center' }}>
                             <Text style={{ fontSize: isPC ? '18px' : '12px', color: copied ? 'rgba(239, 88, 123, 0.8)' : 'rgba(239, 88, 123, 1)', fontWeight: '800', textDecoration: 'underline', textUnderlineOffset: '10px', cursor: 'pointer' }}
                                 onClick={() => {
                                     copyToClipboard(myRoomInfo.room_path);
                                 }}>
-
                                 {reduceString(myRoomInfo.room_path)}
                             </Text>
                             <Image source={require("../assets/icons/copyIcon.png")}
