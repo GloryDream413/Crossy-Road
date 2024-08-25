@@ -47,6 +47,9 @@ const GameRoomScreen = () => {
     const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
 
     useEffect(() => {
+
+        console.log("GameRoomScreen : ", myRoomInfo);
+
         if (myRoomInfo.room_state != 'opened') {
             window.alert("Room Not Created !");
         }
@@ -221,7 +224,17 @@ const GameRoomScreen = () => {
                         cursor: 'pointer',
                         color: 'white',
                         margin: '20px'
-                    }}>
+                    }}
+                    onClick = {() => {
+                        if (myRoomInfo.room_my_role == 0) {
+                            window.alert('server');
+                        } else if (myRoomInfo.room_my_role == 1){
+                            window.alert('client');
+                        } else {
+                            window.alert("Someone joined in an untracked way!");
+                        }
+                    }}
+                    >
                         Play Mobber!
                     </Text>
 

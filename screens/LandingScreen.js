@@ -21,7 +21,8 @@
  *    Developer   : Rothschild (Nickname)                                                                                                                  *
  *   Source Mode  : 100% Private                                                                                                                          *
  *   Description  : CrossyGame project with NFT as a service.                                                                                            *
- *  Writing Style : P0413-K0408-K1206                                                                                                                   *
+ *  Writing Style : P0413-K0408-K1206                                            
+ *                                                                        *
  *                                                                                                                                                     *
  ********************************************************************** The Road to Valhalla! *********************************************************
  */
@@ -145,6 +146,7 @@ const LandingScreen = () => {
                 }
             }
             else if (data.cmd == "SIGNAL_ROOM_JOINED") {
+                setLoadingState(false);
                 if (data.status) {
                     setLoadingState(false);
                     // Client JOINED
@@ -175,14 +177,22 @@ const LandingScreen = () => {
                         }));
 
                         console.log("Joined : ", myRoomInfo);
+                        console.log("Data : ", data);
 
-                        navigation.navigate("GameRoomScreen");
+                        // When server close the room
+                        if (data.players[0].player_state == 0 && data.players[1].player_state == 0) {
+                            window.alert("Player1 closed the room.");
+                            setServerId(undefined);
+                            navigation.navigate("LandingScreen");
+                        } else {
+                            navigation.navigate("GameRoomScreen");
+                        }
                     } else {
                         window.alert("Someone joined in an untracked way!");
                         return;
                     }
                 } else {
-                    window.alert(data.reason);
+                    window.alert(data.msg);
                 }
 
             }
@@ -321,11 +331,12 @@ const LandingScreen = () => {
                                     fontWeight: '800',
                                 }}
                                     onClick={() => {
+                                        
                                         setLoadingState(true);
                                         if (serverId) {     // JOIN TO THE OTHER SERVER SPECIFIED IN THE SERVER ID
                                             socket.emit('message', JSON.stringify({
                                                 cmd: 'ACTION_JOIN_GAME',
-                                                name: serverId,
+                                                name: serverId.toString(),
                                                 player2: userName
                                             }));
                                         } else {
