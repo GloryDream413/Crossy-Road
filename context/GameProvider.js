@@ -42,10 +42,12 @@ export default function GameProvider({ children }) {
     room_my_role : 0, // 0 : server, 1 : client
     players : [{
       player_name : "",
-      player_id : ""
+      player_id : "",
+      player_state : 1, // 0 : not joined, 1 : joined
     },{
       player_name : "",
-      player_id : ""
+      player_id : "",
+      player_state : 0, // 0 : not joined, 1 : joined
     }]
   })
 

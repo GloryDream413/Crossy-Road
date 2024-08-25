@@ -47,9 +47,10 @@ const GameRoomScreen = () => {
     const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
 
     useEffect(() => {
-        window.alert(myRoomInfo.room_state);
-        console.log(myRoomInfo);
-        
+        if (myRoomInfo.room_state != 'opened') {
+            window.alert("Room Not Created !");
+        }
+
         const handleResize = () => {
             setIsMobile(window.innerWidth < evalWidth);
             setIsPC(window.innerWidth >= evalWidth);
@@ -58,7 +59,6 @@ const GameRoomScreen = () => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-
     }, []);
 
     /* ================================ For Mobile Responsive ===============================*/
@@ -71,6 +71,12 @@ const GameRoomScreen = () => {
     } = React.useContext(GameContext);
 
     const [path, setPath] = useState("room");
+
+    const reduceString = (str, len = 40) => {
+        if (str.toString().length <= len) 
+            return str;
+        return str.slice(0,20) + "..." + str.slice(-17);
+    }
 
     // Receiving events from the server
 
@@ -133,26 +139,34 @@ const GameRoomScreen = () => {
                         columnGap: '10px'
                     }}>
                         <View style={{ display: "flex", flexDirection: 'column', justifyContent: 'center', rowGap: '10px' }}>
-                            <Image source={require("../assets/avatar/avatar_empty.png")}
-                                style={{ width: isPC ? '100px' : '60px', height: isPC ? '100px' : '60px', background: 'blue', borderRadius: '50%' }}></Image>
-                            <Text style={{ fontSize: '24px', fontFamily: myFont, color: 'white' }}>Server</Text>
+                            <Image source={
+                                myRoomInfo.players[0].player_state ? require("../assets/avatar/avatar_player4.png") : require("../assets/avatar/avatar_empty.png")}
+                                style={{ width: isPC ? '100px' : '60px', height: isPC ? '100px' : '60px', border: '2px solid gray', borderRadius: '50%' }}></Image>
+                            <Text style={{ fontSize: '24px', fontFamily: myFont, color: 'white' }}>
+                                {myRoomInfo.players[0].player_state ? myRoomInfo.players[0].player_name : 'Server'}
+                            </Text>
                         </View>
                         <Text style={{ fontSize: '18px', color: 'gray', fontFamily: myFont }}>  VS </Text>
                         <View style={{ display: "flex", flexDirection: 'column', justifyContent: 'center', rowGap: '10px' }}>
-                            <Image source={require("../assets/avatar/avatar_empty.png")}
-                                style={{ width: isPC ? '100px' : '60px', height: isPC ? '100px' : '60px', background: 'blue', borderRadius: '50%' }}></Image>
-                            <Text style={{ fontSize: '24px', fontFamily: myFont, color: 'white' }}>Client</Text>
+                            <Image source={
+                                myRoomInfo.players[1].player_state ? require("../assets/avatar/avatar_player1.png") : require("../assets/avatar/avatar_empty.png")
+                            }
+                                style={{ width: isPC ? '100px' : '60px', height: isPC ? '100px' : '60px', border: '2px solid gray', borderRadius: '50%' }}></Image>
+                            <Text style={{ fontSize: '24px', fontFamily: myFont, color: 'white' }}>
+                                {myRoomInfo.players[1].player_state ? myRoomInfo.players[0].player_name : 'Client'}
+                            </Text>
                         </View>
                     </View>
 
-                    <View style={{ display: 'flex', flexDirection: 'row', columnGap: '10px', alignItems: 'center' }}>
-                        <Text style={{ fontSize: isPC ? '18px' : '12px', color: 'rgba(239, 88, 123, 1)', fontWeight: '800', textDecoration: 'underline', cursor: 'pointer' }}>
-                            https://valhalla.proskillowner.com/?47xmi6s5g4zs823f
-                        </Text>
-                        <Image source={require("../assets/icons/copyIcon.png")}
-                            style={{ width: isPC ? '20px' : '14px', height: isPC ? '20px' : '14px', cursor: 'pointer' }}></Image>
+                    {myRoomInfo.room_state == 'opened' &&
+                        < View style={{ display: 'flex', flexDirection: 'row', columnGap: '10px', alignItems: 'center' }}>
+                            <Text style={{ fontSize: isPC ? '18px' : '12px', color: 'rgba(239, 88, 123, 1)', fontWeight: '800', textDecoration: 'underline' , textUnderlineOffset : '10px', cursor: 'pointer' }}>
+                                {reduceString(myRoomInfo.room_path)}
+                            </Text>
+                            <Image source={require("../assets/icons/copyIcon.png")}
+                                style={{ width: isPC ? '20px' : '14px', height: isPC ? '20px' : '14px', cursor: 'pointer' }}></Image>
 
-                    </View>
+                        </View>}
 
                     <Text style={{
                         fontFamily: myFont,
