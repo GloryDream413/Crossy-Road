@@ -33,8 +33,8 @@ import { useNavigation } from "@react-navigation/native";
 import { View, Text, TextInput, Image, Platform, Dimensions, Linking } from 'react-native';
 
 // Personal informations 
+import GameContext from '../context/GameContext';
 import HeaderScreen from "./HeaderScreen";
-
 import { myFont } from '../global/myFont';
 
 // Guide Page component
@@ -47,6 +47,9 @@ const GameRoomScreen = () => {
     const [isPC, setIsPC] = useState(Dimensions.get('window').width >= evalWidth);
 
     useEffect(() => {
+        window.alert(myRoomInfo.room_state);
+        console.log(myRoomInfo);
+        
         const handleResize = () => {
             setIsMobile(window.innerWidth < evalWidth);
             setIsPC(window.innerWidth >= evalWidth);
@@ -55,12 +58,17 @@ const GameRoomScreen = () => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
+
     }, []);
 
     /* ================================ For Mobile Responsive ===============================*/
 
     // Initial Variables
     const navigation = useNavigation();
+    const {
+        gameMode,
+        myRoomInfo, setMyRoomInfo,
+    } = React.useContext(GameContext);
 
     const [path, setPath] = useState("room");
 

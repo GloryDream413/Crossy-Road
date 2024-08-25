@@ -84,7 +84,10 @@ const LandingScreen = () => {
         role, setRole,
         // set the global map to the context 
         contextGameMap, setContextGameMap,
+        // Loading state
         setLoadingState,
+        // Room State
+        myRoomInfo, setMyRoomInfo,
     } = React.useContext(GameContext);
 
     // Initial hook functions 
@@ -119,16 +122,23 @@ const LandingScreen = () => {
     // Receiving events from the server
     useEffect(() => {
         const handleSocketMessage = (data) => {
-            if (data.cmd === "ROOM_CREATED") {
+            if (data.cmd === "SIGNAL_ROOM_CREATED") {
                 setLoadingState(false);
 
                 if (data.status) {
-                    setRole('server');
                     setGameMode(2);
-                    setRoomPath(FRONTEND_URL + "/?" + data.name);
+                    setRole('server');
+                    setMyRoomInfo({
+                        ...myRoomInfo,
+                        room_state : 'opened',
+                        room_name : data.name,
+                        room_path : FRONTEND_URL + "/?" + data.name,
+                        room_my_role : 0,
+                        players : data.players
+                    });
                     navigation.navigate("GameRoomScreen");
                 } else {
-                    //window.alert(data.msg);
+                    window.alert(data.msg);
                 }
             }
         };
@@ -291,7 +301,7 @@ const LandingScreen = () => {
                                     onClick={() => {
                                         setLoadingState(true);
                                         socket.emit('message', JSON.stringify({
-                                            cmd: 'CREATE_ROOM',
+                                            cmd: 'ACTION_CREATE_ROOM',
                                             player1: cUserName,
                                             map: globalMap
                                         }));

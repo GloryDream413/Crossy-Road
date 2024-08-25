@@ -27,14 +27,27 @@ async function rehydrateAsync() {
 }
 
 export default function GameProvider({ children }) {
-  const [character, setCharacter] = React.useState(defaultState.character);
-  const [highscore, setHighscore] = React.useState(defaultState.highscore);
-  const [gameMode, setGameMode] = React.useState(0); // 0 : PVE , 1 : PVP  
-  const [contextGameMap, setContextGameMap] = React.useState([]);
-  const [role, setRole] = React.useState("");
-  const [keyMap_Server, setKeyMap_Server] = React.useState(keyMap_None);
-  const [keyMap_Client, setKeyMap_Client] = React.useState(keyMap_None);
-  const [socket, setSocket] = React.useState();
+  const [character, setCharacter] = useState(defaultState.character);
+  const [highscore, setHighscore] = useState(defaultState.highscore);
+  const [gameMode, setGameMode] = useState(0); // 0 : PVE , 1 : PVP  
+  const [contextGameMap, setContextGameMap] = useState([]);
+  const [role, setRole] = useState("");
+  const [keyMap_Server, setKeyMap_Server] = useState(keyMap_None);
+  const [keyMap_Client, setKeyMap_Client] = useState(keyMap_None);
+  const [socket, setSocket] = useState();
+  const [myRoomInfo, setMyRoomInfo] = useState({
+    room_state : "closed", // or 'opened'
+    room_name : "",
+    room_path : "",
+    room_my_role : 0, // 0 : server, 1 : client
+    players : [{
+      player_name : "",
+      player_id : ""
+    },{
+      player_name : "",
+      player_id : ""
+    }]
+  })
 
   /* ================================ For Mobile Responsive ===============================*/
 
@@ -55,11 +68,15 @@ export default function GameProvider({ children }) {
 
 
   /* ================================ For Mobile Responsive ===============================*/
-
+  
+  /* ================================ For Loading Components  ===============================*/
+  
   const [rotateValue, setRotateValue] = useState(0);
   const [innerLoading, setInnerLoading] = useState(false);
   const [loadingState, setLoadingState] = useState(false);
   const [intervalId, setIntervalId] = useState(-1);
+  
+  /* ================================ For Loading Components  ===============================*/
 
   const startAnimation = () => {
     const _intervalId = setInterval(() => {
@@ -109,45 +126,23 @@ export default function GameProvider({ children }) {
         loadingState,
         setLoadingState,
         character,
-        setCharacter: (character) => {
-          setCharacter(character);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
-        },
+        setCharacter,
         highscore,
-        setHighscore: (highscore) => {
-          setHighscore(highscore);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
-        },
+        setHighscore,
         gameMode,
-        setGameMode: (_gameMode) => {
-          setGameMode(_gameMode);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
-        },
+        setGameMode,
         contextGameMap,
-        setContextGameMap: (_newMap) => {
-          setContextGameMap(_newMap);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
-        },
+        setContextGameMap,
         role,
-        setRole: (_role) => {
-          setRole(_role);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
-        },
+        setRole,
         keyMap_Server,
-        setKeyMap_Server: (_newKeyMap) => {
-          setKeyMap_Server(_newKeyMap);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
-        },
+        setKeyMap_Server,
         keyMap_Client,
-        setKeyMap_Client: (_newKeyMap) => {
-          setKeyMap_Client(_newKeyMap);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
-        },
+        setKeyMap_Client,
         socket,
-        setSocket: (_socket) => {
-          setSocket(_socket);
-          cacheAsync({ character, highscore, gameMode, contextGameMap, role, keyMap_Server, setKeyMap_Server, keyMap_Client, setKeyMap_Client });
-        }
+        setSocket,
+        myRoomInfo,
+        setMyRoomInfo
       }}
     >
       {innerLoading == true &&
